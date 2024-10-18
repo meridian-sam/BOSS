@@ -1,0 +1,86 @@
+services:
+  - class: org.yamcs.archive.XtceTmRecorder
+  - class: org.yamcs.archive.ParameterRecorder
+  - class: org.yamcs.archive.AlarmRecorder
+  - class: org.yamcs.archive.EventRecorder
+  - class: org.yamcs.archive.ReplayServer
+  - class: org.yamcs.parameter.SystemParametersService
+    args:
+      producers:
+        - fs
+        - jvm
+  - class: org.yamcs.ProcessorCreatorService
+    args:
+      name: realtime
+      type: realtime
+  - class: org.yamcs.archive.CommandHistoryRecorder
+  - class: org.yamcs.parameterarchive.ParameterArchive
+    args:
+      realtimeFiller:
+        enabled: true
+      backFiller:
+        enabled: false
+        warmupTime: 60
+  - class: org.yamcs.plists.ParameterListService
+  - class: org.yamcs.timeline.TimelineService
+
+dataLinks:
+  - name: radio-in
+    class: org.yamcs.tctm.UdpTmDataLink
+    stream: tm_realtime
+    port: 6011
+    packetPreprocessorClassName: org.yamcs.tctm.cfs.CfsPacketPreprocessor
+
+  - name: radio-out
+    class: org.yamcs.tctm.UdpTcDataLink
+    stream: tc_realtime
+    host: localhost
+    port: 6010
+    commandPostprocessorClassName: org.yamcs.tctm.cfs.CfsCommandPostprocessor
+
+mdb:
+  - type: xtce
+    args:
+      file: mdb/ccsds.xtce
+  - type: xtce
+    args:
+      file: mdb/cfs.xtce
+  - type: xtce
+    args:
+      file: mdb/ci_debug.xtce
+  - type: xtce
+    args:
+      file: mdb/cmd_util.xtce
+  - type: xtce
+    args:
+      file: mdb/pdu.xtce
+  - type: xtce
+    args:
+      file: mdb/sim_42_truth.xtce
+  - type: xtce
+    args:
+      file: mdb/system.xtce
+  - type: xtce
+    args:
+      file: mdb/to_debug.xtce
+#  - type: xtce
+#    args:
+#      file: mdb/cfdp_test.xtce
+#  - type: xtce
+#    args:
+#      file: mdb/cfdp.xtce
+
+# Configuration for streams created at server startup
+streamConfig:
+  tm:
+    - name: "tm_realtime"
+      processor: "realtime"
+    - name: "tm_dump"
+  cmdHist: ["cmdhist_realtime", "cmdhist_dump"]
+  event: ["events_realtime", "events_dump"]
+  param: ["pp_realtime", "pp_dump", "sys_param", "proc_param"]
+  parameterAlarm: ["alarms_realtime"]
+  tc:
+    - name: "tc_realtime"
+      processor: "realtime"
+

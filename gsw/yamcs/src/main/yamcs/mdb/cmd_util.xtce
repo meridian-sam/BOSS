@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xtce:SpaceSystem xmlns:xtce="http://www.omg.org/space/xtce" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="CMD_UTIL" xsi:schemaLocation="https://www.omg.org/spec/XTCE/20180204/SpaceSystem.xsd">
+  <xtce:TelemetryMetaData>
+    <xtce:ParameterTypeSet/>
+    <xtce:ParameterSet/>
+  </xtce:TelemetryMetaData>
+  <xtce:CommandMetaData>
+    <xtce:ArgumentTypeSet>
+      <xtce:EnumeratedArgumentType name="PKTID_Type" initialValue="CAM" shortDescription="CCSDS Packet Identification">
+        <xtce:IntegerDataEncoding sizeInBits="16" encoding="unsigned"/>
+        <xtce:EnumerationList>
+          <xtce:Enumeration value="6344" label="CAM"/>
+          <xtce:Enumeration value="6336" label="EPS"/>
+          <xtce:Enumeration value="6256" label="NAV"/>
+        </xtce:EnumerationList>
+      </xtce:EnumeratedArgumentType>
+      <xtce:IntegerArgumentType name="CCSDS_SEQUENCE_Type" initialValue="49152" shortDescription="CCSDS Packet Sequence Control" signed="false">
+        <xtce:IntegerDataEncoding sizeInBits="16" encoding="unsigned"/>
+        <xtce:ValidRange minInclusive="0" maxInclusive="65535"/>
+      </xtce:IntegerArgumentType>
+      <xtce:IntegerArgumentType name="CCSDS_LENGTH_Type" initialValue="1" shortDescription="CCSDS Packet Data Length" signed="false">
+        <xtce:IntegerDataEncoding sizeInBits="16" encoding="unsigned"/>
+        <xtce:ValidRange minInclusive="0" maxInclusive="65535"/>
+      </xtce:IntegerArgumentType>
+      <xtce:IntegerArgumentType name="CMD_CODE_Type" initialValue="0" shortDescription="CCSDS Command Function Code" signed="false">
+        <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+        <xtce:ValidRange minInclusive="0" maxInclusive="255"/>
+      </xtce:IntegerArgumentType>
+      <xtce:IntegerArgumentType name="CCSDS_CHECKSUM_Type" initialValue="0" shortDescription="CCSDS Command Checksum" signed="false">
+        <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+        <xtce:ValidRange minInclusive="0" maxInclusive="255"/>
+      </xtce:IntegerArgumentType>
+    </xtce:ArgumentTypeSet>
+    <xtce:MetaCommandSet>
+      <xtce:MetaCommand name="CMD_UTIL">
+        <xtce:BaseMetaCommand metaCommandRef="/CCSDS/CCSDS_TC"/>
+        <xtce:ArgumentList>
+          <xtce:Argument name="PKTID" argumentTypeRef="PKTID_Type"/>
+          <xtce:Argument name="CMD_CODE" argumentTypeRef="CMD_CODE_Type"/>
+        </xtce:ArgumentList>
+        <xtce:CommandContainer name="CMD_UTIL_CMD_UTIL_CommandContainer">
+          <xtce:EntryList>
+            <xtce:ArgumentRefEntry argumentRef="PKTID"/>
+            <xtce:ArgumentRefEntry argumentRef="CMD_CODE"/>
+          </xtce:EntryList>
+        </xtce:CommandContainer>
+      </xtce:MetaCommand>
+    </xtce:MetaCommandSet>
+  </xtce:CommandMetaData>
+</xtce:SpaceSystem>
