@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xtce:SpaceSystem xmlns:xtce="http://www.omg.org/spec/XTCE/20180204" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="GENERIC_FSS" xsi:schemaLocation="http://www.omg.org/spec/XTCE/20180204 https://www.omg.org/spec/XTCE/20180204/SpaceSystem.xsd">
+  <xtce:SpaceSystem name="GENERIC_FSS_DATA_TLM">
+    <xtce:TelemetryMetaData>
+      <xtce:ParameterTypeSet>
+        <xtce:FloatParameterType name="GENERIC_FSS_ALPHA_Type" sizeInBits="32" shortDescription="Raw generic_fss data alpha angle (-60 to 60)">
+          <xtce:FloatDataEncoding sizeInBits="32" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="GENERIC_FSS_BETA_Type" sizeInBits="32" shortDescription="Raw generic_fss data beta angle  (-60 to 60)">
+          <xtce:FloatDataEncoding sizeInBits="32" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:IntegerParameterType name="GENERIC_FSS_ERROR_CODE_Type" shortDescription="Raw generic_fss data error code  (0=no error, 1=error)" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+        </xtce:IntegerParameterType>
+      </xtce:ParameterTypeSet>
+      <xtce:ParameterSet>
+        <xtce:Parameter name="GENERIC_FSS_ALPHA" parameterTypeRef="GENERIC_FSS_ALPHA_Type"/>
+        <xtce:Parameter name="GENERIC_FSS_BETA" parameterTypeRef="GENERIC_FSS_BETA_Type"/>
+        <xtce:Parameter name="GENERIC_FSS_ERROR_CODE" parameterTypeRef="GENERIC_FSS_ERROR_CODE_Type"/>
+      </xtce:ParameterSet>
+      <xtce:ContainerSet>
+        <xtce:SequenceContainer name="GENERIC_FSS_DATA_TLM" shortDescription="GENERIC_FSS_Device_tlm_t">
+          <xtce:EntryList>
+            <xtce:ParameterRefEntry parameterRef="GENERIC_FSS_ALPHA"/>
+            <xtce:ParameterRefEntry parameterRef="GENERIC_FSS_BETA"/>
+            <xtce:ParameterRefEntry parameterRef="GENERIC_FSS_ERROR_CODE"/>
+          </xtce:EntryList>
+          <xtce:BaseContainer containerRef="/CCSDS/CCSDS_TM">
+            <xtce:RestrictionCriteria>
+              <xtce:ComparisonList>
+                <xtce:Comparison parameterRef="/CCSDS/CCSDS_STREAMID" value="2337"/>
+              </xtce:ComparisonList>
+            </xtce:RestrictionCriteria>
+          </xtce:BaseContainer>
+        </xtce:SequenceContainer>
+      </xtce:ContainerSet>
+    </xtce:TelemetryMetaData>
+  </xtce:SpaceSystem>
+  <xtce:SpaceSystem name="GENERIC_FSS_HK_TLM">
+    <xtce:TelemetryMetaData>
+      <xtce:ParameterTypeSet>
+        <xtce:IntegerParameterType name="CMD_ERR_COUNT_Type" shortDescription="Command Error Count" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+        </xtce:IntegerParameterType>
+        <xtce:IntegerParameterType name="CMD_COUNT_Type" shortDescription="Command Count" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+        </xtce:IntegerParameterType>
+        <xtce:IntegerParameterType name="DEVICE_ERR_COUNT_Type" shortDescription="Device Command Error Count" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+        </xtce:IntegerParameterType>
+        <xtce:IntegerParameterType name="DEVICE_COUNT_Type" shortDescription="Device Command Count" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+        </xtce:IntegerParameterType>
+        <xtce:EnumeratedParameterType name="DEVICE_ENABLED_Type" shortDescription="Device Enable Status">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+          <xtce:EnumerationList>
+            <xtce:Enumeration value="0" label="DISABLED"/>
+            <xtce:Enumeration value="1" label="ENABLED"/>
+          </xtce:EnumerationList>
+        </xtce:EnumeratedParameterType>
+      </xtce:ParameterTypeSet>
+      <xtce:ParameterSet>
+        <xtce:Parameter name="CMD_ERR_COUNT" parameterTypeRef="CMD_ERR_COUNT_Type"/>
+        <xtce:Parameter name="CMD_COUNT" parameterTypeRef="CMD_COUNT_Type"/>
+        <xtce:Parameter name="DEVICE_ERR_COUNT" parameterTypeRef="DEVICE_ERR_COUNT_Type"/>
+        <xtce:Parameter name="DEVICE_COUNT" parameterTypeRef="DEVICE_COUNT_Type"/>
+        <xtce:Parameter name="DEVICE_ENABLED" parameterTypeRef="DEVICE_ENABLED_Type"/>
+      </xtce:ParameterSet>
+      <xtce:ContainerSet>
+        <xtce:SequenceContainer name="GENERIC_FSS_HK_TLM" shortDescription="GENERIC_FSS_Hk_tlm_t">
+          <xtce:EntryList>
+            <xtce:ParameterRefEntry parameterRef="CMD_ERR_COUNT"/>
+            <xtce:ParameterRefEntry parameterRef="CMD_COUNT"/>
+            <xtce:ParameterRefEntry parameterRef="DEVICE_ERR_COUNT"/>
+            <xtce:ParameterRefEntry parameterRef="DEVICE_COUNT"/>
+            <xtce:ParameterRefEntry parameterRef="DEVICE_ENABLED"/>
+          </xtce:EntryList>
+          <xtce:BaseContainer containerRef="/CCSDS/CCSDS_TM">
+            <xtce:RestrictionCriteria>
+              <xtce:ComparisonList>
+                <xtce:Comparison parameterRef="/CCSDS/CCSDS_STREAMID" value="2336"/>
+              </xtce:ComparisonList>
+            </xtce:RestrictionCriteria>
+          </xtce:BaseContainer>
+        </xtce:SequenceContainer>
+      </xtce:ContainerSet>
+    </xtce:TelemetryMetaData>
+  </xtce:SpaceSystem>
+  <xtce:SpaceSystem name="CMD">
+    <xtce:CommandMetaData>
+      <xtce:ArgumentTypeSet/>
+      <xtce:MetaCommandSet>
+        <xtce:MetaCommand name="GENERIC_FSS_REQ_DATA">
+          <xtce:BaseMetaCommand metaCommandRef="/CCSDS/CCSDS_TC">
+            <xtce:ArgumentAssignmentList>
+              <xtce:ArgumentAssignment argumentName="CCSDS_STREAMID" argumentValue="6433"/>
+              <xtce:ArgumentAssignment argumentName="CCSDS_FC" argumentValue="1"/>
+            </xtce:ArgumentAssignmentList>
+          </xtce:BaseMetaCommand>
+          <xtce:ArgumentList/>
+          <xtce:CommandContainer name="GENERIC_FSS_GENERIC_FSS_REQ_DATA_CommandContainer">
+            <xtce:EntryList/>
+          </xtce:CommandContainer>
+        </xtce:MetaCommand>
+        <xtce:MetaCommand name="GENERIC_FSS_REQ_HK">
+          <xtce:BaseMetaCommand metaCommandRef="/CCSDS/CCSDS_TC">
+            <xtce:ArgumentAssignmentList>
+              <xtce:ArgumentAssignment argumentName="CCSDS_STREAMID" argumentValue="6433"/>
+              <xtce:ArgumentAssignment argumentName="CCSDS_FC" argumentValue="0"/>
+            </xtce:ArgumentAssignmentList>
+          </xtce:BaseMetaCommand>
+          <xtce:ArgumentList/>
+          <xtce:CommandContainer name="GENERIC_FSS_GENERIC_FSS_REQ_HK_CommandContainer">
+            <xtce:EntryList/>
+          </xtce:CommandContainer>
+        </xtce:MetaCommand>
+        <xtce:MetaCommand name="GENERIC_FSS_DISABLE_CC">
+          <xtce:BaseMetaCommand metaCommandRef="/CCSDS/CCSDS_TC">
+            <xtce:ArgumentAssignmentList>
+              <xtce:ArgumentAssignment argumentName="CCSDS_STREAMID" argumentValue="6432"/>
+              <xtce:ArgumentAssignment argumentName="CCSDS_FC" argumentValue="3"/>
+            </xtce:ArgumentAssignmentList>
+          </xtce:BaseMetaCommand>
+          <xtce:ArgumentList/>
+          <xtce:CommandContainer name="GENERIC_FSS_GENERIC_FSS_DISABLE_CC_CommandContainer">
+            <xtce:EntryList/>
+          </xtce:CommandContainer>
+        </xtce:MetaCommand>
+        <xtce:MetaCommand name="GENERIC_FSS_ENABLE_CC">
+          <xtce:BaseMetaCommand metaCommandRef="/CCSDS/CCSDS_TC">
+            <xtce:ArgumentAssignmentList>
+              <xtce:ArgumentAssignment argumentName="CCSDS_STREAMID" argumentValue="6432"/>
+              <xtce:ArgumentAssignment argumentName="CCSDS_FC" argumentValue="2"/>
+            </xtce:ArgumentAssignmentList>
+          </xtce:BaseMetaCommand>
+          <xtce:ArgumentList/>
+          <xtce:CommandContainer name="GENERIC_FSS_GENERIC_FSS_ENABLE_CC_CommandContainer">
+            <xtce:EntryList/>
+          </xtce:CommandContainer>
+        </xtce:MetaCommand>
+        <xtce:MetaCommand name="GENERIC_FSS_RST_COUNTERS_CC">
+          <xtce:BaseMetaCommand metaCommandRef="/CCSDS/CCSDS_TC">
+            <xtce:ArgumentAssignmentList>
+              <xtce:ArgumentAssignment argumentName="CCSDS_STREAMID" argumentValue="6432"/>
+              <xtce:ArgumentAssignment argumentName="CCSDS_FC" argumentValue="1"/>
+            </xtce:ArgumentAssignmentList>
+          </xtce:BaseMetaCommand>
+          <xtce:ArgumentList/>
+          <xtce:CommandContainer name="GENERIC_FSS_GENERIC_FSS_RST_COUNTERS_CC_CommandContainer">
+            <xtce:EntryList/>
+          </xtce:CommandContainer>
+        </xtce:MetaCommand>
+        <xtce:MetaCommand name="GENERIC_FSS_NOOP_CC">
+          <xtce:BaseMetaCommand metaCommandRef="/CCSDS/CCSDS_TC">
+            <xtce:ArgumentAssignmentList>
+              <xtce:ArgumentAssignment argumentName="CCSDS_STREAMID" argumentValue="6432"/>
+              <xtce:ArgumentAssignment argumentName="CCSDS_FC" argumentValue="0"/>
+            </xtce:ArgumentAssignmentList>
+          </xtce:BaseMetaCommand>
+          <xtce:ArgumentList/>
+          <xtce:CommandContainer name="GENERIC_FSS_GENERIC_FSS_NOOP_CC_CommandContainer">
+            <xtce:EntryList/>
+          </xtce:CommandContainer>
+        </xtce:MetaCommand>
+      </xtce:MetaCommandSet>
+    </xtce:CommandMetaData>
+  </xtce:SpaceSystem>
+</xtce:SpaceSystem>

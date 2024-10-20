@@ -27,9 +27,13 @@ echo "$c2:  $ip2 $pid2"
 
 port=5013
 
+nsenter -t $pid2 -n iptables -t nat -F PREROUTING
+nsenter -t $pid1 -n iptables -t mangle -F PREROUTING
+
 for port in 5013 5111 6011; do
    echo "duplicating port $port"
-   nsenter -t $pid2 -n iptables -t nat -A PREROUTING -p udp --dport $port -j DNAT --to-destination $ip2
-   nsenter -t $pid1 -n iptables -t mangle -A PREROUTING -p udp --dport $port -j TEE --gateway $ip2
+   nsenter -n -t $pid2 iptables -t nat -A PREROUTING -p udp --dport $port -j DNAT --to-destination $ip2
+   nsenter -n -t $pid1 iptables -t mangle -A PREROUTING -p udp --dport $port -j TEE --gateway $ip2
 done 
-
+nsenter -n -t $pid1 conntrack -F
+nsenter -n -t $pid2 conntrack -F

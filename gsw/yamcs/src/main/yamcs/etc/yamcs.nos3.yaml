@@ -30,12 +30,29 @@ dataLinks:
     stream: tm_realtime
     port: 6011
     packetPreprocessorClassName: org.yamcs.tctm.cfs.CfsPacketPreprocessor
+    packetPreprocessorArgs:
+      useLocalGenerationTime: true
 
   - name: radio-out
     class: org.yamcs.tctm.UdpTcDataLink
     stream: tc_realtime
-    host: localhost
+    host: cryptolib
     port: 6010
+    commandPostprocessorClassName: org.yamcs.tctm.cfs.CfsCommandPostprocessor
+
+  - name: debug-in
+    class: org.yamcs.tctm.UdpTmDataLink
+    stream: tm_realtime
+    port: 5013
+    packetPreprocessorClassName: org.yamcs.tctm.cfs.CfsPacketPreprocessor
+    packetPreprocessorArgs:
+      useLocalGenerationTime: true
+      
+  - name: debug-out
+    class: org.yamcs.tctm.UdpTcDataLink
+    stream: tc_realtime
+    host: nos_fsw
+    port: 5012
     commandPostprocessorClassName: org.yamcs.tctm.cfs.CfsCommandPostprocessor
 
 mdb:
@@ -63,6 +80,51 @@ mdb:
   - type: xtce
     args:
       file: mdb/to_debug.xtce
+  - type: xtce
+    args:
+      file: mdb/arducam.xtce
+  - type: xtce
+    args:
+      file: mdb/generic_adcs.xtce
+  - type: xtce
+    args:
+      file: mdb/generic_css.xtce
+  - type: xtce
+    args:
+      file: mdb/generic_eps.xtce
+  - type: xtce
+    args:
+      file: mdb/generic_fss.xtce
+  - type: xtce
+    args:
+      file: mdb/generic_imu.xtce
+  - type: xtce
+    args:
+      file: mdb/generic_mag.xtce
+  - type: xtce
+    args:
+      file: mdb/generic_radio.xtce
+  - type: xtce
+    args:
+      file: mdb/generic_reaction_wheel.xtce
+  - type: xtce
+    args:
+      file: mdb/generic_star_tracker.xtce
+  - type: xtce
+    args:
+      file: mdb/generic_thruster.xtce
+  - type: xtce
+    args:
+      file: mdb/generic_torquer.xtce
+  - type: xtce
+    args:
+      file: mdb/novatel_oem615.xtce
+  - type: xtce
+    args:
+      file: mdb/sample.xtce
+#  - type: xtce
+#    args:
+#      file: mdb/syn.xtce
 #  - type: xtce
 #    args:
 #      file: mdb/cfdp_test.xtce
@@ -75,12 +137,16 @@ streamConfig:
   tm:
     - name: "tm_realtime"
       processor: "realtime"
+      rootContainer: "/CCSDS/CCSDS_TM"
     - name: "tm_dump"
   cmdHist: ["cmdhist_realtime", "cmdhist_dump"]
   event: ["events_realtime", "events_dump"]
   param: ["pp_realtime", "pp_dump", "sys_param", "proc_param"]
   parameterAlarm: ["alarms_realtime"]
   tc:
+    # - name: "tc_debug"
+    #  processor: "realtime"
+    #  tcPatterns: ["/TO_DEBUG/CMD/.*"]
     - name: "tc_realtime"
       processor: "realtime"
 

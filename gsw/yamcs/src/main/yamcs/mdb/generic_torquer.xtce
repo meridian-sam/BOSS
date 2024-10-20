@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xtce:SpaceSystem xmlns:xtce="http://www.omg.org/spec/XTCE/20180204" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="GENERIC_TORQUER" xsi:schemaLocation="http://www.omg.org/spec/XTCE/20180204 https://www.omg.org/spec/XTCE/20180204/SpaceSystem.xsd">
+  <xtce:SpaceSystem name="GENERIC_TORQUER_HK_TLM_T">
+    <xtce:TelemetryMetaData>
+      <xtce:ParameterTypeSet>
+        <xtce:IntegerParameterType name="CMD_ERR_COUNT_Type" shortDescription="Command Error Count" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+        </xtce:IntegerParameterType>
+        <xtce:IntegerParameterType name="CMD_COUNT_Type" shortDescription="Command Count" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+        </xtce:IntegerParameterType>
+        <xtce:IntegerParameterType name="DEVICE_ERR_COUNT_Type" shortDescription="Device Command Error Count" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+        </xtce:IntegerParameterType>
+        <xtce:IntegerParameterType name="DEVICE_COUNT_Type" shortDescription="Device Command Count" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+        </xtce:IntegerParameterType>
+        <xtce:EnumeratedParameterType name="DEVICE_ENABLED_Type" shortDescription="Device Enable Status">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+          <xtce:EnumerationList>
+            <xtce:Enumeration value="0" label="DISABLED"/>
+            <xtce:Enumeration value="1" label="ENABLED"/>
+          </xtce:EnumerationList>
+        </xtce:EnumeratedParameterType>
+        <xtce:IntegerParameterType name="TORQUER_PERIOD_Type" shortDescription="Torquer Period" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="32" encoding="unsigned" byteOrder="leastSignificantByteFirst"/>
+        </xtce:IntegerParameterType>
+        <xtce:IntegerParameterType name="TORQUER_DIRECTION_0_Type" shortDescription="Torquer 0 Direction" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+        </xtce:IntegerParameterType>
+        <xtce:IntegerParameterType name="TORQUER_PERCENT_ON_0_Type" shortDescription="Torquer 0 Percent On" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+        </xtce:IntegerParameterType>
+        <xtce:IntegerParameterType name="TORQUER_DIRECTION_1_Type" shortDescription="Torquer 1 Direction" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+        </xtce:IntegerParameterType>
+        <xtce:IntegerParameterType name="TORQUER_PERCENT_ON_1_Type" shortDescription="Torquer 1 Percent On" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+        </xtce:IntegerParameterType>
+        <xtce:IntegerParameterType name="TORQUER_DIRECTION_2_Type" shortDescription="Torquer 2 Direction" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+        </xtce:IntegerParameterType>
+        <xtce:IntegerParameterType name="TORQUER_PERCENT_ON_2_Type" shortDescription="Torquer 2 Percent On" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+        </xtce:IntegerParameterType>
+      </xtce:ParameterTypeSet>
+      <xtce:ParameterSet>
+        <xtce:Parameter name="CMD_ERR_COUNT" parameterTypeRef="CMD_ERR_COUNT_Type"/>
+        <xtce:Parameter name="CMD_COUNT" parameterTypeRef="CMD_COUNT_Type"/>
+        <xtce:Parameter name="DEVICE_ERR_COUNT" parameterTypeRef="DEVICE_ERR_COUNT_Type"/>
+        <xtce:Parameter name="DEVICE_COUNT" parameterTypeRef="DEVICE_COUNT_Type"/>
+        <xtce:Parameter name="DEVICE_ENABLED" parameterTypeRef="DEVICE_ENABLED_Type"/>
+        <xtce:Parameter name="TORQUER_PERIOD" parameterTypeRef="TORQUER_PERIOD_Type"/>
+        <xtce:Parameter name="TORQUER_DIRECTION_0" parameterTypeRef="TORQUER_DIRECTION_0_Type"/>
+        <xtce:Parameter name="TORQUER_PERCENT_ON_0" parameterTypeRef="TORQUER_PERCENT_ON_0_Type"/>
+        <xtce:Parameter name="TORQUER_DIRECTION_1" parameterTypeRef="TORQUER_DIRECTION_1_Type"/>
+        <xtce:Parameter name="TORQUER_PERCENT_ON_1" parameterTypeRef="TORQUER_PERCENT_ON_1_Type"/>
+        <xtce:Parameter name="TORQUER_DIRECTION_2" parameterTypeRef="TORQUER_DIRECTION_2_Type"/>
+        <xtce:Parameter name="TORQUER_PERCENT_ON_2" parameterTypeRef="TORQUER_PERCENT_ON_2_Type"/>
+      </xtce:ParameterSet>
+      <xtce:ContainerSet>
+        <xtce:SequenceContainer name="GENERIC_TORQUER_HK_TLM_T" shortDescription="GENERIC_TORQUER_Hk_tlm_t">
+          <xtce:EntryList>
+            <xtce:ParameterRefEntry parameterRef="CMD_ERR_COUNT"/>
+            <xtce:ParameterRefEntry parameterRef="CMD_COUNT"/>
+            <xtce:ParameterRefEntry parameterRef="DEVICE_ERR_COUNT"/>
+            <xtce:ParameterRefEntry parameterRef="DEVICE_COUNT"/>
+            <xtce:ParameterRefEntry parameterRef="DEVICE_ENABLED"/>
+            <xtce:ParameterRefEntry parameterRef="TORQUER_PERIOD"/>
+            <xtce:ParameterRefEntry parameterRef="TORQUER_DIRECTION_0"/>
+            <xtce:ParameterRefEntry parameterRef="TORQUER_PERCENT_ON_0"/>
+            <xtce:ParameterRefEntry parameterRef="TORQUER_DIRECTION_1"/>
+            <xtce:ParameterRefEntry parameterRef="TORQUER_PERCENT_ON_1"/>
+            <xtce:ParameterRefEntry parameterRef="TORQUER_DIRECTION_2"/>
+            <xtce:ParameterRefEntry parameterRef="TORQUER_PERCENT_ON_2"/>
+          </xtce:EntryList>
+          <xtce:BaseContainer containerRef="/CCSDS/CCSDS_TM">
+            <xtce:RestrictionCriteria>
+              <xtce:ComparisonList>
+                <xtce:Comparison parameterRef="/CCSDS/CCSDS_STREAMID" value="2362"/>
+              </xtce:ComparisonList>
+            </xtce:RestrictionCriteria>
+          </xtce:BaseContainer>
+        </xtce:SequenceContainer>
+      </xtce:ContainerSet>
+    </xtce:TelemetryMetaData>
+  </xtce:SpaceSystem>
+  <xtce:SpaceSystem name="CMD">
+    <xtce:CommandMetaData>
+      <xtce:ArgumentTypeSet>
+        <xtce:IntegerArgumentType name="DIRECTION_0_Type" initialValue="0" shortDescription="Direction - 0" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+          <xtce:ValidRange minInclusive="0" maxInclusive="1"/>
+        </xtce:IntegerArgumentType>
+        <xtce:IntegerArgumentType name="PERCENT_ON_0_Type" initialValue="0" shortDescription="Percent On - 0" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+          <xtce:ValidRange minInclusive="0" maxInclusive="100"/>
+        </xtce:IntegerArgumentType>
+        <xtce:IntegerArgumentType name="DIRECTION_1_Type" initialValue="0" shortDescription="Direction - 1" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+          <xtce:ValidRange minInclusive="0" maxInclusive="1"/>
+        </xtce:IntegerArgumentType>
+        <xtce:IntegerArgumentType name="PERCENT_ON_1_Type" initialValue="0" shortDescription="Percent On - 1" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+          <xtce:ValidRange minInclusive="0" maxInclusive="100"/>
+        </xtce:IntegerArgumentType>
+        <xtce:IntegerArgumentType name="DIRECTION_2_Type" initialValue="0" shortDescription="Direction - 2" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+          <xtce:ValidRange minInclusive="0" maxInclusive="1"/>
+        </xtce:IntegerArgumentType>
+        <xtce:IntegerArgumentType name="PERCENT_ON_2_Type" initialValue="0" shortDescription="Percent On - 2" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+          <xtce:ValidRange minInclusive="0" maxInclusive="100"/>
+        </xtce:IntegerArgumentType>
+        <xtce:IntegerArgumentType name="TRQNUM_Type" initialValue="0" shortDescription="The number corresponding to the torquer" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+          <xtce:ValidRange minInclusive="0" maxInclusive="2"/>
+        </xtce:IntegerArgumentType>
+        <xtce:IntegerArgumentType name="DIRECTION_Type" initialValue="0" shortDescription="The direction for the current to flow" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+          <xtce:ValidRange minInclusive="0" maxInclusive="1"/>
+        </xtce:IntegerArgumentType>
+        <xtce:IntegerArgumentType name="PERCENT_ON_Type" initialValue="0" shortDescription="The percent of maximum current to use" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+          <xtce:ValidRange minInclusive="0" maxInclusive="100"/>
+        </xtce:IntegerArgumentType>
+      </xtce:ArgumentTypeSet>
+      <xtce:MetaCommandSet>
+        <xtce:MetaCommand name="GENERIC_TORQUER_SEND_HK_CC">
+          <xtce:BaseMetaCommand metaCommandRef="/CCSDS/CCSDS_TC">
+            <xtce:ArgumentAssignmentList>
+              <xtce:ArgumentAssignment argumentName="CCSDS_STREAMID" argumentValue="6459"/>
+              <xtce:ArgumentAssignment argumentName="CCSDS_FC" argumentValue="7"/>
+            </xtce:ArgumentAssignmentList>
+          </xtce:BaseMetaCommand>
+          <xtce:ArgumentList/>
+          <xtce:CommandContainer name="GENERIC_TORQUER_GENERIC_TORQUER_SEND_HK_CC_CommandContainer">
+            <xtce:EntryList/>
+          </xtce:CommandContainer>
+        </xtce:MetaCommand>
+        <xtce:MetaCommand name="GENERIC_TORQUER_ALL_PERCENT_ON_CC">
+          <xtce:BaseMetaCommand metaCommandRef="/CCSDS/CCSDS_TC">
+            <xtce:ArgumentAssignmentList>
+              <xtce:ArgumentAssignment argumentName="CCSDS_STREAMID" argumentValue="6458"/>
+              <xtce:ArgumentAssignment argumentName="CCSDS_FC" argumentValue="5"/>
+            </xtce:ArgumentAssignmentList>
+          </xtce:BaseMetaCommand>
+          <xtce:ArgumentList>
+            <xtce:Argument name="DIRECTION_0" argumentTypeRef="DIRECTION_0_Type"/>
+            <xtce:Argument name="PERCENT_ON_0" argumentTypeRef="PERCENT_ON_0_Type"/>
+            <xtce:Argument name="DIRECTION_1" argumentTypeRef="DIRECTION_1_Type"/>
+            <xtce:Argument name="PERCENT_ON_1" argumentTypeRef="PERCENT_ON_1_Type"/>
+            <xtce:Argument name="DIRECTION_2" argumentTypeRef="DIRECTION_2_Type"/>
+            <xtce:Argument name="PERCENT_ON_2" argumentTypeRef="PERCENT_ON_2_Type"/>
+          </xtce:ArgumentList>
+          <xtce:CommandContainer name="GENERIC_TORQUER_GENERIC_TORQUER_ALL_PERCENT_ON_CC_CommandContainer">
+            <xtce:EntryList>
+              <xtce:ArgumentRefEntry argumentRef="DIRECTION_0"/>
+              <xtce:ArgumentRefEntry argumentRef="PERCENT_ON_0"/>
+              <xtce:ArgumentRefEntry argumentRef="DIRECTION_1"/>
+              <xtce:ArgumentRefEntry argumentRef="PERCENT_ON_1"/>
+              <xtce:ArgumentRefEntry argumentRef="DIRECTION_2"/>
+              <xtce:ArgumentRefEntry argumentRef="PERCENT_ON_2"/>
+            </xtce:EntryList>
+          </xtce:CommandContainer>
+        </xtce:MetaCommand>
+        <xtce:MetaCommand name="GENERIC_TORQUER_PERCENT_ON_CC">
+          <xtce:BaseMetaCommand metaCommandRef="/CCSDS/CCSDS_TC">
+            <xtce:ArgumentAssignmentList>
+              <xtce:ArgumentAssignment argumentName="CCSDS_STREAMID" argumentValue="6458"/>
+              <xtce:ArgumentAssignment argumentName="CCSDS_FC" argumentValue="4"/>
+            </xtce:ArgumentAssignmentList>
+          </xtce:BaseMetaCommand>
+          <xtce:ArgumentList>
+            <xtce:Argument name="TRQNUM" argumentTypeRef="TRQNUM_Type"/>
+            <xtce:Argument name="DIRECTION" argumentTypeRef="DIRECTION_Type"/>
+            <xtce:Argument name="PERCENT_ON" argumentTypeRef="PERCENT_ON_Type"/>
+          </xtce:ArgumentList>
+          <xtce:CommandContainer name="GENERIC_TORQUER_GENERIC_TORQUER_PERCENT_ON_CC_CommandContainer">
+            <xtce:EntryList>
+              <xtce:ArgumentRefEntry argumentRef="TRQNUM"/>
+              <xtce:ArgumentRefEntry argumentRef="DIRECTION"/>
+              <xtce:ArgumentRefEntry argumentRef="PERCENT_ON"/>
+            </xtce:EntryList>
+          </xtce:CommandContainer>
+        </xtce:MetaCommand>
+        <xtce:MetaCommand name="GENERIC_TORQUER_DISABLE_CC">
+          <xtce:BaseMetaCommand metaCommandRef="/CCSDS/CCSDS_TC">
+            <xtce:ArgumentAssignmentList>
+              <xtce:ArgumentAssignment argumentName="CCSDS_STREAMID" argumentValue="6458"/>
+              <xtce:ArgumentAssignment argumentName="CCSDS_FC" argumentValue="3"/>
+            </xtce:ArgumentAssignmentList>
+          </xtce:BaseMetaCommand>
+          <xtce:ArgumentList/>
+          <xtce:CommandContainer name="GENERIC_TORQUER_GENERIC_TORQUER_DISABLE_CC_CommandContainer">
+            <xtce:EntryList/>
+          </xtce:CommandContainer>
+        </xtce:MetaCommand>
+        <xtce:MetaCommand name="GENERIC_TORQUER_ENABLE_CC">
+          <xtce:BaseMetaCommand metaCommandRef="/CCSDS/CCSDS_TC">
+            <xtce:ArgumentAssignmentList>
+              <xtce:ArgumentAssignment argumentName="CCSDS_STREAMID" argumentValue="6458"/>
+              <xtce:ArgumentAssignment argumentName="CCSDS_FC" argumentValue="2"/>
+            </xtce:ArgumentAssignmentList>
+          </xtce:BaseMetaCommand>
+          <xtce:ArgumentList/>
+          <xtce:CommandContainer name="GENERIC_TORQUER_GENERIC_TORQUER_ENABLE_CC_CommandContainer">
+            <xtce:EntryList/>
+          </xtce:CommandContainer>
+        </xtce:MetaCommand>
+        <xtce:MetaCommand name="GENERIC_TORQUER_RST_COUNTERS_CC">
+          <xtce:BaseMetaCommand metaCommandRef="/CCSDS/CCSDS_TC">
+            <xtce:ArgumentAssignmentList>
+              <xtce:ArgumentAssignment argumentName="CCSDS_STREAMID" argumentValue="6458"/>
+              <xtce:ArgumentAssignment argumentName="CCSDS_FC" argumentValue="1"/>
+            </xtce:ArgumentAssignmentList>
+          </xtce:BaseMetaCommand>
+          <xtce:ArgumentList/>
+          <xtce:CommandContainer name="GENERIC_TORQUER_GENERIC_TORQUER_RST_COUNTERS_CC_CommandContainer">
+            <xtce:EntryList/>
+          </xtce:CommandContainer>
+        </xtce:MetaCommand>
+        <xtce:MetaCommand name="GENERIC_TORQUER_NOOP_CC">
+          <xtce:BaseMetaCommand metaCommandRef="/CCSDS/CCSDS_TC">
+            <xtce:ArgumentAssignmentList>
+              <xtce:ArgumentAssignment argumentName="CCSDS_STREAMID" argumentValue="6458"/>
+              <xtce:ArgumentAssignment argumentName="CCSDS_FC" argumentValue="0"/>
+            </xtce:ArgumentAssignmentList>
+          </xtce:BaseMetaCommand>
+          <xtce:ArgumentList/>
+          <xtce:CommandContainer name="GENERIC_TORQUER_GENERIC_TORQUER_NOOP_CC_CommandContainer">
+            <xtce:EntryList/>
+          </xtce:CommandContainer>
+        </xtce:MetaCommand>
+      </xtce:MetaCommandSet>
+    </xtce:CommandMetaData>
+  </xtce:SpaceSystem>
+</xtce:SpaceSystem>

@@ -62,7 +62,7 @@
     </xtce:TelemetryMetaData>
     <xtce:CommandMetaData>
         <xtce:ArgumentTypeSet>
-            <xtce:IntegerArgumentType name="CCSDS_STREAMID_Type" initialValue="6293"
+            <xtce:IntegerArgumentType name="CCSDS_STREAMID_Type"
                 shortDescription="CCSDS Packet Identification" signed="false">
                 <xtce:IntegerDataEncoding sizeInBits="16" encoding="unsigned" />
                 <xtce:ValidRange minInclusive="0" maxInclusive="65535" />
@@ -89,8 +89,20 @@
             </xtce:IntegerArgumentType>
         </xtce:ArgumentTypeSet>
         <xtce:MetaCommandSet>
-            <xtce:MetaCommand name="CCSDS_TC">
-                
+            <xtce:MetaCommand name="CCSDS_TC" abstract="true">
+                <xtce:ArgumentList>
+                    <xtce:Argument name="CCSDS_STREAMID" argumentTypeRef="CCSDS_STREAMID_Type" />
+                    <xtce:Argument name="CCSDS_FC" argumentTypeRef="CCSDS_FC_Type" />                    
+                </xtce:ArgumentList>
+                <xtce:CommandContainer name="CCSDS_TC_CommandContainer">
+                    <xtce:EntryList>
+                      <xtce:ArgumentRefEntry argumentRef="CCSDS_STREAMID"/>
+                      <xtce:FixedValueEntry name="CCSDS_SEQUENCE" sizeInBits="16" binaryValue="0000"/>
+                      <xtce:FixedValueEntry name="CCSDS_LENGTH" sizeInBits="16" binaryValue="0000"/>
+                      <xtce:ArgumentRefEntry argumentRef="CCSDS_FC"/>
+                      <xtce:FixedValueEntry name="CCSDS_CHECKSUM" sizeInBits="8" binaryValue="00"/>                      
+                    </xtce:EntryList>
+                  </xtce:CommandContainer>
             </xtce:MetaCommand>
         </xtce:MetaCommandSet>
     </xtce:CommandMetaData>

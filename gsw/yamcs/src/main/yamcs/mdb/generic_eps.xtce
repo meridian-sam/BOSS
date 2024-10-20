@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xtce:SpaceSystem xmlns:xtce="http://www.omg.org/spec/XTCE/20180204" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="GENERIC_EPS" xsi:schemaLocation="http://www.omg.org/spec/XTCE/20180204 https://www.omg.org/spec/XTCE/20180204/SpaceSystem.xsd">
+  <xtce:SpaceSystem name="GENERIC_EPS_HK_TLM">
+    <xtce:TelemetryMetaData>
+      <xtce:ParameterTypeSet>
+        <xtce:IntegerParameterType name="CMD_ERR_COUNT_Type" shortDescription="Command Error Count" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+        </xtce:IntegerParameterType>
+        <xtce:IntegerParameterType name="CMD_COUNT_Type" shortDescription="Command Count" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+        </xtce:IntegerParameterType>
+        <xtce:IntegerParameterType name="DEVICE_ERR_COUNT_Type" shortDescription="Device Command Error Count" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+        </xtce:IntegerParameterType>
+        <xtce:IntegerParameterType name="DEVICE_COUNT_Type" shortDescription="Device Command Count" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+        </xtce:IntegerParameterType>
+        <xtce:IntegerParameterType name="RAW_BATTERY_VOLTAGE_Type" shortDescription="Battery Voltage" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="16" encoding="unsigned" byteOrder="leastSignificantByteFirst"/>
+        </xtce:IntegerParameterType>
+        <xtce:IntegerParameterType name="RAW_BATTERY_TEMPERATURE_Type" shortDescription="Battery Temperature" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="16" encoding="unsigned" byteOrder="leastSignificantByteFirst"/>
+        </xtce:IntegerParameterType>
+        <xtce:IntegerParameterType name="RAW_BUS_3P3V_Type" shortDescription="Bus 3.3 Volt Rail" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="16" encoding="unsigned" byteOrder="leastSignificantByteFirst"/>
+        </xtce:IntegerParameterType>
+        <xtce:IntegerParameterType name="RAW_BUS_5P0V_Type" shortDescription="Bus 5.0 Volt Rail" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="16" encoding="unsigned" byteOrder="leastSignificantByteFirst"/>
+        </xtce:IntegerParameterType>
+        <xtce:IntegerParameterType name="RAW_BUS_12V_Type" shortDescription="Bus 12 Volt Rail" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="16" encoding="unsigned" byteOrder="leastSignificantByteFirst"/>
+        </xtce:IntegerParameterType>
+        <xtce:IntegerParameterType name="RAW_EPS_TEMPERATURE_Type" shortDescription="EPS Temperature" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="16" encoding="unsigned" byteOrder="leastSignificantByteFirst"/>
+        </xtce:IntegerParameterType>
+        <xtce:IntegerParameterType name="RAW_SA_VOLTAGE_Type" shortDescription="Solar Array Voltage" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="16" encoding="unsigned" byteOrder="leastSignificantByteFirst"/>
+        </xtce:IntegerParameterType>
+        <xtce:IntegerParameterType name="RAW_SA_TEMPERATURE_Type" shortDescription="Solar Array Temperature" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="16" encoding="unsigned" byteOrder="leastSignificantByteFirst"/>
+        </xtce:IntegerParameterType>
+        <xtce:IntegerParameterType name="RAW_SWITCH_0_VOLTAGE_Type" shortDescription="Switch 0 Voltage" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="16" encoding="unsigned" byteOrder="leastSignificantByteFirst"/>
+        </xtce:IntegerParameterType>
+        <xtce:IntegerParameterType name="RAW_SWITCH_0_CURRENT_Type" shortDescription="Switch 0 Current" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="16" encoding="unsigned" byteOrder="leastSignificantByteFirst"/>
+        </xtce:IntegerParameterType>
+        <xtce:EnumeratedParameterType name="SWITCH_0_STATE_Type" shortDescription="Switch 0 State">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+          <xtce:EnumerationList>
+            <xtce:Enumeration value="170" label="ON"/>
+            <xtce:Enumeration value="0" label="OFF"/>
+          </xtce:EnumerationList>
+        </xtce:EnumeratedParameterType>
+        <xtce:EnumeratedParameterType name="SWITCH_0_FLAGS_Type" shortDescription="Switch 0 Flags">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+          <xtce:EnumerationList>
+            <xtce:Enumeration value="0" label="HEALTHY"/>
+          </xtce:EnumerationList>
+        </xtce:EnumeratedParameterType>
+        <xtce:IntegerParameterType name="RAW_SWITCH_1_VOLTAGE_Type" shortDescription="Switch 1 Voltage" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="16" encoding="unsigned" byteOrder="leastSignificantByteFirst"/>
+        </xtce:IntegerParameterType>
+        <xtce:IntegerParameterType name="RAW_SWITCH_1_CURRENT_Type" shortDescription="Switch 1 Current" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="16" encoding="unsigned" byteOrder="leastSignificantByteFirst"/>
+        </xtce:IntegerParameterType>
+        <xtce:EnumeratedParameterType name="SWITCH_1_STATE_Type" shortDescription="Switch 1 State">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+          <xtce:EnumerationList>
+            <xtce:Enumeration value="170" label="ON"/>
+            <xtce:Enumeration value="0" label="OFF"/>
+          </xtce:EnumerationList>
+        </xtce:EnumeratedParameterType>
+        <xtce:EnumeratedParameterType name="SWITCH_1_FLAGS_Type" shortDescription="Switch 1 Flags">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+          <xtce:EnumerationList>
+            <xtce:Enumeration value="0" label="HEALTHY"/>
+          </xtce:EnumerationList>
+        </xtce:EnumeratedParameterType>
+        <xtce:IntegerParameterType name="RAW_SWITCH_2_VOLTAGE_Type" shortDescription="Switch 2 Voltage" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="16" encoding="unsigned" byteOrder="leastSignificantByteFirst"/>
+        </xtce:IntegerParameterType>
+        <xtce:IntegerParameterType name="RAW_SWITCH_2_CURRENT_Type" shortDescription="Switch 2 Current" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="16" encoding="unsigned" byteOrder="leastSignificantByteFirst"/>
+        </xtce:IntegerParameterType>
+        <xtce:EnumeratedParameterType name="SWITCH_2_STATE_Type" shortDescription="Switch 2 State">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+          <xtce:EnumerationList>
+            <xtce:Enumeration value="170" label="ON"/>
+            <xtce:Enumeration value="0" label="OFF"/>
+          </xtce:EnumerationList>
+        </xtce:EnumeratedParameterType>
+        <xtce:EnumeratedParameterType name="SWITCH_2_FLAGS_Type" shortDescription="Switch 2 Flags">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+          <xtce:EnumerationList>
+            <xtce:Enumeration value="0" label="HEALTHY"/>
+          </xtce:EnumerationList>
+        </xtce:EnumeratedParameterType>
+        <xtce:IntegerParameterType name="RAW_SWITCH_3_VOLTAGE_Type" shortDescription="Switch 3 Voltage" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="16" encoding="unsigned" byteOrder="leastSignificantByteFirst"/>
+        </xtce:IntegerParameterType>
+        <xtce:IntegerParameterType name="RAW_SWITCH_3_CURRENT_Type" shortDescription="Switch 3 Current" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="16" encoding="unsigned" byteOrder="leastSignificantByteFirst"/>
+        </xtce:IntegerParameterType>
+        <xtce:EnumeratedParameterType name="SWITCH_3_STATE_Type" shortDescription="Switch 3 State">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+          <xtce:EnumerationList>
+            <xtce:Enumeration value="170" label="ON"/>
+            <xtce:Enumeration value="0" label="OFF"/>
+          </xtce:EnumerationList>
+        </xtce:EnumeratedParameterType>
+        <xtce:EnumeratedParameterType name="SWITCH_3_FLAGS_Type" shortDescription="Switch 3 Flags">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+          <xtce:EnumerationList>
+            <xtce:Enumeration value="0" label="HEALTHY"/>
+          </xtce:EnumerationList>
+        </xtce:EnumeratedParameterType>
+        <xtce:IntegerParameterType name="RAW_SWITCH_4_VOLTAGE_Type" shortDescription="Switch 4 Voltage" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="16" encoding="unsigned" byteOrder="leastSignificantByteFirst"/>
+        </xtce:IntegerParameterType>
+        <xtce:IntegerParameterType name="RAW_SWITCH_4_CURRENT_Type" shortDescription="Switch 4 Current" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="16" encoding="unsigned" byteOrder="leastSignificantByteFirst"/>
+        </xtce:IntegerParameterType>
+        <xtce:EnumeratedParameterType name="SWITCH_4_STATE_Type" shortDescription="Switch 4 State">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+          <xtce:EnumerationList>
+            <xtce:Enumeration value="170" label="ON"/>
+            <xtce:Enumeration value="0" label="OFF"/>
+          </xtce:EnumerationList>
+        </xtce:EnumeratedParameterType>
+        <xtce:EnumeratedParameterType name="SWITCH_4_FLAGS_Type" shortDescription="Switch 4 Flags">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+          <xtce:EnumerationList>
+            <xtce:Enumeration value="0" label="HEALTHY"/>
+          </xtce:EnumerationList>
+        </xtce:EnumeratedParameterType>
+        <xtce:IntegerParameterType name="RAW_SWITCH_5_VOLTAGE_Type" shortDescription="Switch 5 Voltage" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="16" encoding="unsigned" byteOrder="leastSignificantByteFirst"/>
+        </xtce:IntegerParameterType>
+        <xtce:IntegerParameterType name="RAW_SWITCH_5_CURRENT_Type" shortDescription="Switch 5 Current" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="16" encoding="unsigned" byteOrder="leastSignificantByteFirst"/>
+        </xtce:IntegerParameterType>
+        <xtce:EnumeratedParameterType name="SWITCH_5_STATE_Type" shortDescription="Switch 5 State">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+          <xtce:EnumerationList>
+            <xtce:Enumeration value="170" label="ON"/>
+            <xtce:Enumeration value="0" label="OFF"/>
+          </xtce:EnumerationList>
+        </xtce:EnumeratedParameterType>
+        <xtce:EnumeratedParameterType name="SWITCH_5_FLAGS_Type" shortDescription="Switch 5 Flags">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+          <xtce:EnumerationList>
+            <xtce:Enumeration value="0" label="HEALTHY"/>
+          </xtce:EnumerationList>
+        </xtce:EnumeratedParameterType>
+        <xtce:IntegerParameterType name="RAW_SWITCH_6_VOLTAGE_Type" shortDescription="Switch 6 Voltage" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="16" encoding="unsigned" byteOrder="leastSignificantByteFirst"/>
+        </xtce:IntegerParameterType>
+        <xtce:IntegerParameterType name="RAW_SWITCH_6_CURRENT_Type" shortDescription="Switch 6 Current" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="16" encoding="unsigned" byteOrder="leastSignificantByteFirst"/>
+        </xtce:IntegerParameterType>
+        <xtce:EnumeratedParameterType name="SWITCH_6_STATE_Type" shortDescription="Switch 6 State">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+          <xtce:EnumerationList>
+            <xtce:Enumeration value="170" label="ON"/>
+            <xtce:Enumeration value="0" label="OFF"/>
+          </xtce:EnumerationList>
+        </xtce:EnumeratedParameterType>
+        <xtce:EnumeratedParameterType name="SWITCH_6_FLAGS_Type" shortDescription="Switch 6 Flags">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+          <xtce:EnumerationList>
+            <xtce:Enumeration value="0" label="HEALTHY"/>
+          </xtce:EnumerationList>
+        </xtce:EnumeratedParameterType>
+        <xtce:IntegerParameterType name="RAW_SWITCH_7_VOLTAGE_Type" shortDescription="Switch 7 Voltage" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="16" encoding="unsigned" byteOrder="leastSignificantByteFirst"/>
+        </xtce:IntegerParameterType>
+        <xtce:IntegerParameterType name="RAW_SWITCH_7_CURRENT_Type" shortDescription="Switch 7 Current" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="16" encoding="unsigned" byteOrder="leastSignificantByteFirst"/>
+        </xtce:IntegerParameterType>
+        <xtce:EnumeratedParameterType name="SWITCH_7_STATE_Type" shortDescription="Switch 7 State">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+          <xtce:EnumerationList>
+            <xtce:Enumeration value="170" label="ON"/>
+            <xtce:Enumeration value="0" label="OFF"/>
+          </xtce:EnumerationList>
+        </xtce:EnumeratedParameterType>
+        <xtce:EnumeratedParameterType name="SWITCH_7_FLAGS_Type" shortDescription="Switch 7 Flags">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+          <xtce:EnumerationList>
+            <xtce:Enumeration value="0" label="HEALTHY"/>
+          </xtce:EnumerationList>
+        </xtce:EnumeratedParameterType>
+      </xtce:ParameterTypeSet>
+      <xtce:ParameterSet>
+        <xtce:Parameter name="CMD_ERR_COUNT" parameterTypeRef="CMD_ERR_COUNT_Type"/>
+        <xtce:Parameter name="CMD_COUNT" parameterTypeRef="CMD_COUNT_Type"/>
+        <xtce:Parameter name="DEVICE_ERR_COUNT" parameterTypeRef="DEVICE_ERR_COUNT_Type"/>
+        <xtce:Parameter name="DEVICE_COUNT" parameterTypeRef="DEVICE_COUNT_Type"/>
+        <xtce:Parameter name="RAW_BATTERY_VOLTAGE" parameterTypeRef="RAW_BATTERY_VOLTAGE_Type"/>
+        <xtce:Parameter name="RAW_BATTERY_TEMPERATURE" parameterTypeRef="RAW_BATTERY_TEMPERATURE_Type"/>
+        <xtce:Parameter name="RAW_BUS_3P3V" parameterTypeRef="RAW_BUS_3P3V_Type"/>
+        <xtce:Parameter name="RAW_BUS_5P0V" parameterTypeRef="RAW_BUS_5P0V_Type"/>
+        <xtce:Parameter name="RAW_BUS_12V" parameterTypeRef="RAW_BUS_12V_Type"/>
+        <xtce:Parameter name="RAW_EPS_TEMPERATURE" parameterTypeRef="RAW_EPS_TEMPERATURE_Type"/>
+        <xtce:Parameter name="RAW_SA_VOLTAGE" parameterTypeRef="RAW_SA_VOLTAGE_Type"/>
+        <xtce:Parameter name="RAW_SA_TEMPERATURE" parameterTypeRef="RAW_SA_TEMPERATURE_Type"/>
+        <xtce:Parameter name="RAW_SWITCH_0_VOLTAGE" parameterTypeRef="RAW_SWITCH_0_VOLTAGE_Type"/>
+        <xtce:Parameter name="RAW_SWITCH_0_CURRENT" parameterTypeRef="RAW_SWITCH_0_CURRENT_Type"/>
+        <xtce:Parameter name="SWITCH_0_STATE" parameterTypeRef="SWITCH_0_STATE_Type"/>
+        <xtce:Parameter name="SWITCH_0_FLAGS" parameterTypeRef="SWITCH_0_FLAGS_Type"/>
+        <xtce:Parameter name="RAW_SWITCH_1_VOLTAGE" parameterTypeRef="RAW_SWITCH_1_VOLTAGE_Type"/>
+        <xtce:Parameter name="RAW_SWITCH_1_CURRENT" parameterTypeRef="RAW_SWITCH_1_CURRENT_Type"/>
+        <xtce:Parameter name="SWITCH_1_STATE" parameterTypeRef="SWITCH_1_STATE_Type"/>
+        <xtce:Parameter name="SWITCH_1_FLAGS" parameterTypeRef="SWITCH_1_FLAGS_Type"/>
+        <xtce:Parameter name="RAW_SWITCH_2_VOLTAGE" parameterTypeRef="RAW_SWITCH_2_VOLTAGE_Type"/>
+        <xtce:Parameter name="RAW_SWITCH_2_CURRENT" parameterTypeRef="RAW_SWITCH_2_CURRENT_Type"/>
+        <xtce:Parameter name="SWITCH_2_STATE" parameterTypeRef="SWITCH_2_STATE_Type"/>
+        <xtce:Parameter name="SWITCH_2_FLAGS" parameterTypeRef="SWITCH_2_FLAGS_Type"/>
+        <xtce:Parameter name="RAW_SWITCH_3_VOLTAGE" parameterTypeRef="RAW_SWITCH_3_VOLTAGE_Type"/>
+        <xtce:Parameter name="RAW_SWITCH_3_CURRENT" parameterTypeRef="RAW_SWITCH_3_CURRENT_Type"/>
+        <xtce:Parameter name="SWITCH_3_STATE" parameterTypeRef="SWITCH_3_STATE_Type"/>
+        <xtce:Parameter name="SWITCH_3_FLAGS" parameterTypeRef="SWITCH_3_FLAGS_Type"/>
+        <xtce:Parameter name="RAW_SWITCH_4_VOLTAGE" parameterTypeRef="RAW_SWITCH_4_VOLTAGE_Type"/>
+        <xtce:Parameter name="RAW_SWITCH_4_CURRENT" parameterTypeRef="RAW_SWITCH_4_CURRENT_Type"/>
+        <xtce:Parameter name="SWITCH_4_STATE" parameterTypeRef="SWITCH_4_STATE_Type"/>
+        <xtce:Parameter name="SWITCH_4_FLAGS" parameterTypeRef="SWITCH_4_FLAGS_Type"/>
+        <xtce:Parameter name="RAW_SWITCH_5_VOLTAGE" parameterTypeRef="RAW_SWITCH_5_VOLTAGE_Type"/>
+        <xtce:Parameter name="RAW_SWITCH_5_CURRENT" parameterTypeRef="RAW_SWITCH_5_CURRENT_Type"/>
+        <xtce:Parameter name="SWITCH_5_STATE" parameterTypeRef="SWITCH_5_STATE_Type"/>
+        <xtce:Parameter name="SWITCH_5_FLAGS" parameterTypeRef="SWITCH_5_FLAGS_Type"/>
+        <xtce:Parameter name="RAW_SWITCH_6_VOLTAGE" parameterTypeRef="RAW_SWITCH_6_VOLTAGE_Type"/>
+        <xtce:Parameter name="RAW_SWITCH_6_CURRENT" parameterTypeRef="RAW_SWITCH_6_CURRENT_Type"/>
+        <xtce:Parameter name="SWITCH_6_STATE" parameterTypeRef="SWITCH_6_STATE_Type"/>
+        <xtce:Parameter name="SWITCH_6_FLAGS" parameterTypeRef="SWITCH_6_FLAGS_Type"/>
+        <xtce:Parameter name="RAW_SWITCH_7_VOLTAGE" parameterTypeRef="RAW_SWITCH_7_VOLTAGE_Type"/>
+        <xtce:Parameter name="RAW_SWITCH_7_CURRENT" parameterTypeRef="RAW_SWITCH_7_CURRENT_Type"/>
+        <xtce:Parameter name="SWITCH_7_STATE" parameterTypeRef="SWITCH_7_STATE_Type"/>
+        <xtce:Parameter name="SWITCH_7_FLAGS" parameterTypeRef="SWITCH_7_FLAGS_Type"/>
+      </xtce:ParameterSet>
+      <xtce:ContainerSet>
+        <xtce:SequenceContainer name="GENERIC_EPS_HK_TLM" shortDescription="GENERIC_EPS_Hk_tlm_t">
+          <xtce:EntryList>
+            <xtce:ParameterRefEntry parameterRef="CMD_ERR_COUNT"/>
+            <xtce:ParameterRefEntry parameterRef="CMD_COUNT"/>
+            <xtce:ParameterRefEntry parameterRef="DEVICE_ERR_COUNT"/>
+            <xtce:ParameterRefEntry parameterRef="DEVICE_COUNT"/>
+            <xtce:ParameterRefEntry parameterRef="RAW_BATTERY_VOLTAGE"/>
+            <xtce:ParameterRefEntry parameterRef="RAW_BATTERY_TEMPERATURE"/>
+            <xtce:ParameterRefEntry parameterRef="RAW_BUS_3P3V"/>
+            <xtce:ParameterRefEntry parameterRef="RAW_BUS_5P0V"/>
+            <xtce:ParameterRefEntry parameterRef="RAW_BUS_12V"/>
+            <xtce:ParameterRefEntry parameterRef="RAW_EPS_TEMPERATURE"/>
+            <xtce:ParameterRefEntry parameterRef="RAW_SA_VOLTAGE"/>
+            <xtce:ParameterRefEntry parameterRef="RAW_SA_TEMPERATURE"/>
+            <xtce:ParameterRefEntry parameterRef="RAW_SWITCH_0_VOLTAGE"/>
+            <xtce:ParameterRefEntry parameterRef="RAW_SWITCH_0_CURRENT"/>
+            <xtce:ParameterRefEntry parameterRef="SWITCH_0_STATE"/>
+            <xtce:ParameterRefEntry parameterRef="SWITCH_0_FLAGS"/>
+            <xtce:ParameterRefEntry parameterRef="RAW_SWITCH_1_VOLTAGE"/>
+            <xtce:ParameterRefEntry parameterRef="RAW_SWITCH_1_CURRENT"/>
+            <xtce:ParameterRefEntry parameterRef="SWITCH_1_STATE"/>
+            <xtce:ParameterRefEntry parameterRef="SWITCH_1_FLAGS"/>
+            <xtce:ParameterRefEntry parameterRef="RAW_SWITCH_2_VOLTAGE"/>
+            <xtce:ParameterRefEntry parameterRef="RAW_SWITCH_2_CURRENT"/>
+            <xtce:ParameterRefEntry parameterRef="SWITCH_2_STATE"/>
+            <xtce:ParameterRefEntry parameterRef="SWITCH_2_FLAGS"/>
+            <xtce:ParameterRefEntry parameterRef="RAW_SWITCH_3_VOLTAGE"/>
+            <xtce:ParameterRefEntry parameterRef="RAW_SWITCH_3_CURRENT"/>
+            <xtce:ParameterRefEntry parameterRef="SWITCH_3_STATE"/>
+            <xtce:ParameterRefEntry parameterRef="SWITCH_3_FLAGS"/>
+            <xtce:ParameterRefEntry parameterRef="RAW_SWITCH_4_VOLTAGE"/>
+            <xtce:ParameterRefEntry parameterRef="RAW_SWITCH_4_CURRENT"/>
+            <xtce:ParameterRefEntry parameterRef="SWITCH_4_STATE"/>
+            <xtce:ParameterRefEntry parameterRef="SWITCH_4_FLAGS"/>
+            <xtce:ParameterRefEntry parameterRef="RAW_SWITCH_5_VOLTAGE"/>
+            <xtce:ParameterRefEntry parameterRef="RAW_SWITCH_5_CURRENT"/>
+            <xtce:ParameterRefEntry parameterRef="SWITCH_5_STATE"/>
+            <xtce:ParameterRefEntry parameterRef="SWITCH_5_FLAGS"/>
+            <xtce:ParameterRefEntry parameterRef="RAW_SWITCH_6_VOLTAGE"/>
+            <xtce:ParameterRefEntry parameterRef="RAW_SWITCH_6_CURRENT"/>
+            <xtce:ParameterRefEntry parameterRef="SWITCH_6_STATE"/>
+            <xtce:ParameterRefEntry parameterRef="SWITCH_6_FLAGS"/>
+            <xtce:ParameterRefEntry parameterRef="RAW_SWITCH_7_VOLTAGE"/>
+            <xtce:ParameterRefEntry parameterRef="RAW_SWITCH_7_CURRENT"/>
+            <xtce:ParameterRefEntry parameterRef="SWITCH_7_STATE"/>
+            <xtce:ParameterRefEntry parameterRef="SWITCH_7_FLAGS"/>
+          </xtce:EntryList>
+          <xtce:BaseContainer containerRef="/CCSDS/CCSDS_TM">
+            <xtce:RestrictionCriteria>
+              <xtce:ComparisonList>
+                <xtce:Comparison parameterRef="/CCSDS/CCSDS_STREAMID" value="2330"/>
+              </xtce:ComparisonList>
+            </xtce:RestrictionCriteria>
+          </xtce:BaseContainer>
+        </xtce:SequenceContainer>
+      </xtce:ContainerSet>
+    </xtce:TelemetryMetaData>
+  </xtce:SpaceSystem>
+  <xtce:SpaceSystem name="CMD">
+    <xtce:CommandMetaData>
+      <xtce:ArgumentTypeSet>
+        <xtce:EnumeratedArgumentType name="SWITCH_NUMBER_Type" initialValue="UNDEFINED" shortDescription="Switch Number (0-7)">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+          <xtce:EnumerationList>
+            <xtce:Enumeration value="0" label="SWITCH_0"/>
+            <xtce:Enumeration value="1" label="SWITCH_1"/>
+            <xtce:Enumeration value="2" label="SWITCH_2"/>
+            <xtce:Enumeration value="3" label="SWITCH_3"/>
+            <xtce:Enumeration value="4" label="SWITCH_4"/>
+            <xtce:Enumeration value="5" label="SWITCH_5"/>
+            <xtce:Enumeration value="6" label="SWITCH_6"/>
+            <xtce:Enumeration value="7" label="SWITCH_7"/>
+            <xtce:Enumeration value="255" label="UNDEFINED"/>
+          </xtce:EnumerationList>
+        </xtce:EnumeratedArgumentType>
+        <xtce:EnumeratedArgumentType name="STATE_Type" initialValue="OFF" shortDescription="ON / OFF">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+          <xtce:EnumerationList>
+            <xtce:Enumeration value="0" label="OFF"/>
+            <xtce:Enumeration value="170" label="ON"/>
+          </xtce:EnumerationList>
+        </xtce:EnumeratedArgumentType>
+      </xtce:ArgumentTypeSet>
+      <xtce:MetaCommandSet>
+        <xtce:MetaCommand name="GENERIC_EPS_REQ_HK">
+          <xtce:BaseMetaCommand metaCommandRef="/CCSDS/CCSDS_TC">
+            <xtce:ArgumentAssignmentList>
+              <xtce:ArgumentAssignment argumentName="CCSDS_STREAMID" argumentValue="6427"/>
+              <xtce:ArgumentAssignment argumentName="CCSDS_FC" argumentValue="0"/>
+            </xtce:ArgumentAssignmentList>
+          </xtce:BaseMetaCommand>
+          <xtce:ArgumentList/>
+          <xtce:CommandContainer name="GENERIC_EPS_GENERIC_EPS_REQ_HK_CommandContainer">
+            <xtce:EntryList/>
+          </xtce:CommandContainer>
+        </xtce:MetaCommand>
+        <xtce:MetaCommand name="GENERIC_EPS_SWITCH_CC">
+          <xtce:BaseMetaCommand metaCommandRef="/CCSDS/CCSDS_TC">
+            <xtce:ArgumentAssignmentList>
+              <xtce:ArgumentAssignment argumentName="CCSDS_STREAMID" argumentValue="6426"/>
+              <xtce:ArgumentAssignment argumentName="CCSDS_FC" argumentValue="2"/>
+            </xtce:ArgumentAssignmentList>
+          </xtce:BaseMetaCommand>
+          <xtce:ArgumentList>
+            <xtce:Argument name="SWITCH_NUMBER" argumentTypeRef="SWITCH_NUMBER_Type"/>
+            <xtce:Argument name="STATE" argumentTypeRef="STATE_Type"/>
+          </xtce:ArgumentList>
+          <xtce:CommandContainer name="GENERIC_EPS_GENERIC_EPS_SWITCH_CC_CommandContainer">
+            <xtce:EntryList>
+              <xtce:ArgumentRefEntry argumentRef="SWITCH_NUMBER"/>
+              <xtce:ArgumentRefEntry argumentRef="STATE"/>
+            </xtce:EntryList>
+          </xtce:CommandContainer>
+        </xtce:MetaCommand>
+        <xtce:MetaCommand name="GENERIC_EPS_RST_COUNTERS_CC">
+          <xtce:BaseMetaCommand metaCommandRef="/CCSDS/CCSDS_TC">
+            <xtce:ArgumentAssignmentList>
+              <xtce:ArgumentAssignment argumentName="CCSDS_STREAMID" argumentValue="6426"/>
+              <xtce:ArgumentAssignment argumentName="CCSDS_FC" argumentValue="1"/>
+            </xtce:ArgumentAssignmentList>
+          </xtce:BaseMetaCommand>
+          <xtce:ArgumentList/>
+          <xtce:CommandContainer name="GENERIC_EPS_GENERIC_EPS_RST_COUNTERS_CC_CommandContainer">
+            <xtce:EntryList/>
+          </xtce:CommandContainer>
+        </xtce:MetaCommand>
+        <xtce:MetaCommand name="GENERIC_EPS_NOOP_CC">
+          <xtce:BaseMetaCommand metaCommandRef="/CCSDS/CCSDS_TC">
+            <xtce:ArgumentAssignmentList>
+              <xtce:ArgumentAssignment argumentName="CCSDS_STREAMID" argumentValue="6426"/>
+              <xtce:ArgumentAssignment argumentName="CCSDS_FC" argumentValue="0"/>
+            </xtce:ArgumentAssignmentList>
+          </xtce:BaseMetaCommand>
+          <xtce:ArgumentList/>
+          <xtce:CommandContainer name="GENERIC_EPS_GENERIC_EPS_NOOP_CC_CommandContainer">
+            <xtce:EntryList/>
+          </xtce:CommandContainer>
+        </xtce:MetaCommand>
+      </xtce:MetaCommandSet>
+    </xtce:CommandMetaData>
+  </xtce:SpaceSystem>
+</xtce:SpaceSystem>

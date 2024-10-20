@@ -1,0 +1,1273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xtce:SpaceSystem xmlns:xtce="http://www.omg.org/spec/XTCE/20180204" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="GENERIC_ADCS" xsi:schemaLocation="http://www.omg.org/spec/XTCE/20180204 https://www.omg.org/spec/XTCE/20180204/SpaceSystem.xsd">
+  <xtce:SpaceSystem name="GENERIC_ADCS_DO">
+    <xtce:TelemetryMetaData>
+      <xtce:ParameterTypeSet>
+        <xtce:FloatParameterType name="QBA_0_Type" sizeInBits="64" shortDescription="Quaternion from magnetic torqer to body frame">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="QBA_1_Type" sizeInBits="64" shortDescription="Quaternion from magnetic torquer to body frame">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="QBA_2_Type" sizeInBits="64" shortDescription="Quaternion from magnetic torquer to body frame">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="QBA_3_Type" sizeInBits="64" shortDescription="Quaternion from magnetic torquer to body frame">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="MCMD_X_Type" sizeInBits="64" shortDescription="Magnetorquer Command in Actuator Frame, X component (A-m^2)">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="MCMD_Y_Type" sizeInBits="64" shortDescription="Magnetorquer Command in Actuator Frame, Y component (A-m^2)">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="MCMD_Z_Type" sizeInBits="64" shortDescription="Magnetorquer Command in Actuator Frame, Z component (A-m^2)">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="RW0_AXIS_X_Type" sizeInBits="64" shortDescription="Reaction wheel 0 axis in body, X component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="RW0_AXIS_Y_Type" sizeInBits="64" shortDescription="Reaction wheel 0 axis in body, Y component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="RW0_AXIS_Z_Type" sizeInBits="64" shortDescription="Reaction wheel 0 axis in body, Z component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="RW1_AXIS_X_Type" sizeInBits="64" shortDescription="Reaction wheel 1 axis in body, X component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="RW1_AXIS_Y_Type" sizeInBits="64" shortDescription="Reaction wheel 1 axis in body, Y component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="RW1_AXIS_Z_Type" sizeInBits="64" shortDescription="Reaction wheel 1 axis in body, Z component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="RW2_AXIS_X_Type" sizeInBits="64" shortDescription="Reaction wheel 2 axis in body, X component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="RW2_AXIS_Y_Type" sizeInBits="64" shortDescription="Reaction wheel 2 axis in body, Y component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="RW2_AXIS_Z_Type" sizeInBits="64" shortDescription="Reaction wheel 2 axis in body, Z component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="TCMD_X_Type" sizeInBits="64" shortDescription="Reaction wheel torque in body frame, X component (Nm)">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="TCMD_Y_Type" sizeInBits="64" shortDescription="Reaction wheel torque in body frame, Y component (Nm)">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="TCMD_Z_Type" sizeInBits="64" shortDescription="Reaction wheel torque in body frame, Z component (Nm)">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+      </xtce:ParameterTypeSet>
+      <xtce:ParameterSet>
+        <xtce:Parameter name="QBA_0" parameterTypeRef="QBA_0_Type"/>
+        <xtce:Parameter name="QBA_1" parameterTypeRef="QBA_1_Type"/>
+        <xtce:Parameter name="QBA_2" parameterTypeRef="QBA_2_Type"/>
+        <xtce:Parameter name="QBA_3" parameterTypeRef="QBA_3_Type"/>
+        <xtce:Parameter name="MCMD_X" parameterTypeRef="MCMD_X_Type"/>
+        <xtce:Parameter name="MCMD_Y" parameterTypeRef="MCMD_Y_Type"/>
+        <xtce:Parameter name="MCMD_Z" parameterTypeRef="MCMD_Z_Type"/>
+        <xtce:Parameter name="RW0_AXIS_X" parameterTypeRef="RW0_AXIS_X_Type"/>
+        <xtce:Parameter name="RW0_AXIS_Y" parameterTypeRef="RW0_AXIS_Y_Type"/>
+        <xtce:Parameter name="RW0_AXIS_Z" parameterTypeRef="RW0_AXIS_Z_Type"/>
+        <xtce:Parameter name="RW1_AXIS_X" parameterTypeRef="RW1_AXIS_X_Type"/>
+        <xtce:Parameter name="RW1_AXIS_Y" parameterTypeRef="RW1_AXIS_Y_Type"/>
+        <xtce:Parameter name="RW1_AXIS_Z" parameterTypeRef="RW1_AXIS_Z_Type"/>
+        <xtce:Parameter name="RW2_AXIS_X" parameterTypeRef="RW2_AXIS_X_Type"/>
+        <xtce:Parameter name="RW2_AXIS_Y" parameterTypeRef="RW2_AXIS_Y_Type"/>
+        <xtce:Parameter name="RW2_AXIS_Z" parameterTypeRef="RW2_AXIS_Z_Type"/>
+        <xtce:Parameter name="TCMD_X" parameterTypeRef="TCMD_X_Type"/>
+        <xtce:Parameter name="TCMD_Y" parameterTypeRef="TCMD_Y_Type"/>
+        <xtce:Parameter name="TCMD_Z" parameterTypeRef="TCMD_Z_Type"/>
+      </xtce:ParameterSet>
+      <xtce:ContainerSet>
+        <xtce:SequenceContainer name="GENERIC_ADCS_DO" shortDescription="Generic_ADCS_DO_Tlm_t">
+          <xtce:EntryList>
+            <xtce:ParameterRefEntry parameterRef="QBA_0"/>
+            <xtce:ParameterRefEntry parameterRef="QBA_1"/>
+            <xtce:ParameterRefEntry parameterRef="QBA_2"/>
+            <xtce:ParameterRefEntry parameterRef="QBA_3"/>
+            <xtce:ParameterRefEntry parameterRef="MCMD_X"/>
+            <xtce:ParameterRefEntry parameterRef="MCMD_Y"/>
+            <xtce:ParameterRefEntry parameterRef="MCMD_Z"/>
+            <xtce:ParameterRefEntry parameterRef="RW0_AXIS_X"/>
+            <xtce:ParameterRefEntry parameterRef="RW0_AXIS_Y"/>
+            <xtce:ParameterRefEntry parameterRef="RW0_AXIS_Z"/>
+            <xtce:ParameterRefEntry parameterRef="RW1_AXIS_X"/>
+            <xtce:ParameterRefEntry parameterRef="RW1_AXIS_Y"/>
+            <xtce:ParameterRefEntry parameterRef="RW1_AXIS_Z"/>
+            <xtce:ParameterRefEntry parameterRef="RW2_AXIS_X"/>
+            <xtce:ParameterRefEntry parameterRef="RW2_AXIS_Y"/>
+            <xtce:ParameterRefEntry parameterRef="RW2_AXIS_Z"/>
+            <xtce:ParameterRefEntry parameterRef="TCMD_X"/>
+            <xtce:ParameterRefEntry parameterRef="TCMD_Y"/>
+            <xtce:ParameterRefEntry parameterRef="TCMD_Z"/>
+          </xtce:EntryList>
+          <xtce:BaseContainer containerRef="/CCSDS/CCSDS_TM">
+            <xtce:RestrictionCriteria>
+              <xtce:ComparisonList>
+                <xtce:Comparison parameterRef="/CCSDS/CCSDS_STREAMID" value="2373"/>
+              </xtce:ComparisonList>
+            </xtce:RestrictionCriteria>
+          </xtce:BaseContainer>
+        </xtce:SequenceContainer>
+      </xtce:ContainerSet>
+    </xtce:TelemetryMetaData>
+  </xtce:SpaceSystem>
+  <xtce:SpaceSystem name="GENERIC_ADCS_AC">
+    <xtce:TelemetryMetaData>
+      <xtce:ParameterTypeSet>
+        <xtce:FloatParameterType name="B_RANGE_Type" sizeInBits="64" shortDescription="Bdot Magnetic Field Range to Operate In (T)">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="KB_Type" sizeInBits="64" shortDescription="Bdot Gain parameter">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="BOLD_X_Type" sizeInBits="64" shortDescription="Bdot Old Magnetic Field Vector in Body Frame, X component (T)">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="BOLD_Y_Type" sizeInBits="64" shortDescription="Bdot Old Magnetic Field Vector in Body Frame, Y component (T)">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="BOLD_Z_Type" sizeInBits="64" shortDescription="Bdot Old Magnetic Field Vector in Body Frame, Z component (T)">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="BDOT_X_Type" sizeInBits="64" shortDescription="Bdot Derivative of Magnetic Field Vector in Body Frame, X component (T/s)">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="BDOT_Y_Type" sizeInBits="64" shortDescription="Bdot Derivative of Magnetic Field Vector in Body Frame, Y component (T/s)">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="BDOT_Z_Type" sizeInBits="64" shortDescription="Bdot Derivative of Magnetic Field Vector in Body Frame, Z component (T/s)">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="KP_X_Type" sizeInBits="64" shortDescription="Sunsafe Gain Parameter">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="KP_Y_Type" sizeInBits="64" shortDescription="Sunsafe Gain Parameter">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="KP_Z_Type" sizeInBits="64" shortDescription="Sunsafe Gain Parameter">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="KR_X_Type" sizeInBits="64" shortDescription="Sunsafe Gain Parameter">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="KR_Y_Type" sizeInBits="64" shortDescription="Sunsafe Gain Parameter">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="KR_Z_Type" sizeInBits="64" shortDescription="Sunsafe Gain Parameter">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="SSIDE_X_Type" sizeInBits="64" shortDescription="Sunsafe sunside vector, X component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="SSIDE_Y_Type" sizeInBits="64" shortDescription="Sunsafe sunside vector, Y component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="SSIDE_Z_Type" sizeInBits="64" shortDescription="Sunsafe sunside vector, Z component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="VMAX_Type" sizeInBits="64" shortDescription="Sunsafe Rate limit (m/s)">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="CMD_WBN_X_Type" sizeInBits="64" shortDescription="Sunsafe commanded angular rate, X component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="CMD_WBN_Y_Type" sizeInBits="64" shortDescription="Sunsafe commanded angular rate, Y component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="CMD_WBN_Z_Type" sizeInBits="64" shortDescription="Sunsafe commanded angular rate, Z component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:IntegerParameterType name="H_MGMT_Type" shortDescription="Sunsafe allow momentum management" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+        </xtce:IntegerParameterType>
+        <xtce:FloatParameterType name="THERR_X_Type" sizeInBits="64" shortDescription="Sunsafe Theta error, X component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="THERR_Y_Type" sizeInBits="64" shortDescription="Sunsafe Theta error, Y component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="THERR_Z_Type" sizeInBits="64" shortDescription="Sunsafe Theta error, z component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="WERR_X_Type" sizeInBits="64" shortDescription="Sunsafe Omega error, X component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="WERR_Y_Type" sizeInBits="64" shortDescription="Sunsafe Omega error, Y component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="WERR_Z_Type" sizeInBits="64" shortDescription="Sunsafe Omega error, Z component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="TCMD_X_Type" sizeInBits="64" shortDescription="Sunsafe torque command, X component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="TCMD_Y_Type" sizeInBits="64" shortDescription="Sunsafe torque command, Y component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="TCMD_Z_Type" sizeInBits="64" shortDescription="Sunsafe torque command, Z component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="ERR_T_Type" sizeInBits="64" shortDescription="Sunsafe error">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+      </xtce:ParameterTypeSet>
+      <xtce:ParameterSet>
+        <xtce:Parameter name="B_RANGE" parameterTypeRef="B_RANGE_Type"/>
+        <xtce:Parameter name="KB" parameterTypeRef="KB_Type"/>
+        <xtce:Parameter name="BOLD_X" parameterTypeRef="BOLD_X_Type"/>
+        <xtce:Parameter name="BOLD_Y" parameterTypeRef="BOLD_Y_Type"/>
+        <xtce:Parameter name="BOLD_Z" parameterTypeRef="BOLD_Z_Type"/>
+        <xtce:Parameter name="BDOT_X" parameterTypeRef="BDOT_X_Type"/>
+        <xtce:Parameter name="BDOT_Y" parameterTypeRef="BDOT_Y_Type"/>
+        <xtce:Parameter name="BDOT_Z" parameterTypeRef="BDOT_Z_Type"/>
+        <xtce:Parameter name="KP_X" parameterTypeRef="KP_X_Type"/>
+        <xtce:Parameter name="KP_Y" parameterTypeRef="KP_Y_Type"/>
+        <xtce:Parameter name="KP_Z" parameterTypeRef="KP_Z_Type"/>
+        <xtce:Parameter name="KR_X" parameterTypeRef="KR_X_Type"/>
+        <xtce:Parameter name="KR_Y" parameterTypeRef="KR_Y_Type"/>
+        <xtce:Parameter name="KR_Z" parameterTypeRef="KR_Z_Type"/>
+        <xtce:Parameter name="SSIDE_X" parameterTypeRef="SSIDE_X_Type"/>
+        <xtce:Parameter name="SSIDE_Y" parameterTypeRef="SSIDE_Y_Type"/>
+        <xtce:Parameter name="SSIDE_Z" parameterTypeRef="SSIDE_Z_Type"/>
+        <xtce:Parameter name="VMAX" parameterTypeRef="VMAX_Type"/>
+        <xtce:Parameter name="CMD_WBN_X" parameterTypeRef="CMD_WBN_X_Type"/>
+        <xtce:Parameter name="CMD_WBN_Y" parameterTypeRef="CMD_WBN_Y_Type"/>
+        <xtce:Parameter name="CMD_WBN_Z" parameterTypeRef="CMD_WBN_Z_Type"/>
+        <xtce:Parameter name="H_MGMT" parameterTypeRef="H_MGMT_Type"/>
+        <xtce:Parameter name="THERR_X" parameterTypeRef="THERR_X_Type"/>
+        <xtce:Parameter name="THERR_Y" parameterTypeRef="THERR_Y_Type"/>
+        <xtce:Parameter name="THERR_Z" parameterTypeRef="THERR_Z_Type"/>
+        <xtce:Parameter name="WERR_X" parameterTypeRef="WERR_X_Type"/>
+        <xtce:Parameter name="WERR_Y" parameterTypeRef="WERR_Y_Type"/>
+        <xtce:Parameter name="WERR_Z" parameterTypeRef="WERR_Z_Type"/>
+        <xtce:Parameter name="TCMD_X" parameterTypeRef="TCMD_X_Type"/>
+        <xtce:Parameter name="TCMD_Y" parameterTypeRef="TCMD_Y_Type"/>
+        <xtce:Parameter name="TCMD_Z" parameterTypeRef="TCMD_Z_Type"/>
+        <xtce:Parameter name="ERR_T" parameterTypeRef="ERR_T_Type"/>
+      </xtce:ParameterSet>
+      <xtce:ContainerSet>
+        <xtce:SequenceContainer name="GENERIC_ADCS_AC" shortDescription="Generic_ADCS_AC_Tlm_t">
+          <xtce:EntryList>
+            <xtce:ParameterRefEntry parameterRef="B_RANGE"/>
+            <xtce:ParameterRefEntry parameterRef="KB"/>
+            <xtce:ParameterRefEntry parameterRef="BOLD_X"/>
+            <xtce:ParameterRefEntry parameterRef="BOLD_Y"/>
+            <xtce:ParameterRefEntry parameterRef="BOLD_Z"/>
+            <xtce:ParameterRefEntry parameterRef="BDOT_X"/>
+            <xtce:ParameterRefEntry parameterRef="BDOT_Y"/>
+            <xtce:ParameterRefEntry parameterRef="BDOT_Z"/>
+            <xtce:ParameterRefEntry parameterRef="KP_X"/>
+            <xtce:ParameterRefEntry parameterRef="KP_Y"/>
+            <xtce:ParameterRefEntry parameterRef="KP_Z"/>
+            <xtce:ParameterRefEntry parameterRef="KR_X"/>
+            <xtce:ParameterRefEntry parameterRef="KR_Y"/>
+            <xtce:ParameterRefEntry parameterRef="KR_Z"/>
+            <xtce:ParameterRefEntry parameterRef="SSIDE_X"/>
+            <xtce:ParameterRefEntry parameterRef="SSIDE_Y"/>
+            <xtce:ParameterRefEntry parameterRef="SSIDE_Z"/>
+            <xtce:ParameterRefEntry parameterRef="VMAX"/>
+            <xtce:ParameterRefEntry parameterRef="CMD_WBN_X"/>
+            <xtce:ParameterRefEntry parameterRef="CMD_WBN_Y"/>
+            <xtce:ParameterRefEntry parameterRef="CMD_WBN_Z"/>
+            <xtce:ParameterRefEntry parameterRef="H_MGMT"/>
+            <xtce:ParameterRefEntry parameterRef="THERR_X"/>
+            <xtce:ParameterRefEntry parameterRef="THERR_Y"/>
+            <xtce:ParameterRefEntry parameterRef="THERR_Z"/>
+            <xtce:ParameterRefEntry parameterRef="WERR_X"/>
+            <xtce:ParameterRefEntry parameterRef="WERR_Y"/>
+            <xtce:ParameterRefEntry parameterRef="WERR_Z"/>
+            <xtce:ParameterRefEntry parameterRef="TCMD_X"/>
+            <xtce:ParameterRefEntry parameterRef="TCMD_Y"/>
+            <xtce:ParameterRefEntry parameterRef="TCMD_Z"/>
+            <xtce:ParameterRefEntry parameterRef="ERR_T"/>
+          </xtce:EntryList>
+          <xtce:BaseContainer containerRef="/CCSDS/CCSDS_TM">
+            <xtce:RestrictionCriteria>
+              <xtce:ComparisonList>
+                <xtce:Comparison parameterRef="/CCSDS/CCSDS_STREAMID" value="2372"/>
+              </xtce:ComparisonList>
+            </xtce:RestrictionCriteria>
+          </xtce:BaseContainer>
+        </xtce:SequenceContainer>
+      </xtce:ContainerSet>
+    </xtce:TelemetryMetaData>
+  </xtce:SpaceSystem>
+  <xtce:SpaceSystem name="GENERIC_ADCS_GNC">
+    <xtce:TelemetryMetaData>
+      <xtce:ParameterTypeSet>
+        <xtce:FloatParameterType name="DT_Type" sizeInBits="64" shortDescription="Delta T">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="MAX_MCMD_Type" sizeInBits="64" shortDescription="Maximum Magnetic Torquer Command (A-m^2)">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:EnumeratedParameterType name="MODE_Type" shortDescription="GN&amp;C Mode">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+          <xtce:EnumerationList>
+            <xtce:Enumeration value="0" label="PASSIVE"/>
+            <xtce:Enumeration value="1" label="BDOT"/>
+            <xtce:Enumeration value="2" label="SUNSAFE"/>
+          </xtce:EnumerationList>
+        </xtce:EnumeratedParameterType>
+        <xtce:EnumeratedParameterType name="H_MGMTON_Type" shortDescription="Momentum Management off (0) / on (1)">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+          <xtce:EnumerationList>
+            <xtce:Enumeration value="0" label="OFF"/>
+            <xtce:Enumeration value="1" label="ON"/>
+          </xtce:EnumerationList>
+        </xtce:EnumeratedParameterType>
+        <xtce:FloatParameterType name="MM_KB_Type" sizeInBits="64" shortDescription="Momentum Management Kb gain">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="MM_B_RANGE_Type" sizeInBits="64" shortDescription="Momentum Management magnetic field range">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="MM_LO_FRAC_Type" sizeInBits="64" shortDescription="Momentum Management lower limit to disable MM">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="MM_HI_FRAC_Type" sizeInBits="64" shortDescription="Momentum Management upper limit to enable MM">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:IntegerParameterType name="MM_ACTIVE_X_Type" shortDescription="Momentum Management active in X axis" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+        </xtce:IntegerParameterType>
+        <xtce:IntegerParameterType name="MM_ACTIVE_Y_Type" shortDescription="Momentum Management active in Y axis" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+        </xtce:IntegerParameterType>
+        <xtce:IntegerParameterType name="MM_ACTIVE_Z_Type" shortDescription="Momentum Management active in Z axis" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+        </xtce:IntegerParameterType>
+        <xtce:FloatParameterType name="MM_MCMD_X_Type" sizeInBits="64" shortDescription="Momentum Management magnetorquer command in body frame, X component (A-m^2)">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="MM_MCMD_Y_Type" sizeInBits="64" shortDescription="Momentum Management magnetorquer command in body frame, Y component (A-m^2)">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="MM_MCMD_Z_Type" sizeInBits="64" shortDescription="Momentum Management magnetorquer command in body frame, Z component (A-m^2)">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="BVB_X_Type" sizeInBits="64" shortDescription="Magnetic Field Vector in Body Frame, X component (T)">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="BVB_Y_Type" sizeInBits="64" shortDescription="Magnetic Field Vector in Body Frame, Y component (T)">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="BVB_Z_Type" sizeInBits="64" shortDescription="Magnetic Field Vector in Body Frame, Z component (T)">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="SVB_X_Type" sizeInBits="64" shortDescription="Sun Unit Vector in Body Frame, X component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="SVB_Y_Type" sizeInBits="64" shortDescription="Sun Unit Vector in Body Frame, Y component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="SVB_Z_Type" sizeInBits="64" shortDescription="Sun Unit Vector in Body Frame, Z component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:IntegerParameterType name="SUN_VALID_Type" shortDescription="Sun Valid(1) / Invalid(0)" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+        </xtce:IntegerParameterType>
+        <xtce:FloatParameterType name="WBN_X_Type" sizeInBits="64" shortDescription="Angular Rate Vector in Body Frame, X component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="WBN_Y_Type" sizeInBits="64" shortDescription="Angular Rate Vector in Body Frame, Y component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="WBN_Z_Type" sizeInBits="64" shortDescription="Angular Rate Vector in Body Frame, Z component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="RW_MAX_MOM_X_Type" sizeInBits="64" shortDescription="Reaction wheel maximum momentum in body frame, X component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="RW_MAX_MOM_Y_Type" sizeInBits="64" shortDescription="Reaction wheel maximum momentum in body frame, Y component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="RW_MAX_MOM_Z_Type" sizeInBits="64" shortDescription="Reaction wheel maximum momentum in body frame, Z component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="RW_MOMENTUM_X_Type" sizeInBits="64" shortDescription="Reaction wheel momentum in body frame, X component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="RW_MOMENTUM_Y_Type" sizeInBits="64" shortDescription="Reaction wheel momentum in body frame, Y component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="RW_MOMENTUM_Z_Type" sizeInBits="64" shortDescription="Reaction wheel momentum in body frame, Z component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="MCMD_X_Type" sizeInBits="64" shortDescription="Magnetorquer Command in Body Frame, X component (A-m^2)">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="MCMD_Y_Type" sizeInBits="64" shortDescription="Magnetorquer Command in Body Frame, Y component (A-m^2)">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="MCMD_Z_Type" sizeInBits="64" shortDescription="Magnetorquer Command in Body Frame, Z component (A-m^2)">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="TCMD_X_Type" sizeInBits="64" shortDescription="Reaction Wheel Torque Command in Body Frame, X component (N-m)">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="TCMD_Y_Type" sizeInBits="64" shortDescription="Reaction Wheel Torque Command in Body Frame, Y component (N-m)">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="TCMD_Z_Type" sizeInBits="64" shortDescription="Reaction Wheel Torque Command in Body Frame, Z component (N-m)">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+      </xtce:ParameterTypeSet>
+      <xtce:ParameterSet>
+        <xtce:Parameter name="DT" parameterTypeRef="DT_Type"/>
+        <xtce:Parameter name="MAX_MCMD" parameterTypeRef="MAX_MCMD_Type"/>
+        <xtce:Parameter name="MODE" parameterTypeRef="MODE_Type"/>
+        <xtce:Parameter name="H_MGMTON" parameterTypeRef="H_MGMTON_Type"/>
+        <xtce:Parameter name="MM_KB" parameterTypeRef="MM_KB_Type"/>
+        <xtce:Parameter name="MM_B_RANGE" parameterTypeRef="MM_B_RANGE_Type"/>
+        <xtce:Parameter name="MM_LO_FRAC" parameterTypeRef="MM_LO_FRAC_Type"/>
+        <xtce:Parameter name="MM_HI_FRAC" parameterTypeRef="MM_HI_FRAC_Type"/>
+        <xtce:Parameter name="MM_ACTIVE_X" parameterTypeRef="MM_ACTIVE_X_Type"/>
+        <xtce:Parameter name="MM_ACTIVE_Y" parameterTypeRef="MM_ACTIVE_Y_Type"/>
+        <xtce:Parameter name="MM_ACTIVE_Z" parameterTypeRef="MM_ACTIVE_Z_Type"/>
+        <xtce:Parameter name="MM_MCMD_X" parameterTypeRef="MM_MCMD_X_Type"/>
+        <xtce:Parameter name="MM_MCMD_Y" parameterTypeRef="MM_MCMD_Y_Type"/>
+        <xtce:Parameter name="MM_MCMD_Z" parameterTypeRef="MM_MCMD_Z_Type"/>
+        <xtce:Parameter name="BVB_X" parameterTypeRef="BVB_X_Type"/>
+        <xtce:Parameter name="BVB_Y" parameterTypeRef="BVB_Y_Type"/>
+        <xtce:Parameter name="BVB_Z" parameterTypeRef="BVB_Z_Type"/>
+        <xtce:Parameter name="SVB_X" parameterTypeRef="SVB_X_Type"/>
+        <xtce:Parameter name="SVB_Y" parameterTypeRef="SVB_Y_Type"/>
+        <xtce:Parameter name="SVB_Z" parameterTypeRef="SVB_Z_Type"/>
+        <xtce:Parameter name="SUN_VALID" parameterTypeRef="SUN_VALID_Type"/>
+        <xtce:Parameter name="WBN_X" parameterTypeRef="WBN_X_Type"/>
+        <xtce:Parameter name="WBN_Y" parameterTypeRef="WBN_Y_Type"/>
+        <xtce:Parameter name="WBN_Z" parameterTypeRef="WBN_Z_Type"/>
+        <xtce:Parameter name="RW_MAX_MOM_X" parameterTypeRef="RW_MAX_MOM_X_Type"/>
+        <xtce:Parameter name="RW_MAX_MOM_Y" parameterTypeRef="RW_MAX_MOM_Y_Type"/>
+        <xtce:Parameter name="RW_MAX_MOM_Z" parameterTypeRef="RW_MAX_MOM_Z_Type"/>
+        <xtce:Parameter name="RW_MOMENTUM_X" parameterTypeRef="RW_MOMENTUM_X_Type"/>
+        <xtce:Parameter name="RW_MOMENTUM_Y" parameterTypeRef="RW_MOMENTUM_Y_Type"/>
+        <xtce:Parameter name="RW_MOMENTUM_Z" parameterTypeRef="RW_MOMENTUM_Z_Type"/>
+        <xtce:Parameter name="MCMD_X" parameterTypeRef="MCMD_X_Type"/>
+        <xtce:Parameter name="MCMD_Y" parameterTypeRef="MCMD_Y_Type"/>
+        <xtce:Parameter name="MCMD_Z" parameterTypeRef="MCMD_Z_Type"/>
+        <xtce:Parameter name="TCMD_X" parameterTypeRef="TCMD_X_Type"/>
+        <xtce:Parameter name="TCMD_Y" parameterTypeRef="TCMD_Y_Type"/>
+        <xtce:Parameter name="TCMD_Z" parameterTypeRef="TCMD_Z_Type"/>
+      </xtce:ParameterSet>
+      <xtce:ContainerSet>
+        <xtce:SequenceContainer name="GENERIC_ADCS_GNC" shortDescription="Generic_ADCS_GNC_Tlm_t">
+          <xtce:EntryList>
+            <xtce:ParameterRefEntry parameterRef="DT"/>
+            <xtce:ParameterRefEntry parameterRef="MAX_MCMD"/>
+            <xtce:ParameterRefEntry parameterRef="MODE"/>
+            <xtce:ParameterRefEntry parameterRef="H_MGMTON"/>
+            <xtce:ParameterRefEntry parameterRef="MM_KB"/>
+            <xtce:ParameterRefEntry parameterRef="MM_B_RANGE"/>
+            <xtce:ParameterRefEntry parameterRef="MM_LO_FRAC"/>
+            <xtce:ParameterRefEntry parameterRef="MM_HI_FRAC"/>
+            <xtce:ParameterRefEntry parameterRef="MM_ACTIVE_X"/>
+            <xtce:ParameterRefEntry parameterRef="MM_ACTIVE_Y"/>
+            <xtce:ParameterRefEntry parameterRef="MM_ACTIVE_Z"/>
+            <xtce:ParameterRefEntry parameterRef="MM_MCMD_X"/>
+            <xtce:ParameterRefEntry parameterRef="MM_MCMD_Y"/>
+            <xtce:ParameterRefEntry parameterRef="MM_MCMD_Z"/>
+            <xtce:ParameterRefEntry parameterRef="BVB_X"/>
+            <xtce:ParameterRefEntry parameterRef="BVB_Y"/>
+            <xtce:ParameterRefEntry parameterRef="BVB_Z"/>
+            <xtce:ParameterRefEntry parameterRef="SVB_X"/>
+            <xtce:ParameterRefEntry parameterRef="SVB_Y"/>
+            <xtce:ParameterRefEntry parameterRef="SVB_Z"/>
+            <xtce:ParameterRefEntry parameterRef="SUN_VALID"/>
+            <xtce:ParameterRefEntry parameterRef="WBN_X"/>
+            <xtce:ParameterRefEntry parameterRef="WBN_Y"/>
+            <xtce:ParameterRefEntry parameterRef="WBN_Z"/>
+            <xtce:ParameterRefEntry parameterRef="RW_MAX_MOM_X"/>
+            <xtce:ParameterRefEntry parameterRef="RW_MAX_MOM_Y"/>
+            <xtce:ParameterRefEntry parameterRef="RW_MAX_MOM_Z"/>
+            <xtce:ParameterRefEntry parameterRef="RW_MOMENTUM_X"/>
+            <xtce:ParameterRefEntry parameterRef="RW_MOMENTUM_Y"/>
+            <xtce:ParameterRefEntry parameterRef="RW_MOMENTUM_Z"/>
+            <xtce:ParameterRefEntry parameterRef="MCMD_X"/>
+            <xtce:ParameterRefEntry parameterRef="MCMD_Y"/>
+            <xtce:ParameterRefEntry parameterRef="MCMD_Z"/>
+            <xtce:ParameterRefEntry parameterRef="TCMD_X"/>
+            <xtce:ParameterRefEntry parameterRef="TCMD_Y"/>
+            <xtce:ParameterRefEntry parameterRef="TCMD_Z"/>
+          </xtce:EntryList>
+          <xtce:BaseContainer containerRef="/CCSDS/CCSDS_TM">
+            <xtce:RestrictionCriteria>
+              <xtce:ComparisonList>
+                <xtce:Comparison parameterRef="/CCSDS/CCSDS_STREAMID" value="2371"/>
+              </xtce:ComparisonList>
+            </xtce:RestrictionCriteria>
+          </xtce:BaseContainer>
+        </xtce:SequenceContainer>
+      </xtce:ContainerSet>
+    </xtce:TelemetryMetaData>
+  </xtce:SpaceSystem>
+  <xtce:SpaceSystem name="GENERIC_ADCS_AD">
+    <xtce:TelemetryMetaData>
+      <xtce:ParameterTypeSet>
+        <xtce:FloatParameterType name="BVB_X_Type" sizeInBits="64" shortDescription="Magnetic Field Vector in Body Frame, X component (T)">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="BVB_Y_Type" sizeInBits="64" shortDescription="Magnetic Field Vector in Body Frame, Y component (T)">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="BVB_Z_Type" sizeInBits="64" shortDescription="Magnetic Field Vector in Body Frame, Z component (T)">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:IntegerParameterType name="SUN_VALID_Type" shortDescription="Sun Unit Vector Valid(1) / Invalid(0)" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+        </xtce:IntegerParameterType>
+        <xtce:IntegerParameterType name="FSS_VALID_Type" shortDescription="FSS Sun Unit Vector Valid(1) / Invalid(0)" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+        </xtce:IntegerParameterType>
+        <xtce:FloatParameterType name="SVB_X_Type" sizeInBits="64" shortDescription="Sun Unit Vector in Body Frame, X component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="SVB_Y_Type" sizeInBits="64" shortDescription="Sun Unit Vector in Body Frame, Y component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="SVB_Z_Type" sizeInBits="64" shortDescription="Sun Unit Vector in Body Frame, Z component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:IntegerParameterType name="IMU_INIT_Type" shortDescription="IMU AD initialized" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+        </xtce:IntegerParameterType>
+        <xtce:FloatParameterType name="ALPHA_Type" sizeInBits="64" shortDescription="Filter coefficient for IMU wbn data">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:IntegerParameterType name="IMU_VALID_Type" shortDescription="IMU data valid(1) / invalid(0)" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+        </xtce:IntegerParameterType>
+        <xtce:FloatParameterType name="WBN_PREV_X_Type" sizeInBits="64" shortDescription="Previous angular rate, X component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="WBN_PREV_Y_Type" sizeInBits="64" shortDescription="Previous angular rate, Y component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="WBN_PREV_Z_Type" sizeInBits="64" shortDescription="Previous angular rate, Z component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="WBN_X_Type" sizeInBits="64" shortDescription="Angular rate, X component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="WBN_Y_Type" sizeInBits="64" shortDescription="Angular rate, Y component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="WBN_Z_Type" sizeInBits="64" shortDescription="Angular rate, Z component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="ACC_X_Type" sizeInBits="64" shortDescription="Acceleration, X component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="ACC_Y_Type" sizeInBits="64" shortDescription="Acceleration, Y component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="ACC_Z_Type" sizeInBits="64" shortDescription="Acceleration, Z component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+      </xtce:ParameterTypeSet>
+      <xtce:ParameterSet>
+        <xtce:Parameter name="BVB_X" parameterTypeRef="BVB_X_Type"/>
+        <xtce:Parameter name="BVB_Y" parameterTypeRef="BVB_Y_Type"/>
+        <xtce:Parameter name="BVB_Z" parameterTypeRef="BVB_Z_Type"/>
+        <xtce:Parameter name="SUN_VALID" parameterTypeRef="SUN_VALID_Type"/>
+        <xtce:Parameter name="FSS_VALID" parameterTypeRef="FSS_VALID_Type"/>
+        <xtce:Parameter name="SVB_X" parameterTypeRef="SVB_X_Type"/>
+        <xtce:Parameter name="SVB_Y" parameterTypeRef="SVB_Y_Type"/>
+        <xtce:Parameter name="SVB_Z" parameterTypeRef="SVB_Z_Type"/>
+        <xtce:Parameter name="IMU_INIT" parameterTypeRef="IMU_INIT_Type"/>
+        <xtce:Parameter name="ALPHA" parameterTypeRef="ALPHA_Type"/>
+        <xtce:Parameter name="IMU_VALID" parameterTypeRef="IMU_VALID_Type"/>
+        <xtce:Parameter name="WBN_PREV_X" parameterTypeRef="WBN_PREV_X_Type"/>
+        <xtce:Parameter name="WBN_PREV_Y" parameterTypeRef="WBN_PREV_Y_Type"/>
+        <xtce:Parameter name="WBN_PREV_Z" parameterTypeRef="WBN_PREV_Z_Type"/>
+        <xtce:Parameter name="WBN_X" parameterTypeRef="WBN_X_Type"/>
+        <xtce:Parameter name="WBN_Y" parameterTypeRef="WBN_Y_Type"/>
+        <xtce:Parameter name="WBN_Z" parameterTypeRef="WBN_Z_Type"/>
+        <xtce:Parameter name="ACC_X" parameterTypeRef="ACC_X_Type"/>
+        <xtce:Parameter name="ACC_Y" parameterTypeRef="ACC_Y_Type"/>
+        <xtce:Parameter name="ACC_Z" parameterTypeRef="ACC_Z_Type"/>
+      </xtce:ParameterSet>
+      <xtce:ContainerSet>
+        <xtce:SequenceContainer name="GENERIC_ADCS_AD" shortDescription="Generic_ADCS_AD_Tlm_t">
+          <xtce:EntryList>
+            <xtce:ParameterRefEntry parameterRef="BVB_X"/>
+            <xtce:ParameterRefEntry parameterRef="BVB_Y"/>
+            <xtce:ParameterRefEntry parameterRef="BVB_Z"/>
+            <xtce:ParameterRefEntry parameterRef="SUN_VALID"/>
+            <xtce:ParameterRefEntry parameterRef="FSS_VALID"/>
+            <xtce:ParameterRefEntry parameterRef="SVB_X"/>
+            <xtce:ParameterRefEntry parameterRef="SVB_Y"/>
+            <xtce:ParameterRefEntry parameterRef="SVB_Z"/>
+            <xtce:ParameterRefEntry parameterRef="IMU_INIT"/>
+            <xtce:ParameterRefEntry parameterRef="ALPHA"/>
+            <xtce:ParameterRefEntry parameterRef="IMU_VALID"/>
+            <xtce:ParameterRefEntry parameterRef="WBN_PREV_X"/>
+            <xtce:ParameterRefEntry parameterRef="WBN_PREV_Y"/>
+            <xtce:ParameterRefEntry parameterRef="WBN_PREV_Z"/>
+            <xtce:ParameterRefEntry parameterRef="WBN_X"/>
+            <xtce:ParameterRefEntry parameterRef="WBN_Y"/>
+            <xtce:ParameterRefEntry parameterRef="WBN_Z"/>
+            <xtce:ParameterRefEntry parameterRef="ACC_X"/>
+            <xtce:ParameterRefEntry parameterRef="ACC_Y"/>
+            <xtce:ParameterRefEntry parameterRef="ACC_Z"/>
+          </xtce:EntryList>
+          <xtce:BaseContainer containerRef="/CCSDS/CCSDS_TM">
+            <xtce:RestrictionCriteria>
+              <xtce:ComparisonList>
+                <xtce:Comparison parameterRef="/CCSDS/CCSDS_STREAMID" value="2370"/>
+              </xtce:ComparisonList>
+            </xtce:RestrictionCriteria>
+          </xtce:BaseContainer>
+        </xtce:SequenceContainer>
+      </xtce:ContainerSet>
+    </xtce:TelemetryMetaData>
+  </xtce:SpaceSystem>
+  <xtce:SpaceSystem name="GENERIC_ADCS_DI">
+    <xtce:TelemetryMetaData>
+      <xtce:ParameterTypeSet>
+        <xtce:FloatParameterType name="MAG_QBS_0_Type" sizeInBits="64" shortDescription="Quaternion from magnetic sensor to body frame">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="MAG_QBS_1_Type" sizeInBits="64" shortDescription="Quaternion from magnetic sensor to body frame">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="MAG_QBS_2_Type" sizeInBits="64" shortDescription="Quaternion from magnetic sensor to body frame">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="MAG_QBS_3_Type" sizeInBits="64" shortDescription="Quaternion from magnetic sensor to body frame">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="BVB_X_Type" sizeInBits="64" shortDescription="Magnetic Field Vector in Body Frame, X component (T)">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="BVB_Y_Type" sizeInBits="64" shortDescription="Magnetic Field Vector in Body Frame, Y component (T)">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="BVB_Z_Type" sizeInBits="64" shortDescription="Magnetic Field Vector in Body Frame, Z component (T)">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="FSS_QBS_0_Type" sizeInBits="64" shortDescription="Quaternion from fine sun sensor to body frame">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="FSS_QBS_1_Type" sizeInBits="64" shortDescription="Quaternion from fine sun sensor to body frame">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="FSS_QBS_2_Type" sizeInBits="64" shortDescription="Quaternion from fine sun sensor to body frame">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="FSS_QBS_3_Type" sizeInBits="64" shortDescription="Quaternion from fine sun sensor to body frame">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:IntegerParameterType name="FSS_VALID_Type" shortDescription="FSS Sun Unit Vector valid (1) / invalid (0)" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+        </xtce:IntegerParameterType>
+        <xtce:FloatParameterType name="FSS_SVB_X_Type" sizeInBits="64" shortDescription="FSS Sun Unit Vector in Body Frame, X component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="FSS_SVB_Y_Type" sizeInBits="64" shortDescription="FSS Sun Unit Vector in Body Frame, Y component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="FSS_SVB_Z_Type" sizeInBits="64" shortDescription="FSS Sun Unit Vector in Body Frame, Z component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="CSS0_X_Type" sizeInBits="64" shortDescription="CSS 0 axis in body frame, X component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="CSS0_Y_Type" sizeInBits="64" shortDescription="CSS 0 axis in body frame, Y component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="CSS0_Z_Type" sizeInBits="64" shortDescription="CSS 0 axis in body frame, Z component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="SCALE0_Type" sizeInBits="64" shortDescription="CSS 0 scale factor">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="PERCENTON0_Type" sizeInBits="64" shortDescription="CSS 0 percent on">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="CSS1_X_Type" sizeInBits="64" shortDescription="CSS 1 axis in body frame, X component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="CSS1_Y_Type" sizeInBits="64" shortDescription="CSS 1 axis in body frame, Y component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="CSS1_Z_Type" sizeInBits="64" shortDescription="CSS 1 axis in body frame, Z component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="SCALE1_Type" sizeInBits="64" shortDescription="CSS 1 scale factor">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="PERCENTON1_Type" sizeInBits="64" shortDescription="CSS 1 percent on">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="CSS2_X_Type" sizeInBits="64" shortDescription="CSS 2 axis in body frame, X component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="CSS2_Y_Type" sizeInBits="64" shortDescription="CSS 2 axis in body frame, Y component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="CSS2_Z_Type" sizeInBits="64" shortDescription="CSS 2 axis in body frame, Z component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="SCALE2_Type" sizeInBits="64" shortDescription="CSS 2 scale factor">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="PERCENTON2_Type" sizeInBits="64" shortDescription="CSS 2 percent on">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="CSS3_X_Type" sizeInBits="64" shortDescription="CSS 3 axis in body frame, X component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="CSS3_Y_Type" sizeInBits="64" shortDescription="CSS 3 axis in body frame, Y component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="CSS3_Z_Type" sizeInBits="64" shortDescription="CSS 3 axis in body frame, Z component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="SCALE3_Type" sizeInBits="64" shortDescription="CSS 3 scale factor">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="PERCENTON3_Type" sizeInBits="64" shortDescription="CSS 3 percent on">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="CSS4_X_Type" sizeInBits="64" shortDescription="CSS 4 axis in body frame, X component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="CSS4_Y_Type" sizeInBits="64" shortDescription="CSS 4 axis in body frame, Y component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="CSS4_Z_Type" sizeInBits="64" shortDescription="CSS 4 axis in body frame, Z component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="SCALE4_Type" sizeInBits="64" shortDescription="CSS 4 scale factor">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="PERCENTON4_Type" sizeInBits="64" shortDescription="CSS 4 percent on">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="CSS5_X_Type" sizeInBits="64" shortDescription="CSS 5 axis in body frame, X component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="CSS5_Y_Type" sizeInBits="64" shortDescription="CSS 5 axis in body frame, Y component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="CSS5_Z_Type" sizeInBits="64" shortDescription="CSS 5 axis in body frame, Z component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="SCALE5_Type" sizeInBits="64" shortDescription="CSS 5 scale factor">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="PERCENTON5_Type" sizeInBits="64" shortDescription="CSS 5 percent on">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:IntegerParameterType name="CSS_VALID_Type" shortDescription="CSS Sun Unit Vector valid (1) / invalid (0)" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+        </xtce:IntegerParameterType>
+        <xtce:FloatParameterType name="CSS_SVB_X_Type" sizeInBits="64" shortDescription="CSS Sun Unit Vector in Body Frame, X component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="CSS_SVB_Y_Type" sizeInBits="64" shortDescription="CSS Sun Unit Vector in Body Frame, Y component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="CSS_SVB_Z_Type" sizeInBits="64" shortDescription="CSS Sun Unit Vector in Body Frame, Z component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="IMU_QBS_0_Type" sizeInBits="64" shortDescription="Quaternion from IMU sensor to body frame">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="IMU_QBS_1_Type" sizeInBits="64" shortDescription="Quaternion from IMU sensor to body frame">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="IMU_QBS_2_Type" sizeInBits="64" shortDescription="Quaternion from IMU sensor to body frame">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="IMU_QBS_3_Type" sizeInBits="64" shortDescription="Quaternion from IMU sensor to body frame">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="IMU_POS_X_Type" sizeInBits="64" shortDescription="Position of IMU sensor in body, X component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="IMU_POS_Y_Type" sizeInBits="64" shortDescription="Position of IMU sensor in body, Y component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="IMU_POS_Z_Type" sizeInBits="64" shortDescription="Position of IMU sensor in body, Z component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:IntegerParameterType name="IMU_VALID_Type" shortDescription="IMU data valid(1) / invalid(0)" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+        </xtce:IntegerParameterType>
+        <xtce:FloatParameterType name="IMU_WBN_X_Type" sizeInBits="64" shortDescription="Angular rate of body, X component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="IMU_WBN_Y_Type" sizeInBits="64" shortDescription="Angular rate of body, Y component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="IMU_WBN_Z_Type" sizeInBits="64" shortDescription="Angular rate of body, Z component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="IMU_ACC_X_Type" sizeInBits="64" shortDescription="Acceleration, X component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="IMU_ACC_Y_Type" sizeInBits="64" shortDescription="Acceleration, Y component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="IMU_ACC_Z_Type" sizeInBits="64" shortDescription="Acceleration, Z component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="RW_0_X_Type" sizeInBits="64" shortDescription="Reaction wheel 0 axis in body frame, X component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="RW_0_Y_Type" sizeInBits="64" shortDescription="Reaction wheel 0 axis in body frame, Y component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="RW_0_Z_Type" sizeInBits="64" shortDescription="Reaction wheel 0 axis in body frame, Z component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="RW_1_X_Type" sizeInBits="64" shortDescription="Reaction wheel 1 axis in body frame, X component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="RW_1_Y_Type" sizeInBits="64" shortDescription="Reaction wheel 1 axis in body frame, Y component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="RW_1_Z_Type" sizeInBits="64" shortDescription="Reaction wheel 1 axis in body frame, Z component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="RW_2_X_Type" sizeInBits="64" shortDescription="Reaction wheel 2 axis in body frame, X component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="RW_2_Y_Type" sizeInBits="64" shortDescription="Reaction wheel 2 axis in body frame, Y component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="RW_2_Z_Type" sizeInBits="64" shortDescription="Reaction wheel 2 axis in body frame, Z component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="RW_MAX_MOMENTUM_X_Type" sizeInBits="64" shortDescription="Reaction wheel maximum momentum in body frame, X component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="RW_MAX_MOMENTUM_Y_Type" sizeInBits="64" shortDescription="Reaction wheel maximum momentum in body frame, Y component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="RW_MAX_MOMENTUM_Z_Type" sizeInBits="64" shortDescription="Reaction wheel maximum momentum in body frame, Z component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="RW_MOMENTUM_X_Type" sizeInBits="64" shortDescription="Reaction wheel momentum in body frame, X component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="RW_MOMENTUM_Y_Type" sizeInBits="64" shortDescription="Reaction wheel momentum in body frame, Y component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="RW_MOMENTUM_Z_Type" sizeInBits="64" shortDescription="Reaction wheel momentum in body frame, Z component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="ST_QBS_0_Type" sizeInBits="64" shortDescription="Quaternion from star tracker sensor to body frame">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="ST_QBS_1_Type" sizeInBits="64" shortDescription="Quaternion from star tracker sensor to body frame">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="ST_QBS_2_Type" sizeInBits="64" shortDescription="Quaternion from star tracker sensor to body frame">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="ST_QBS_3_Type" sizeInBits="64" shortDescription="Quaternion from star tracker sensor to body frame">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="ST_Q_0_Type" sizeInBits="64" shortDescription="Inertial quaternion of body, 0 component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="ST_Q_1_Type" sizeInBits="64" shortDescription="Inertial quaternion of body, 1 component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="ST_Q_2_Type" sizeInBits="64" shortDescription="Inertial quaternion of body, 2 component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:FloatParameterType name="ST_Q_3_Type" sizeInBits="64" shortDescription="Inertial quaternion of body, 3 component">
+          <xtce:FloatDataEncoding sizeInBits="64" encoding="IEEE754_1985" byteOrder="leastSignificantByteFirst"/>
+        </xtce:FloatParameterType>
+        <xtce:IntegerParameterType name="ST_VALID_Type" shortDescription="Star tracker data valid(1) / invalid(0)" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+        </xtce:IntegerParameterType>
+      </xtce:ParameterTypeSet>
+      <xtce:ParameterSet>
+        <xtce:Parameter name="MAG_QBS_0" parameterTypeRef="MAG_QBS_0_Type"/>
+        <xtce:Parameter name="MAG_QBS_1" parameterTypeRef="MAG_QBS_1_Type"/>
+        <xtce:Parameter name="MAG_QBS_2" parameterTypeRef="MAG_QBS_2_Type"/>
+        <xtce:Parameter name="MAG_QBS_3" parameterTypeRef="MAG_QBS_3_Type"/>
+        <xtce:Parameter name="BVB_X" parameterTypeRef="BVB_X_Type"/>
+        <xtce:Parameter name="BVB_Y" parameterTypeRef="BVB_Y_Type"/>
+        <xtce:Parameter name="BVB_Z" parameterTypeRef="BVB_Z_Type"/>
+        <xtce:Parameter name="FSS_QBS_0" parameterTypeRef="FSS_QBS_0_Type"/>
+        <xtce:Parameter name="FSS_QBS_1" parameterTypeRef="FSS_QBS_1_Type"/>
+        <xtce:Parameter name="FSS_QBS_2" parameterTypeRef="FSS_QBS_2_Type"/>
+        <xtce:Parameter name="FSS_QBS_3" parameterTypeRef="FSS_QBS_3_Type"/>
+        <xtce:Parameter name="FSS_VALID" parameterTypeRef="FSS_VALID_Type"/>
+        <xtce:Parameter name="FSS_SVB_X" parameterTypeRef="FSS_SVB_X_Type"/>
+        <xtce:Parameter name="FSS_SVB_Y" parameterTypeRef="FSS_SVB_Y_Type"/>
+        <xtce:Parameter name="FSS_SVB_Z" parameterTypeRef="FSS_SVB_Z_Type"/>
+        <xtce:Parameter name="CSS0_X" parameterTypeRef="CSS0_X_Type"/>
+        <xtce:Parameter name="CSS0_Y" parameterTypeRef="CSS0_Y_Type"/>
+        <xtce:Parameter name="CSS0_Z" parameterTypeRef="CSS0_Z_Type"/>
+        <xtce:Parameter name="SCALE0" parameterTypeRef="SCALE0_Type"/>
+        <xtce:Parameter name="PERCENTON0" parameterTypeRef="PERCENTON0_Type"/>
+        <xtce:Parameter name="CSS1_X" parameterTypeRef="CSS1_X_Type"/>
+        <xtce:Parameter name="CSS1_Y" parameterTypeRef="CSS1_Y_Type"/>
+        <xtce:Parameter name="CSS1_Z" parameterTypeRef="CSS1_Z_Type"/>
+        <xtce:Parameter name="SCALE1" parameterTypeRef="SCALE1_Type"/>
+        <xtce:Parameter name="PERCENTON1" parameterTypeRef="PERCENTON1_Type"/>
+        <xtce:Parameter name="CSS2_X" parameterTypeRef="CSS2_X_Type"/>
+        <xtce:Parameter name="CSS2_Y" parameterTypeRef="CSS2_Y_Type"/>
+        <xtce:Parameter name="CSS2_Z" parameterTypeRef="CSS2_Z_Type"/>
+        <xtce:Parameter name="SCALE2" parameterTypeRef="SCALE2_Type"/>
+        <xtce:Parameter name="PERCENTON2" parameterTypeRef="PERCENTON2_Type"/>
+        <xtce:Parameter name="CSS3_X" parameterTypeRef="CSS3_X_Type"/>
+        <xtce:Parameter name="CSS3_Y" parameterTypeRef="CSS3_Y_Type"/>
+        <xtce:Parameter name="CSS3_Z" parameterTypeRef="CSS3_Z_Type"/>
+        <xtce:Parameter name="SCALE3" parameterTypeRef="SCALE3_Type"/>
+        <xtce:Parameter name="PERCENTON3" parameterTypeRef="PERCENTON3_Type"/>
+        <xtce:Parameter name="CSS4_X" parameterTypeRef="CSS4_X_Type"/>
+        <xtce:Parameter name="CSS4_Y" parameterTypeRef="CSS4_Y_Type"/>
+        <xtce:Parameter name="CSS4_Z" parameterTypeRef="CSS4_Z_Type"/>
+        <xtce:Parameter name="SCALE4" parameterTypeRef="SCALE4_Type"/>
+        <xtce:Parameter name="PERCENTON4" parameterTypeRef="PERCENTON4_Type"/>
+        <xtce:Parameter name="CSS5_X" parameterTypeRef="CSS5_X_Type"/>
+        <xtce:Parameter name="CSS5_Y" parameterTypeRef="CSS5_Y_Type"/>
+        <xtce:Parameter name="CSS5_Z" parameterTypeRef="CSS5_Z_Type"/>
+        <xtce:Parameter name="SCALE5" parameterTypeRef="SCALE5_Type"/>
+        <xtce:Parameter name="PERCENTON5" parameterTypeRef="PERCENTON5_Type"/>
+        <xtce:Parameter name="CSS_VALID" parameterTypeRef="CSS_VALID_Type"/>
+        <xtce:Parameter name="CSS_SVB_X" parameterTypeRef="CSS_SVB_X_Type"/>
+        <xtce:Parameter name="CSS_SVB_Y" parameterTypeRef="CSS_SVB_Y_Type"/>
+        <xtce:Parameter name="CSS_SVB_Z" parameterTypeRef="CSS_SVB_Z_Type"/>
+        <xtce:Parameter name="IMU_QBS_0" parameterTypeRef="IMU_QBS_0_Type"/>
+        <xtce:Parameter name="IMU_QBS_1" parameterTypeRef="IMU_QBS_1_Type"/>
+        <xtce:Parameter name="IMU_QBS_2" parameterTypeRef="IMU_QBS_2_Type"/>
+        <xtce:Parameter name="IMU_QBS_3" parameterTypeRef="IMU_QBS_3_Type"/>
+        <xtce:Parameter name="IMU_POS_X" parameterTypeRef="IMU_POS_X_Type"/>
+        <xtce:Parameter name="IMU_POS_Y" parameterTypeRef="IMU_POS_Y_Type"/>
+        <xtce:Parameter name="IMU_POS_Z" parameterTypeRef="IMU_POS_Z_Type"/>
+        <xtce:Parameter name="IMU_VALID" parameterTypeRef="IMU_VALID_Type"/>
+        <xtce:Parameter name="IMU_WBN_X" parameterTypeRef="IMU_WBN_X_Type"/>
+        <xtce:Parameter name="IMU_WBN_Y" parameterTypeRef="IMU_WBN_Y_Type"/>
+        <xtce:Parameter name="IMU_WBN_Z" parameterTypeRef="IMU_WBN_Z_Type"/>
+        <xtce:Parameter name="IMU_ACC_X" parameterTypeRef="IMU_ACC_X_Type"/>
+        <xtce:Parameter name="IMU_ACC_Y" parameterTypeRef="IMU_ACC_Y_Type"/>
+        <xtce:Parameter name="IMU_ACC_Z" parameterTypeRef="IMU_ACC_Z_Type"/>
+        <xtce:Parameter name="RW_0_X" parameterTypeRef="RW_0_X_Type"/>
+        <xtce:Parameter name="RW_0_Y" parameterTypeRef="RW_0_Y_Type"/>
+        <xtce:Parameter name="RW_0_Z" parameterTypeRef="RW_0_Z_Type"/>
+        <xtce:Parameter name="RW_1_X" parameterTypeRef="RW_1_X_Type"/>
+        <xtce:Parameter name="RW_1_Y" parameterTypeRef="RW_1_Y_Type"/>
+        <xtce:Parameter name="RW_1_Z" parameterTypeRef="RW_1_Z_Type"/>
+        <xtce:Parameter name="RW_2_X" parameterTypeRef="RW_2_X_Type"/>
+        <xtce:Parameter name="RW_2_Y" parameterTypeRef="RW_2_Y_Type"/>
+        <xtce:Parameter name="RW_2_Z" parameterTypeRef="RW_2_Z_Type"/>
+        <xtce:Parameter name="RW_MAX_MOMENTUM_X" parameterTypeRef="RW_MAX_MOMENTUM_X_Type"/>
+        <xtce:Parameter name="RW_MAX_MOMENTUM_Y" parameterTypeRef="RW_MAX_MOMENTUM_Y_Type"/>
+        <xtce:Parameter name="RW_MAX_MOMENTUM_Z" parameterTypeRef="RW_MAX_MOMENTUM_Z_Type"/>
+        <xtce:Parameter name="RW_MOMENTUM_X" parameterTypeRef="RW_MOMENTUM_X_Type"/>
+        <xtce:Parameter name="RW_MOMENTUM_Y" parameterTypeRef="RW_MOMENTUM_Y_Type"/>
+        <xtce:Parameter name="RW_MOMENTUM_Z" parameterTypeRef="RW_MOMENTUM_Z_Type"/>
+        <xtce:Parameter name="ST_QBS_0" parameterTypeRef="ST_QBS_0_Type"/>
+        <xtce:Parameter name="ST_QBS_1" parameterTypeRef="ST_QBS_1_Type"/>
+        <xtce:Parameter name="ST_QBS_2" parameterTypeRef="ST_QBS_2_Type"/>
+        <xtce:Parameter name="ST_QBS_3" parameterTypeRef="ST_QBS_3_Type"/>
+        <xtce:Parameter name="ST_Q_0" parameterTypeRef="ST_Q_0_Type"/>
+        <xtce:Parameter name="ST_Q_1" parameterTypeRef="ST_Q_1_Type"/>
+        <xtce:Parameter name="ST_Q_2" parameterTypeRef="ST_Q_2_Type"/>
+        <xtce:Parameter name="ST_Q_3" parameterTypeRef="ST_Q_3_Type"/>
+        <xtce:Parameter name="ST_VALID" parameterTypeRef="ST_VALID_Type"/>
+      </xtce:ParameterSet>
+      <xtce:ContainerSet>
+        <xtce:SequenceContainer name="GENERIC_ADCS_DI" shortDescription="Generic_ADCS_DI_Tlm_t">
+          <xtce:EntryList>
+            <xtce:ParameterRefEntry parameterRef="MAG_QBS_0"/>
+            <xtce:ParameterRefEntry parameterRef="MAG_QBS_1"/>
+            <xtce:ParameterRefEntry parameterRef="MAG_QBS_2"/>
+            <xtce:ParameterRefEntry parameterRef="MAG_QBS_3"/>
+            <xtce:ParameterRefEntry parameterRef="BVB_X"/>
+            <xtce:ParameterRefEntry parameterRef="BVB_Y"/>
+            <xtce:ParameterRefEntry parameterRef="BVB_Z"/>
+            <xtce:ParameterRefEntry parameterRef="FSS_QBS_0"/>
+            <xtce:ParameterRefEntry parameterRef="FSS_QBS_1"/>
+            <xtce:ParameterRefEntry parameterRef="FSS_QBS_2"/>
+            <xtce:ParameterRefEntry parameterRef="FSS_QBS_3"/>
+            <xtce:ParameterRefEntry parameterRef="FSS_VALID"/>
+            <xtce:ParameterRefEntry parameterRef="FSS_SVB_X"/>
+            <xtce:ParameterRefEntry parameterRef="FSS_SVB_Y"/>
+            <xtce:ParameterRefEntry parameterRef="FSS_SVB_Z"/>
+            <xtce:ParameterRefEntry parameterRef="CSS0_X"/>
+            <xtce:ParameterRefEntry parameterRef="CSS0_Y"/>
+            <xtce:ParameterRefEntry parameterRef="CSS0_Z"/>
+            <xtce:ParameterRefEntry parameterRef="SCALE0"/>
+            <xtce:ParameterRefEntry parameterRef="PERCENTON0"/>
+            <xtce:ParameterRefEntry parameterRef="CSS1_X"/>
+            <xtce:ParameterRefEntry parameterRef="CSS1_Y"/>
+            <xtce:ParameterRefEntry parameterRef="CSS1_Z"/>
+            <xtce:ParameterRefEntry parameterRef="SCALE1"/>
+            <xtce:ParameterRefEntry parameterRef="PERCENTON1"/>
+            <xtce:ParameterRefEntry parameterRef="CSS2_X"/>
+            <xtce:ParameterRefEntry parameterRef="CSS2_Y"/>
+            <xtce:ParameterRefEntry parameterRef="CSS2_Z"/>
+            <xtce:ParameterRefEntry parameterRef="SCALE2"/>
+            <xtce:ParameterRefEntry parameterRef="PERCENTON2"/>
+            <xtce:ParameterRefEntry parameterRef="CSS3_X"/>
+            <xtce:ParameterRefEntry parameterRef="CSS3_Y"/>
+            <xtce:ParameterRefEntry parameterRef="CSS3_Z"/>
+            <xtce:ParameterRefEntry parameterRef="SCALE3"/>
+            <xtce:ParameterRefEntry parameterRef="PERCENTON3"/>
+            <xtce:ParameterRefEntry parameterRef="CSS4_X"/>
+            <xtce:ParameterRefEntry parameterRef="CSS4_Y"/>
+            <xtce:ParameterRefEntry parameterRef="CSS4_Z"/>
+            <xtce:ParameterRefEntry parameterRef="SCALE4"/>
+            <xtce:ParameterRefEntry parameterRef="PERCENTON4"/>
+            <xtce:ParameterRefEntry parameterRef="CSS5_X"/>
+            <xtce:ParameterRefEntry parameterRef="CSS5_Y"/>
+            <xtce:ParameterRefEntry parameterRef="CSS5_Z"/>
+            <xtce:ParameterRefEntry parameterRef="SCALE5"/>
+            <xtce:ParameterRefEntry parameterRef="PERCENTON5"/>
+            <xtce:ParameterRefEntry parameterRef="CSS_VALID"/>
+            <xtce:ParameterRefEntry parameterRef="CSS_SVB_X"/>
+            <xtce:ParameterRefEntry parameterRef="CSS_SVB_Y"/>
+            <xtce:ParameterRefEntry parameterRef="CSS_SVB_Z"/>
+            <xtce:ParameterRefEntry parameterRef="IMU_QBS_0"/>
+            <xtce:ParameterRefEntry parameterRef="IMU_QBS_1"/>
+            <xtce:ParameterRefEntry parameterRef="IMU_QBS_2"/>
+            <xtce:ParameterRefEntry parameterRef="IMU_QBS_3"/>
+            <xtce:ParameterRefEntry parameterRef="IMU_POS_X"/>
+            <xtce:ParameterRefEntry parameterRef="IMU_POS_Y"/>
+            <xtce:ParameterRefEntry parameterRef="IMU_POS_Z"/>
+            <xtce:ParameterRefEntry parameterRef="IMU_VALID"/>
+            <xtce:ParameterRefEntry parameterRef="IMU_WBN_X"/>
+            <xtce:ParameterRefEntry parameterRef="IMU_WBN_Y"/>
+            <xtce:ParameterRefEntry parameterRef="IMU_WBN_Z"/>
+            <xtce:ParameterRefEntry parameterRef="IMU_ACC_X"/>
+            <xtce:ParameterRefEntry parameterRef="IMU_ACC_Y"/>
+            <xtce:ParameterRefEntry parameterRef="IMU_ACC_Z"/>
+            <xtce:ParameterRefEntry parameterRef="RW_0_X"/>
+            <xtce:ParameterRefEntry parameterRef="RW_0_Y"/>
+            <xtce:ParameterRefEntry parameterRef="RW_0_Z"/>
+            <xtce:ParameterRefEntry parameterRef="RW_1_X"/>
+            <xtce:ParameterRefEntry parameterRef="RW_1_Y"/>
+            <xtce:ParameterRefEntry parameterRef="RW_1_Z"/>
+            <xtce:ParameterRefEntry parameterRef="RW_2_X"/>
+            <xtce:ParameterRefEntry parameterRef="RW_2_Y"/>
+            <xtce:ParameterRefEntry parameterRef="RW_2_Z"/>
+            <xtce:ParameterRefEntry parameterRef="RW_MAX_MOMENTUM_X"/>
+            <xtce:ParameterRefEntry parameterRef="RW_MAX_MOMENTUM_Y"/>
+            <xtce:ParameterRefEntry parameterRef="RW_MAX_MOMENTUM_Z"/>
+            <xtce:ParameterRefEntry parameterRef="RW_MOMENTUM_X"/>
+            <xtce:ParameterRefEntry parameterRef="RW_MOMENTUM_Y"/>
+            <xtce:ParameterRefEntry parameterRef="RW_MOMENTUM_Z"/>
+            <xtce:ParameterRefEntry parameterRef="ST_QBS_0"/>
+            <xtce:ParameterRefEntry parameterRef="ST_QBS_1"/>
+            <xtce:ParameterRefEntry parameterRef="ST_QBS_2"/>
+            <xtce:ParameterRefEntry parameterRef="ST_QBS_3"/>
+            <xtce:ParameterRefEntry parameterRef="ST_Q_0"/>
+            <xtce:ParameterRefEntry parameterRef="ST_Q_1"/>
+            <xtce:ParameterRefEntry parameterRef="ST_Q_2"/>
+            <xtce:ParameterRefEntry parameterRef="ST_Q_3"/>
+            <xtce:ParameterRefEntry parameterRef="ST_VALID"/>
+          </xtce:EntryList>
+          <xtce:BaseContainer containerRef="/CCSDS/CCSDS_TM">
+            <xtce:RestrictionCriteria>
+              <xtce:ComparisonList>
+                <xtce:Comparison parameterRef="/CCSDS/CCSDS_STREAMID" value="2369"/>
+              </xtce:ComparisonList>
+            </xtce:RestrictionCriteria>
+          </xtce:BaseContainer>
+        </xtce:SequenceContainer>
+      </xtce:ContainerSet>
+    </xtce:TelemetryMetaData>
+  </xtce:SpaceSystem>
+  <xtce:SpaceSystem name="GENERIC_ADCS_HK_TLM">
+    <xtce:TelemetryMetaData>
+      <xtce:ParameterTypeSet>
+        <xtce:IntegerParameterType name="CMD_ERR_COUNT_Type" shortDescription="Command Error Count" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+        </xtce:IntegerParameterType>
+        <xtce:IntegerParameterType name="CMD_COUNT_Type" shortDescription="Command Count" signed="false">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+        </xtce:IntegerParameterType>
+      </xtce:ParameterTypeSet>
+      <xtce:ParameterSet>
+        <xtce:Parameter name="CMD_ERR_COUNT" parameterTypeRef="CMD_ERR_COUNT_Type"/>
+        <xtce:Parameter name="CMD_COUNT" parameterTypeRef="CMD_COUNT_Type"/>
+      </xtce:ParameterSet>
+      <xtce:ContainerSet>
+        <xtce:SequenceContainer name="GENERIC_ADCS_HK_TLM" shortDescription="Generic_ADCS_Hk_tlm_t">
+          <xtce:EntryList>
+            <xtce:ParameterRefEntry parameterRef="CMD_ERR_COUNT"/>
+            <xtce:ParameterRefEntry parameterRef="CMD_COUNT"/>
+          </xtce:EntryList>
+          <xtce:BaseContainer containerRef="/CCSDS/CCSDS_TM">
+            <xtce:RestrictionCriteria>
+              <xtce:ComparisonList>
+                <xtce:Comparison parameterRef="/CCSDS/CCSDS_STREAMID" value="2368"/>
+              </xtce:ComparisonList>
+            </xtce:RestrictionCriteria>
+          </xtce:BaseContainer>
+        </xtce:SequenceContainer>
+      </xtce:ContainerSet>
+    </xtce:TelemetryMetaData>
+  </xtce:SpaceSystem>
+  <xtce:SpaceSystem name="CMD">
+    <xtce:CommandMetaData>
+      <xtce:ArgumentTypeSet>
+        <xtce:EnumeratedArgumentType name="GNC_MODE_Type" initialValue="OFF" shortDescription="Momentum Management off (0) / on (1)">
+          <xtce:IntegerDataEncoding sizeInBits="8" encoding="unsigned"/>
+          <xtce:EnumerationList>
+            <xtce:Enumeration value="0" label="OFF"/>
+            <xtce:Enumeration value="1" label="ON"/>
+          </xtce:EnumerationList>
+        </xtce:EnumeratedArgumentType>
+      </xtce:ArgumentTypeSet>
+      <xtce:MetaCommandSet>
+        <xtce:MetaCommand name="GENERIC_ADCS_PERFORM_ADAC">
+          <xtce:BaseMetaCommand metaCommandRef="/CCSDS/CCSDS_TC">
+            <xtce:ArgumentAssignmentList>
+              <xtce:ArgumentAssignment argumentName="CCSDS_STREAMID" argumentValue="6466"/>
+              <xtce:ArgumentAssignment argumentName="CCSDS_FC" argumentValue="0"/>
+            </xtce:ArgumentAssignmentList>
+          </xtce:BaseMetaCommand>
+          <xtce:ArgumentList/>
+          <xtce:CommandContainer name="GENERIC_ADCS_GENERIC_ADCS_PERFORM_ADAC_CommandContainer">
+            <xtce:EntryList/>
+          </xtce:CommandContainer>
+        </xtce:MetaCommand>
+        <xtce:MetaCommand name="GENERIC_ADCS_REQ_HK">
+          <xtce:BaseMetaCommand metaCommandRef="/CCSDS/CCSDS_TC">
+            <xtce:ArgumentAssignmentList>
+              <xtce:ArgumentAssignment argumentName="CCSDS_STREAMID" argumentValue="6465"/>
+              <xtce:ArgumentAssignment argumentName="CCSDS_FC" argumentValue="0"/>
+            </xtce:ArgumentAssignmentList>
+          </xtce:BaseMetaCommand>
+          <xtce:ArgumentList/>
+          <xtce:CommandContainer name="GENERIC_ADCS_GENERIC_ADCS_REQ_HK_CommandContainer">
+            <xtce:EntryList/>
+          </xtce:CommandContainer>
+        </xtce:MetaCommand>
+        <xtce:MetaCommand name="GENERIC_ADCS_SEND_DO_CC">
+          <xtce:BaseMetaCommand metaCommandRef="/CCSDS/CCSDS_TC">
+            <xtce:ArgumentAssignmentList>
+              <xtce:ArgumentAssignment argumentName="CCSDS_STREAMID" argumentValue="6464"/>
+              <xtce:ArgumentAssignment argumentName="CCSDS_FC" argumentValue="7"/>
+            </xtce:ArgumentAssignmentList>
+          </xtce:BaseMetaCommand>
+          <xtce:ArgumentList/>
+          <xtce:CommandContainer name="GENERIC_ADCS_GENERIC_ADCS_SEND_DO_CC_CommandContainer">
+            <xtce:EntryList/>
+          </xtce:CommandContainer>
+        </xtce:MetaCommand>
+        <xtce:MetaCommand name="GENERIC_ADCS_SEND_AC_CC">
+          <xtce:BaseMetaCommand metaCommandRef="/CCSDS/CCSDS_TC">
+            <xtce:ArgumentAssignmentList>
+              <xtce:ArgumentAssignment argumentName="CCSDS_STREAMID" argumentValue="6464"/>
+              <xtce:ArgumentAssignment argumentName="CCSDS_FC" argumentValue="6"/>
+            </xtce:ArgumentAssignmentList>
+          </xtce:BaseMetaCommand>
+          <xtce:ArgumentList/>
+          <xtce:CommandContainer name="GENERIC_ADCS_GENERIC_ADCS_SEND_AC_CC_CommandContainer">
+            <xtce:EntryList/>
+          </xtce:CommandContainer>
+        </xtce:MetaCommand>
+        <xtce:MetaCommand name="GENERIC_ADCS_SEND_GNC_CC">
+          <xtce:BaseMetaCommand metaCommandRef="/CCSDS/CCSDS_TC">
+            <xtce:ArgumentAssignmentList>
+              <xtce:ArgumentAssignment argumentName="CCSDS_STREAMID" argumentValue="6464"/>
+              <xtce:ArgumentAssignment argumentName="CCSDS_FC" argumentValue="5"/>
+            </xtce:ArgumentAssignmentList>
+          </xtce:BaseMetaCommand>
+          <xtce:ArgumentList/>
+          <xtce:CommandContainer name="GENERIC_ADCS_GENERIC_ADCS_SEND_GNC_CC_CommandContainer">
+            <xtce:EntryList/>
+          </xtce:CommandContainer>
+        </xtce:MetaCommand>
+        <xtce:MetaCommand name="GENERIC_ADCS_SEND_AD_CC">
+          <xtce:BaseMetaCommand metaCommandRef="/CCSDS/CCSDS_TC">
+            <xtce:ArgumentAssignmentList>
+              <xtce:ArgumentAssignment argumentName="CCSDS_STREAMID" argumentValue="6464"/>
+              <xtce:ArgumentAssignment argumentName="CCSDS_FC" argumentValue="4"/>
+            </xtce:ArgumentAssignmentList>
+          </xtce:BaseMetaCommand>
+          <xtce:ArgumentList/>
+          <xtce:CommandContainer name="GENERIC_ADCS_GENERIC_ADCS_SEND_AD_CC_CommandContainer">
+            <xtce:EntryList/>
+          </xtce:CommandContainer>
+        </xtce:MetaCommand>
+        <xtce:MetaCommand name="GENERIC_ADCS_SEND_DI_CC">
+          <xtce:BaseMetaCommand metaCommandRef="/CCSDS/CCSDS_TC">
+            <xtce:ArgumentAssignmentList>
+              <xtce:ArgumentAssignment argumentName="CCSDS_STREAMID" argumentValue="6464"/>
+              <xtce:ArgumentAssignment argumentName="CCSDS_FC" argumentValue="3"/>
+            </xtce:ArgumentAssignmentList>
+          </xtce:BaseMetaCommand>
+          <xtce:ArgumentList/>
+          <xtce:CommandContainer name="GENERIC_ADCS_GENERIC_ADCS_SEND_DI_CC_CommandContainer">
+            <xtce:EntryList/>
+          </xtce:CommandContainer>
+        </xtce:MetaCommand>
+        <xtce:MetaCommand name="GENERIC_ADCS_SET_MOMENTUM_MANAGEMENT_CC">
+          <xtce:BaseMetaCommand metaCommandRef="/CCSDS/CCSDS_TC">
+            <xtce:ArgumentAssignmentList>
+              <xtce:ArgumentAssignment argumentName="CCSDS_STREAMID" argumentValue="6464"/>
+              <xtce:ArgumentAssignment argumentName="CCSDS_FC" argumentValue="8"/>
+            </xtce:ArgumentAssignmentList>
+          </xtce:BaseMetaCommand>
+          <xtce:ArgumentList>
+            <xtce:Argument name="GNC_MODE" argumentTypeRef="GNC_MODE_Type"/>
+          </xtce:ArgumentList>
+          <xtce:CommandContainer name="GENERIC_ADCS_GENERIC_ADCS_SET_MOMENTUM_MANAGEMENT_CC_CommandContainer">
+            <xtce:EntryList>
+              <xtce:ArgumentRefEntry argumentRef="GNC_MODE"/>
+            </xtce:EntryList>
+          </xtce:CommandContainer>
+        </xtce:MetaCommand>
+        <xtce:MetaCommand name="GENERIC_ADCS_SET_MODE_CC">
+          <xtce:BaseMetaCommand metaCommandRef="/CCSDS/CCSDS_TC">
+            <xtce:ArgumentAssignmentList>
+              <xtce:ArgumentAssignment argumentName="CCSDS_STREAMID" argumentValue="6464"/>
+              <xtce:ArgumentAssignment argumentName="CCSDS_FC" argumentValue="2"/>
+            </xtce:ArgumentAssignmentList>
+          </xtce:BaseMetaCommand>
+          <xtce:ArgumentList>
+            <xtce:Argument name="GNC_MODE" argumentTypeRef="GNC_MODE_Type"/>
+          </xtce:ArgumentList>
+          <xtce:CommandContainer name="GENERIC_ADCS_GENERIC_ADCS_SET_MODE_CC_CommandContainer">
+            <xtce:EntryList>
+              <xtce:ArgumentRefEntry argumentRef="GNC_MODE"/>
+            </xtce:EntryList>
+          </xtce:CommandContainer>
+        </xtce:MetaCommand>
+        <xtce:MetaCommand name="GENERIC_ADCS_RST_COUNTERS_CC">
+          <xtce:BaseMetaCommand metaCommandRef="/CCSDS/CCSDS_TC">
+            <xtce:ArgumentAssignmentList>
+              <xtce:ArgumentAssignment argumentName="CCSDS_STREAMID" argumentValue="6464"/>
+              <xtce:ArgumentAssignment argumentName="CCSDS_FC" argumentValue="1"/>
+            </xtce:ArgumentAssignmentList>
+          </xtce:BaseMetaCommand>
+          <xtce:ArgumentList/>
+          <xtce:CommandContainer name="GENERIC_ADCS_GENERIC_ADCS_RST_COUNTERS_CC_CommandContainer">
+            <xtce:EntryList/>
+          </xtce:CommandContainer>
+        </xtce:MetaCommand>
+        <xtce:MetaCommand name="GENERIC_ADCS_NOOP_CC">
+          <xtce:BaseMetaCommand metaCommandRef="/CCSDS/CCSDS_TC">
+            <xtce:ArgumentAssignmentList>
+              <xtce:ArgumentAssignment argumentName="CCSDS_STREAMID" argumentValue="6464"/>
+              <xtce:ArgumentAssignment argumentName="CCSDS_FC" argumentValue="0"/>
+            </xtce:ArgumentAssignmentList>
+          </xtce:BaseMetaCommand>
+          <xtce:ArgumentList/>
+          <xtce:CommandContainer name="GENERIC_ADCS_GENERIC_ADCS_NOOP_CC_CommandContainer">
+            <xtce:EntryList/>
+          </xtce:CommandContainer>
+        </xtce:MetaCommand>
+      </xtce:MetaCommandSet>
+    </xtce:CommandMetaData>
+  </xtce:SpaceSystem>
+</xtce:SpaceSystem>
