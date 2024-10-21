@@ -32,8 +32,8 @@ public class Truth42PacketPreprocessor extends AbstractPacketPreprocessor {
         ByteBuffer bb = ByteBuffer.wrap(bytes);
         short year = bb.getShort();
         short doy = bb.getShort();
-        short month = bb.getShort();
-        short day = bb.getShort();
+        /*short month =*/ bb.getShort();
+        /*short day = */bb.getShort();
         short hour = bb.getShort();
         short minute = bb.getShort();
         double second = bb.getDouble();
@@ -43,8 +43,6 @@ public class Truth42PacketPreprocessor extends AbstractPacketPreprocessor {
                  secint,  millisec);            
         var gentime = TimeEncoding.fromUtc(dtc);
         packet.setGenerationTime(gentime);
-        
-        System.out.println("year: "+year+" doy: "+doy+" day: "+day+" month: "+month+" hour: "+ hour+" minute: "+minute+" second: "+second );        
         return packet;
     }
 
