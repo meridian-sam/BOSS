@@ -1,0 +1,82 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>io.epsilon3.plugin</groupId>
+  <artifactId>yamcs-epsilon3-plugin</artifactId>
+  <packaging>jar</packaging>
+  <version>1.0.1</version>
+
+  <name>Yamcs Epsilon3 Plugin</name>
+  <description>
+    Plugin for managing connection between Epsilon3 and Yamcs
+  </description>
+  <url>http://maven.apache.org</url>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <!--
+    Update this to the latest Yamcs release.
+    Check https://mvnrepository.com/artifact/org.yamcs/yamcs-core
+    -->
+    <yamcsVersion>5.10.5</yamcsVersion>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.yamcs</groupId>
+      <artifactId>yamcs-core</artifactId>
+      <version>${yamcsVersion}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.yamcs</groupId>
+      <artifactId>yamcs-web</artifactId>
+      <version>${yamcsVersion}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>2.16.1</version>
+    </dependency>
+    <dependency>
+      <groupId>io.socket</groupId>
+      <artifactId>socket.io-client</artifactId>
+      <version>2.1.0</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.11.0</version>
+        <configuration>
+          <release>11</release>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.yamcs</groupId>
+        <artifactId>yamcs-maven-plugin</artifactId>
+        <version>1.2.9</version>
+        <executions>
+          <execution>
+            <id>bundle-yamcs</id>
+            <phase>package</phase>
+            <goals>
+              <goal>bundle</goal>
+            </goals>
+          </execution>
+          <execution>
+            <goals>
+              <goal>detect</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  
+</project>
+

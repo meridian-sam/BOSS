@@ -12,7 +12,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <yamcsVersion>5.10.4</yamcsVersion>
+    <yamcsVersion>5.10.5</yamcsVersion>
   </properties>
 
   <dependencies>
@@ -27,6 +27,21 @@
       <groupId>org.yamcs</groupId>
       <artifactId>yamcs-web</artifactId>
       <version>${yamcsVersion}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.epsilon3.plugin</groupId>
+      <artifactId>yamcs-epsilon3-plugin</artifactId>
+      <version>1.0.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>2.16.1</version>
+    </dependency>
+    <dependency>
+      <groupId>io.socket</groupId>
+      <artifactId>socket.io-client</artifactId>
+      <version>2.1.0</version>
     </dependency>
   </dependencies>
 
