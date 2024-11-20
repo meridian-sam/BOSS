@@ -7,6 +7,7 @@ import json
 import logging
 import os
 from pathlib import Path
+from filelock import FileLock
 
 class FileType(Enum):
     """Types of files managed by FMS."""
@@ -216,6 +217,12 @@ class FileManagementSystem:
         Returns:
             File ID if successful, None otherwise
         """
+        file_path = self._get_file_path(file_id, storage_area)
+        lock_path = f"{file_path}.lock"
+        with FileLock(lock_path):
+            with open(file_path, 'wb') as f:
+                f.write(processed_data)
+                
         try:
             # Convert dict to bytes if necessary
             if isinstance(data, dict):

@@ -1,8 +1,9 @@
 from dataclasses import dataclass
 from datetime import datetime
 import struct
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List, Optional, Union
 from .ccsds import CCSDSPacket, PacketType
+import numpy as np
 
 HOUSEKEEPING_APID = 100
 EVENT_APID = 101
@@ -13,6 +14,74 @@ THERMAL_APID = 105
 COMMS_APID = 106
 FMS_APID = 107
 OBC_APID = 108
+
+@dataclass
+class TelemetryValidation:
+    """Telemetry validation rules."""
+    min_value: Optional[float] = None
+    max_value: Optional[float] = None
+    expected_type: type = float
+    required: bool = True
+    validation_func: Optional[callable] = None
+
+class TelemetryProcessor:
+    """Process and validate telemetry data."""
+    
+    def __init__(self):
+        self.validation_rules = {
+            'battery_voltage': TelemetryValidation(
+                min_value=6.0,
+                max_value=8.4,
+                required=True
+            ),
+            'solar_array_current': TelemetryValidation(
+                min_value=0.0,
+                max_value=2.5,
+                required=True
+            ),
+            'temperature': TelemetryValidation(
+                min_value=-40.0,
+                max_value=85.0,
+                required=True
+            ),
+            'quaternion': TelemetryValidation(
+                validation_func=self._validate_quaternion
+            )
+        }
+        
+    def validate_telemetry(self, data: Dict) -> List[str]:
+        """Validate telemetry data against rules."""
+        MAX_ERRORS = 100
+        errors = []
+        
+        for field, rule in self.validation_rules.items():
+            if len(errors) >= MAX_ERRORS:
+                errors.append("Maximum error limit reached")
+                break
+            if field not in data:
+                if rule.required:
+                    errors.append(f"Missing required field: {field}")
+                continue
+                
+            value = data[field]
+            
+            # Type validation
+            if not isinstance(value, rule.expected_type):
+                errors.append(f"Invalid type for {field}: expected {rule.expected_type}")
+                continue
+                
+            # Range validation
+            if rule.min_value is not None and value < rule.min_value:
+                errors.append(f"{field} below minimum value: {value} < {rule.min_value}")
+            
+            if rule.max_value is not None and value > rule.max_value:
+                errors.append(f"{field} above maximum value: {value} > {rule.max_value}")
+                
+            # Custom validation
+            if rule.validation_func and not rule.validation_func(value):
+                errors.append(f"Validation failed for {field}")
+                
+        return errors
 
 @dataclass
 class TelemetryFrame:

@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import time
 
 class SimulationClock:
@@ -12,6 +12,8 @@ class SimulationClock:
             start_time: Simulation start time
             time_factor: Time acceleration factor (>1 for faster than real-time)
         """
+        if start_time.tzinfo is None:
+            start_time = start_time.replace(tzinfo=timezone.utc)
         self.start_time = start_time
         self.time_factor = time_factor
         self.sim_start = time.time()

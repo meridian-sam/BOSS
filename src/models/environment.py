@@ -31,7 +31,7 @@ class Environment:
         """
         self.config = config
         self.state: Optional[EnvironmentState] = None
-        
+
         # Load astronomical ephemerides
         self.ts = load.timescale()
         self.ephemeris = load('de421.bsp')  # NASA JPL ephemerides
@@ -134,17 +134,23 @@ class Environment:
         
     def calculate_atmospheric_density(self, position: np.ndarray) -> float:
         """
-        Calculate atmospheric density at given position
-        Using simple exponential model
+        Calculate atmospheric density using exponential model.
+        
+        Args:
+            position: Position vector in ECI frame [km]
+            
+        Returns:
+            Atmospheric density [kg/m³]
         """
-        r = np.linalg.norm(position)
-        altitude = r - self.EARTH_RADIUS
+        altitude = np.linalg.norm(position) - self.EARTH_RADIUS
         
-        # Simple exponential atmospheric model
-        rho0 = 1.225  # sea level density (kg/m³)
-        H = 7.249  # scale height (km)
+        # Base density at reference altitude
+        rho_0 = 1.225  # kg/m³ at sea level
+        H = 7.249  # Scale height in km
         
-        density = rho0 * np.exp(-altitude / H)
+        # Exponential decay model
+        density = rho_0 * np.exp(-altitude / H)
+        
         return density
 
     def calculate_eclipse(self, satellite_position: np.ndarray) -> EclipseState:

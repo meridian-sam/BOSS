@@ -144,3 +144,51 @@ def set_yamcs_ports(tm_port: int, tc_port: int):
     """Set YAMCS communication ports."""
     DEFAULT_CONFIG.comms.yamcs_tm_port = tm_port
     DEFAULT_CONFIG.comms.yamcs_tc_port = tc_port
+
+def validate_config(config: Config) -> List[str]:
+    """
+    Validate configuration values.
+    Returns list of validation errors, empty if valid.
+    """
+    errors = []
+    
+    # Validate orbit configuration
+    if config.orbit.semi_major_axis_km is None:
+        errors.append("Semi-major axis cannot be None")
+    elif config.orbit.semi_major_axis_km < 6371:
+        errors.append("Semi-major axis must be above Earth's radius")
+    
+    if not 0 <= config.orbit.eccentricity < 1:
+        errors.append("Eccentricity must be between 0 and 1")
+        
+    # Validate comms configuration
+    if config.comms.uplink_rate_bps <= 0:
+        errors.append("Uplink rate must be positive")
+    
+    if config.comms.downlink_rate_bps <= 0:
+        errors.append("Downlink rate must be positive")
+        
+    if config.comms.tx_power_dbm > 33:  # Example limit
+        errors.append("Transmit power exceeds maximum allowed")
+        
+    # Validate simulation configuration
+    if config.simulation.dt <= 0:
+        errors.append("Simulation timestep must be positive")
+        
+    if config.simulation.time_factor <= 0:
+        errors.append("Time factor must be positive")
+        
+    return errors
+
+def load_config(config_file: str) -> Config:
+    """Load and validate configuration from file."""
+    # Load config from file
+    config = Config()  # Load from file implementation
+    
+    # Validate configuration
+    errors = validate_config(config)
+    if errors:
+        raise ValueError(f"Configuration validation failed:\n" + 
+                        "\n".join(f"- {error}" for error in errors))
+        
+    return config

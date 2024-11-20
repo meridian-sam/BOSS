@@ -3,6 +3,7 @@ from typing import Tuple, Optional, Dict
 import numpy as np
 from scipy.integrate import solve_ivp
 from datetime import datetime, timedelta
+import sys
 
 @dataclass
 class OrbitState:
@@ -301,6 +302,13 @@ def _calculate_srp_acceleration(self, pos: np.ndarray, bodies) -> np.ndarray:
         # Node vector
         n = np.cross([0, 0, 1], h)
         n_mag = np.linalg.norm(n)
+        if n_mag < 1e-10:
+            raise ValueError("Node vector magnitude too small")
+        if ecc < 1e-10:
+            # Handle circular orbit case
+            arg_p = 0.0
+        else:
+            arg_p = np.arccos(np.dot(n, e)/(n_mag * ecc))
         
         # Eccentricity vector
         e = ((v**2 - self.env.EARTH_MU/r) * pos - np.dot(pos, vel) * vel) / self.env.EARTH_MU
@@ -406,3 +414,54 @@ def _calculate_srp_acceleration(self, pos: np.ndarray, bodies) -> np.ndarray:
         eclipse_factor = self.env.calculate_eclipse(pos)
         
         return srp_force, eclipse_factor
+
+class OrbitStateManager:
+    """Manage and interpolate orbit states."""
+
+    if len(self.state_history) > 0:
+        memory_usage = sys.getsizeof(self.state_history[-1])
+        if memory_usage * len(self.state_history) > 1e8:  # 100MB limit
+            self.state_history = self.state_history[len(self.state_history)//2:]
+    
+    def __init__(self, max_history: int = 1000):
+        self.max_history = max_history
+        self.state_history: List[OrbitState] = []
+        self._interpolator = None
+        
+    def add_state(self, state: OrbitState):
+        """Add new state to history."""
+        self.state_history.append(state)
+        if len(self.state_history) > self.max_history:
+            self.state_history.pop(0)
+        self._update_interpolator()
+        
+    def get_state_at_time(self, timestamp: datetime) -> Optional[OrbitState]:
+        """Get interpolated state at specific time."""
+        if not self.state_history:
+            return None
+            
+        # Check if time is within history bounds
+        earliest = self.state_history[0].timestamp
+        latest = self.state_history[-1].timestamp
+        
+        if timestamp < earliest or timestamp > latest:
+            return None
+            
+        # Interpolate state
+        return self._interpolate_state(timestamp)
+        
+    def _update_interpolator(self):
+        """Update state interpolation functions."""
+        if len(self.state_history) < 2:
+            return
+            
+        times = [(state.timestamp - self.state_history[0].timestamp).total_seconds()
+                for state in self.state_history]
+        
+        positions = np.array([state.position for state in self.state_history])
+        velocities = np.array([state.velocity for state in self.state_history])
+        
+        self._interpolator = {
+            'position': scipy.interpolate.interp1d(times, positions, axis=0),
+            'velocity': scipy.interpolate.interp1d(times, velocities, axis=0)
+        }

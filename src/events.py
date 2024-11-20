@@ -31,6 +31,27 @@ class EventPriority(Enum):
     HIGH = 2
     CRITICAL = 3
 
+class EventFilter:
+    """Filter for event processing."""
+    
+    def __init__(self, 
+                 event_types: Optional[List[EventType]] = None,
+                 priorities: Optional[List[EventPriority]] = None,
+                 sources: Optional[List[str]] = None):
+        self.event_types = set(event_types) if event_types else None
+        self.priorities = set(priorities) if priorities else None
+        self.sources = set(sources) if sources else None
+        
+    def matches(self, event: Event) -> bool:
+        """Check if event matches filter criteria."""
+        if self.event_types and event.type not in self.event_types:
+            return False
+        if self.priorities and event.priority not in self.priorities:
+            return False
+        if self.sources and event.source not in self.sources:
+            return False
+        return True
+
 @dataclass
 class Event:
     """
@@ -64,6 +85,7 @@ class EventBus:
         self._subscribers: Dict[EventType, List[Callable[[Event], None]]] = {
             event_type: [] for event_type in EventType
         }
+        self._filtered_callbacks: Dict[Callable, Callable] = {}
         self._event_queue: Queue[Event] = Queue()
         self._event_history: List[Event] = []
         self.max_history = 1000  # Maximum number of events to keep in history
@@ -129,6 +151,30 @@ class EventBus:
         """
         if callback in self._subscribers[event_type]:
             self._subscribers[event_type].remove(callback)
+
+    def subscribe_filtered(self, 
+                         callback: Callable[[Event], None],
+                         event_filter: EventFilter):
+        """Subscribe to events with filter."""
+        def filtered_callback(event: Event):
+            if event_filter.matches(event):
+                callback(event)
+                
+        # Store both callbacks to allow unsubscribing
+        self._filtered_callbacks[callback] = filtered_callback
+        
+        # Subscribe filtered callback to all event types
+        for event_type in EventType:
+            self._subscribers[event_type].append(filtered_callback)
+            
+    def unsubscribe_filtered(self, callback: Callable[[Event], None]):
+        """Unsubscribe filtered callback."""
+        if callback in self._filtered_callbacks:
+            filtered_callback = self._filtered_callbacks[callback]
+            for subscribers in self._subscribers.values():
+                if filtered_callback in subscribers:
+                    subscribers.remove(filtered_callback)
+            del self._filtered_callbacks[callback]
     
     def process_events(self):
         """Process all pending events in the queue."""
