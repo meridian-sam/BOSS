@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Dict
 import numpy as np
+from datetime import datetime
 
 @dataclass
 class OrbitConfig:
@@ -23,32 +24,70 @@ class OrbitConfig:
 
 @dataclass
 class CommsConfig:
+    # Data rates
     uplink_rate_bps: int = 20_000  # 20 kbps
     downlink_rate_bps: int = 1_000_000  # 1 Mbps
     telemetry_rate_hz: float = 10.0
+    
+    # YAMCS UDP Connection
     yamcs_host: str = "localhost"
-    yamcs_uplink_port: int = 10015
-    yamcs_downlink_port: int = 10016
+    tm_port: int = 10015      # Spacecraft telemetry send port
+    tc_port: int = 10025      # Spacecraft telecommand receive port
+    yamcs_tm_port: int = 10115  # YAMCS telemetry receive port
+    yamcs_tc_port: int = 10125  # YAMCS telecommand send port
+    
+    # RF Parameters
+    downlink_frequency_mhz: float = 437.0
+    uplink_frequency_mhz: float = 145.9
+    tx_power_dbm: float = 30.0
+    rx_sensitivity_dbm: float = -110.0
+    
+    # CCSDS Configuration
+    max_packet_size: int = 1024
+    packet_overhead: int = 16  # CCSDS header size + CRC
+    max_retry_count: int = 3
+    ack_timeout_s: float = 1.0
+    
+    # Default APIDs
+    housekeeping_apid: int = 100
+    event_apid: int = 101
+    payload_apid: int = 102
+    adcs_apid: int = 103
+    power_apid: int = 104
+    thermal_apid: int = 105
 
 @dataclass
-class SimConfig:
-    orbit: OrbitConfig = OrbitConfig()
-    comms: CommsConfig = CommsConfig()
-    dt: float = 0.1  # 100ms simulation timestep 
+class SimulationConfig:
+    # Time Configuration
+    start_time: datetime = datetime(2024, 1, 1, 0, 0, 0)  # Simulation start time
+    time_factor: float = 1.0  # Real-time = 1.0, 2x speed = 2.0, etc.
+    dt: float = 0.1  # 100ms simulation timestep
+    
+    # Simulation Control
+    max_duration_s: float = 86400.0  # 24 hours default
+    random_seed: int = 42
+    enable_faults: bool = True
+    logging_level: str = "INFO"
+    
+    # Telemetry Generation
+    hk_generation_period_s: float = 1.0  # Housekeeping telemetry period
+    event_check_period_s: float = 0.1    # Event checking period
+    attitude_update_period_s: float = 0.1 # ADCS update period
 
 @dataclass
 class EnvironmentConfig:
     ephemeris_file: str = 'de421.bsp'
     magnetic_model: str = 'dipole'  # or 'igrf'
     atmosphere_model: str = 'exponential'  # or 'nrlmsise'
-
-@dataclass
-class SimConfig:
-    orbit: OrbitConfig = OrbitConfig()
-    comms: CommsConfig = CommsConfig()
-    environment: EnvironmentConfig = EnvironmentConfig()
-    dt: float = 0.1  # 100ms simulation timestep
-
+    
+    # Space environment parameters
+    solar_flux_f10_7: float = 150.0
+    magnetic_index_kp: float = 3.0
+    
+    # Thermal environment
+    solar_constant_w_m2: float = 1361.0
+    earth_ir_w_m2: float = 237.0
+    albedo_coefficient: float = 0.3
 
 @dataclass
 class CameraConfig:
@@ -70,3 +109,38 @@ class CameraConfig:
     
     # Mounting parameters (relative to spacecraft body)
     mounting_quaternion: tuple = (1.0, 0.0, 0.0, 0.0)  # Aligned with nadir face
+
+@dataclass
+class Config:
+    """Main configuration class."""
+    orbit: OrbitConfig = OrbitConfig()
+    comms: CommsConfig = CommsConfig()
+    simulation: SimulationConfig = SimulationConfig()
+    environment: EnvironmentConfig = EnvironmentConfig()
+    camera: CameraConfig = CameraConfig()
+
+# Create default configuration instance
+DEFAULT_CONFIG = Config()
+
+def get_config() -> Config:
+    """Get configuration instance."""
+    return DEFAULT_CONFIG
+
+def set_simulation_start_time(start_time: datetime):
+    """Set simulation start time."""
+    DEFAULT_CONFIG.simulation.start_time = start_time
+
+def set_time_factor(factor: float):
+    """Set simulation time factor."""
+    if factor <= 0:
+        raise ValueError("Time factor must be positive")
+    DEFAULT_CONFIG.simulation.time_factor = factor
+
+def set_yamcs_host(host: str):
+    """Set YAMCS host address."""
+    DEFAULT_CONFIG.comms.yamcs_host = host
+
+def set_yamcs_ports(tm_port: int, tc_port: int):
+    """Set YAMCS communication ports."""
+    DEFAULT_CONFIG.comms.yamcs_tm_port = tm_port
+    DEFAULT_CONFIG.comms.yamcs_tc_port = tc_port

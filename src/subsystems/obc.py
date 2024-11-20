@@ -44,7 +44,8 @@ class OBC:
                  power: PowerSubsystem,
                  payload: PayloadManager,
                  fms: FileManagementSystem,
-                 thermal: ThermalSubsystem):
+                 thermal: ThermalSubsystem,
+                 spacecraft):
         """
         Initialize OBC.
         
@@ -61,6 +62,10 @@ class OBC:
         self.payload = payload
         self.fms = fms
         self.thermal = thermal
+        self.spacecraft = spacecraft
+        self.event_counter = 0
+        self.housekeeping_interval = 1.0  # seconds
+        self.last_housekeeping_time = datetime.utcnow()
         self.logger = logging.getLogger(__name__)
         
         # Initialize event bus
@@ -95,6 +100,144 @@ class OBC:
         self.last_watchdog_reset = datetime.utcnow()
         
         self.logger.info("OBC initialized")
+
+    def collect_housekeeping(self) -> HousekeepingTelemetry:
+        """Collect system-wide housekeeping telemetry."""
+        current_time = datetime.utcnow()
+        
+        # Collect subsystem status
+        subsystem_status = []
+        for name, subsys in self.spacecraft.subsystems.items():
+            status = SubsystemStatus(
+                name=name,
+                enabled=subsys.is_enabled(),
+                mode=subsys.mode.name,
+                uptime_seconds=subsys.get_uptime(),
+                fault_flags=subsys.get_fault_flags(),
+                power_consumption=subsys.get_power_consumption(),
+                board_temp=subsys.get_board_temperature()
+            )
+            subsystem_status.append(status)
+        
+        return HousekeepingTelemetry(
+            timestamp=current_time,
+            spacecraft_mode=self.spacecraft.mode.name,
+            eclipse_state=self.spacecraft.orbit.in_eclipse(),
+            
+            # Power Status
+            battery_voltage=self.spacecraft.power.battery.get_voltage(),
+            battery_current=self.spacecraft.power.battery.get_current(),
+            battery_charge=self.spacecraft.power.battery.get_state_of_charge(),
+            solar_array_power=self.spacecraft.power.get_solar_array_power(),
+            power_consumption=self.spacecraft.power.get_total_power_consumption(),
+            
+            # Thermal Status
+            min_temperature=self.spacecraft.thermal.get_min_temperature(),
+            max_temperature=self.spacecraft.thermal.get_max_temperature(),
+            avg_temperature=self.spacecraft.thermal.get_average_temperature(),
+            heater_states=self.spacecraft.thermal.get_heater_states(),
+            
+            # Attitude Status
+            quaternion=self.spacecraft.adcs.state.quaternion.tolist(),
+            angular_velocity=self.spacecraft.adcs.state.angular_velocity.tolist(),
+            sun_pointing_error=self.spacecraft.adcs.get_sun_pointing_error(),
+            
+            # Orbit Status
+            position_eci=self.spacecraft.orbit.get_position_eci().tolist(),
+            velocity_eci=self.spacecraft.orbit.get_velocity_eci().tolist(),
+            next_aos_time=self.spacecraft.gsi.get_next_aos_time(),
+            next_los_time=self.spacecraft.gsi.get_next_los_time(),
+            
+            # Communication Status
+            rf_power_dbm=self.spacecraft.comms.get_rf_power(),
+            link_quality=self.spacecraft.comms.get_link_quality(),
+            packets_queued=self.spacecraft.comms.get_queued_packet_count(),
+            last_ground_contact=self.spacecraft.gsi.get_last_contact_time(),
+            
+            # Memory Status
+            memory_usage=self.memory_monitor.get_usage_percent(),
+            storage_usage=self.spacecraft.fms.get_storage_usage_percent(),
+            cpu_load=self.get_cpu_load(),
+            
+            subsystem_status=subsystem_status,
+            
+            # Error Status
+            error_count=self.error_counter.get_error_count(),
+            warning_count=self.error_counter.get_warning_count(),
+            last_error_time=self.error_counter.get_last_error_time(),
+            last_error_message=self.error_counter.get_last_error_message()
+        )
+
+    def publish_housekeeping(self):
+        """Publish housekeeping telemetry if interval has elapsed."""
+        current_time = datetime.utcnow()
+        if (current_time - self.last_housekeeping_time).total_seconds() >= self.housekeeping_interval:
+            telemetry = self.collect_housekeeping()
+            packet = telemetry.to_ccsds()
+            self.event_bus.publish(
+                EventType.TELEMETRY,
+                "HOUSEKEEPING",
+                {"packet": packet.pack()}
+            )
+            self.last_housekeeping_time = current_time
+
+    def publish_event(self, 
+                     severity: EventSeverity,
+                     source: str,
+                     category: str,
+                     message: str,
+                     **kwargs):
+        """Publish system event."""
+        self.event_counter += 1
+        
+        event = EventTelemetry(
+            timestamp=datetime.utcnow(),
+            event_id=self.event_counter,
+            severity=severity,
+            source=source,
+            category=category,
+            message=message,
+            subsystem=kwargs.get('subsystem', ''),
+            component=kwargs.get('component', ''),
+            parameter_values=kwargs.get('parameters', {}),
+            related_event_id=kwargs.get('related_event_id'),
+            spacecraft_mode=self.spacecraft.mode.name,
+            orbit_position=self.spacecraft.orbit.get_position_eci().tolist(),
+            ground_contact=self.spacecraft.gsi.is_in_contact()
+        )
+        
+        packet = event.to_ccsds()
+        self.event_bus.publish(
+            EventType.TELEMETRY,
+            "EVENT",
+            {"packet": packet.pack()}
+        )
+        
+        # Log critical events to persistent storage
+        if severity == EventSeverity.CRITICAL:
+            self.log_critical_event(event)
+
+    def log_critical_event(self, event: EventTelemetry):
+        """Log critical events to persistent storage."""
+        try:
+            log_entry = {
+                'timestamp': event.timestamp.isoformat(),
+                'event_id': event.event_id,
+                'message': event.message,
+                'source': event.source,
+                'parameters': event.parameter_values
+            }
+            self.spacecraft.fms.append_to_file(
+                'critical_events.log',
+                json.dumps(log_entry) + '\n'
+            )
+        except Exception as e:
+            # If logging fails, create a new event but don't recurse
+            self.event_bus.publish(
+                EventType.TELEMETRY,
+                "OBC",
+                {"message": f"Failed to log critical event: {str(e)}"}
+            )
         
     def update(self, dt: float):
         """
@@ -145,6 +288,15 @@ class OBC:
             
             # Monitor system health
             self._monitor_health()
+
+            # Update housekeeping telemetry
+            self.publish_housekeeping()
+            
+            # Update other OBC functions
+            self.monitor_subsystem_health()
+            self.check_memory_usage()
+            self.update_time_sync()
+            self.process_command_queue()
             
             # Store telemetry
             self._store_telemetry()
@@ -152,6 +304,28 @@ class OBC:
         except Exception as e:
             self.logger.error(f"Error in OBC update: {str(e)}")
             self._handle_error(str(e))
+            self.publish_event(
+                severity=EventSeverity.ERROR,
+                source="OBC",
+                category="SYSTEM",
+                message=f"OBC update error: {str(e)}",
+                subsystem="OBC",
+                component="update"
+            )
+    
+    def monitor_subsystem_health(self):
+        """Monitor health of all subsystems and generate events for issues."""
+        for name, subsys in self.spacecraft.subsystems.items():
+            fault_flags = subsys.get_fault_flags()
+            if fault_flags != 0:
+                self.publish_event(
+                    severity=EventSeverity.WARNING,
+                    source="OBC",
+                    category="HEALTH",
+                    message=f"Subsystem fault detected: {name}",
+                    subsystem=name,
+                    parameters={"fault_flags": fault_flags}
+                )
             
     def execute_command(self, command: Dict) -> Dict:
         """
@@ -185,30 +359,123 @@ class OBC:
                 'error': str(e)
             }
             
-    def get_telemetry(self) -> Dict:
-        """Get system-wide telemetry."""
-        return {
-            'system': {
-                'mode': self.state.mode.name,
-                'boot_count': self.state.boot_count,
-                'uptime': self.state.uptime_seconds,
-                'last_command': self.state.last_command_time.isoformat() 
-                    if self.state.last_command_time else None,
-                'last_contact': self.state.last_ground_contact.isoformat()
-                    if self.state.last_ground_contact else None,
-                'errors': self.state.error_count,
-                'warnings': self.state.warning_count,
-                'cpu_usage': self.state.cpu_usage,
-                'memory_usage': self.state.memory_usage,
-                'temperature': self.state.temperature_c,
-                'timestamp': self.state.timestamp.isoformat()
-            },
-            'power': self.power.get_telemetry(),
-            'adcs': self.adcs.get_telemetry(),
-            'comms': self.comms.get_telemetry(),
-            'payload': self.payload.get_telemetry(),
-            'thermal': self.thermal.get_telemetry()
-        }
+    def get_telemetry(self) -> OBCTelemetry:
+        """Generate OBC telemetry packet."""
+        current_time = datetime.utcnow()
+        
+        # Get process statistics
+        process_stats = []
+        for process in self.process_manager.get_processes():
+            stats = ProcessStats(
+                name=process.name,
+                cpu_percent=process.get_cpu_usage(),
+                memory_bytes=process.get_memory_usage(),
+                thread_count=process.get_thread_count(),
+                uptime_seconds=process.get_uptime(),
+                last_heartbeat=process.get_last_heartbeat()
+            )
+            process_stats.append(stats)
+        
+        return OBCTelemetry(
+            # Basic Info
+            timestamp=current_time,
+            boot_count=self.boot_counter,
+            uptime_seconds=int((current_time - self.boot_time).total_seconds()),
+            boot_cause=self.last_boot_cause,
+            
+            # CPU Status
+            cpu_load_1min=self.get_cpu_load(interval=60),
+            cpu_load_5min=self.get_cpu_load(interval=300),
+            cpu_load_15min=self.get_cpu_load(interval=900),
+            cpu_temp=self.get_cpu_temperature(),
+            
+            # Memory Status
+            total_memory_bytes=self.memory_monitor.total,
+            used_memory_bytes=self.memory_monitor.used,
+            free_memory_bytes=self.memory_monitor.free,
+            total_swap_bytes=self.memory_monitor.swap_total,
+            used_swap_bytes=self.memory_monitor.swap_used,
+            
+            # Process Information
+            process_count=len(process_stats),
+            thread_count=sum(p.thread_count for p in process_stats),
+            process_stats=process_stats,
+            
+            # Watchdog Status
+            watchdog_enabled=self.watchdog.is_enabled(),
+            last_watchdog_kick=self.watchdog.last_kick_time,
+            watchdog_timeout_s=self.watchdog.timeout,
+            
+            # Software Status
+            software_version=self.software_version,
+            last_update_time=self.last_software_update,
+            pending_updates=len(self.pending_updates),
+            failed_updates=self.failed_updates,
+            
+            # Time Synchronization
+            time_sync_error_ms=self.time_sync.get_error_ms(),
+            last_time_sync=self.time_sync.last_sync_time,
+            time_source=self.time_sync.current_source,
+            
+            # System Performance
+            interrupt_count=self.performance_monitor.get_interrupts(),
+            context_switches=self.performance_monitor.get_context_switches(),
+            system_calls=self.performance_monitor.get_syscalls(),
+            page_faults=self.performance_monitor.get_page_faults(),
+            
+            # Error Counters
+            memory_errors=self.error_counter.memory_errors,
+            bus_errors=self.error_counter.bus_errors,
+            software_errors=self.error_counter.software_errors,
+            hardware_errors=self.error_counter.hardware_errors,
+            
+            # System Status
+            operating_mode=self.mode.name,
+            fault_flags=self.get_fault_flags(),
+            board_voltages=self.power_monitor.get_voltages(),
+            board_currents=self.power_monitor.get_currents(),
+            board_temps=self.temperature_monitor.get_temperatures()
+        )
+
+    def publish_telemetry(self):
+        """Publish OBC telemetry packet."""
+        telemetry = self.get_telemetry()
+        packet = telemetry.to_ccsds()
+        self.event_bus.publish(
+            EventType.TELEMETRY,
+            "OBC",
+            {"packet": packet.pack()}
+        )
+
+    def get_fault_flags(self) -> int:
+        """Get OBC fault flags."""
+        flags = 0
+        
+        # CPU faults
+        if self.get_cpu_temperature() > self.CPU_TEMP_LIMIT:
+            flags |= 0x01
+        if self.get_cpu_load(60) > self.CPU_LOAD_LIMIT:
+            flags |= 0x02
+            
+        # Memory faults
+        if self.memory_monitor.free < self.MIN_FREE_MEMORY:
+            flags |= 0x10
+        if self.error_counter.memory_errors > self.MAX_MEMORY_ERRORS:
+            flags |= 0x20
+            
+        # Process faults
+        if not self.process_manager.all_processes_healthy():
+            flags |= 0x100
+            
+        # Watchdog faults
+        if not self.watchdog.is_healthy():
+            flags |= 0x1000
+            
+        # Time sync faults
+        if abs(self.time_sync.get_error_ms()) > self.MAX_TIME_ERROR_MS:
+            flags |= 0x10000
+            
+        return flags
         
     def _register_event_handlers(self):
         """Register event handlers."""

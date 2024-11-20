@@ -188,24 +188,91 @@ class CommunicationsSubsystem:
         )
         return str(transaction.transaction_id)
         
-    def get_telemetry(self) -> Dict:
-        """Get communications telemetry."""
-        return {
-            'state': self.status.state.name,
-            'uplink_enabled': self.status.uplink_enabled,
-            'downlink_enabled': self.status.downlink_enabled,
-            'last_packet_time': self.status.last_packet_time.isoformat() 
-                if self.status.last_packet_time else None,
-            'packets_received': self.status.packets_received,
-            'packets_transmitted': self.status.packets_transmitted,
-            'bit_errors': self.status.bit_errors_detected,
-            'rssi_dbm': self.status.rssi_dbm,
-            'temperature_c': self.status.temperature_c,
-            'power_consumption_w': self.status.power_consumption_w,
-            'uplink_buffer_usage': len(self.uplink_buffer),
-            'downlink_buffer_usage': len(self.downlink_buffer),
-            'timestamp': self.status.timestamp.isoformat()
-        }
+    def get_telemetry(self) -> CommsTelemetry:
+        """Generate communications subsystem telemetry packet."""
+        return CommsTelemetry(
+            timestamp=datetime.utcnow(),
+            
+            # RF Status
+            tx_power_dbm=self.transmitter.get_power(),
+            rx_power_dbm=self.receiver.get_rssi(),
+            tx_current=self.transmitter.get_current(),
+            rx_current=self.receiver.get_current(),
+            pa_temp=self.transmitter.get_pa_temperature(),
+            
+            # Link Quality
+            link_quality=self.get_link_quality(),
+            bit_snr=self.receiver.get_snr(),
+            rssi=self.receiver.get_rssi(),
+            ber=self.get_bit_error_rate(),
+            agc_gain=self.receiver.get_agc_gain(),
+            
+            # Data Rates
+            uplink_rate_bps=self.get_uplink_rate(),
+            downlink_rate_bps=self.get_downlink_rate(),
+            uplink_rssi=self.receiver.get_rssi(),
+            downlink_rssi=self.get_downlink_rssi(),
+            
+            # Buffer Status
+            tx_buffer_used=self.tx_buffer.get_used(),
+            rx_buffer_used=self.rx_buffer.get_used(),
+            tx_buffer_size=self.tx_buffer.get_size(),
+            rx_buffer_size=self.rx_buffer.get_size(),
+            
+            # Packet Statistics
+            packets_sent=self.packet_stats['sent'],
+            packets_received=self.packet_stats['received'],
+            packets_dropped=self.packet_stats['dropped'],
+            crc_errors=self.packet_stats['crc_errors'],
+            frame_errors=self.packet_stats['frame_errors'],
+            
+            # System Status
+            tx_enabled=self.transmitter.is_enabled(),
+            rx_enabled=self.receiver.is_enabled(),
+            mode=self.mode.name,
+            fault_flags=self.get_fault_flags(),
+            board_temp=self.get_board_temperature()
+        )
+
+    def publish_telemetry(self):
+        """Publish communications telemetry packet."""
+        telemetry = self.get_telemetry()
+        packet = telemetry.to_ccsds()
+        self.event_bus.publish(
+            EventType.TELEMETRY,
+            "COMMS",
+            {"packet": packet.pack()}
+        )
+
+    def get_fault_flags(self) -> int:
+        """Get communications subsystem fault flags."""
+        flags = 0
+        
+        # Check transmitter faults
+        if self.transmitter.has_fault():
+            flags |= 0x01
+        if self.transmitter.power_exceeded():
+            flags |= 0x02
+        if self.transmitter.temperature_exceeded():
+            flags |= 0x04
+            
+        # Check receiver faults
+        if self.receiver.has_fault():
+            flags |= 0x10
+        if self.receiver.signal_lost():
+            flags |= 0x20
+            
+        # Check buffer faults
+        if self.tx_buffer.is_full():
+            flags |= 0x100
+        if self.rx_buffer.is_full():
+            flags |= 0x200
+            
+        # Check link quality
+        if self.get_link_quality() < 0.3:
+            flags |= 0x1000
+            
+        return flags
         
     def _calculate_link_budget(self, 
                              ground_station_pos: np.ndarray,

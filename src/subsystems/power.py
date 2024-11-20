@@ -144,6 +144,10 @@ class PowerSubsystem:
             
             # Calculate total power
             self._update_power_totals()
+
+            if hasattr(self, 'thermal_subsystem'):
+            thermal_power = self.thermal_subsystem.total_power_consumption
+            self.total_power_consumed += thermal_power
             
             return self.get_telemetry()
             
@@ -388,4 +392,53 @@ class PowerSubsystem:
             'power',
             {'battery_fault': True},
             priority=EventPriority.CRITICAL
+        )
+
+    def get_telemetry(self) -> PowerTelemetry:
+        """Generate power subsystem telemetry packet."""
+        return PowerTelemetry(
+            # Battery state
+            battery_voltage=self.battery.get_voltage(),
+            battery_current=self.battery.get_current(),
+            battery_temperature=self.battery.get_temperature(),
+            battery_charge=self.battery.get_state_of_charge(),
+            battery_health=self.battery.get_state_of_health(),
+            battery_cycles=self.battery.get_cycle_count(),
+            
+            # Solar panel states
+            solar_voltages=[panel.get_voltage() for panel in self.solar_panels],
+            solar_currents=[panel.get_current() for panel in self.solar_panels],
+            solar_temperatures=[panel.get_temperature() for panel in self.solar_panels],
+            solar_power=[panel.get_power() for panel in self.solar_panels],
+            
+            # Power distribution
+            bus_voltage_3v3=self.power_buses['3v3'].get_voltage(),
+            bus_current_3v3=self.power_buses['3v3'].get_current(),
+            bus_voltage_5v=self.power_buses['5v'].get_voltage(),
+            bus_current_5v=self.power_buses['5v'].get_current(),
+            bus_voltage_12v=self.power_buses['12v'].get_voltage(),
+            bus_current_12v=self.power_buses['12v'].get_current(),
+            
+            # Subsystem power states
+            subsystem_powers={name: bus.get_power() 
+                            for name, bus in self.subsystem_buses.items()},
+            subsystem_states={name: bus.is_enabled() 
+                            for name, bus in self.subsystem_buses.items()},
+            
+            # System status
+            total_power_in=self.get_total_power_in(),
+            total_power_out=self.get_total_power_out(),
+            power_mode=self.power_mode.name,
+            fault_flags=self.get_fault_flags(),
+            board_temp=self.get_board_temperature()
+        )
+
+    def publish_telemetry(self):
+        """Publish power telemetry packet."""
+        telemetry = self.get_telemetry()
+        packet = telemetry.to_ccsds()
+        self.event_bus.publish(
+            EventType.TELEMETRY,
+            "POWER",
+            {"packet": packet.pack()}
         )

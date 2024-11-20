@@ -410,3 +410,97 @@ class FileManagementSystem:
         """Decrypt data using AES-256."""
         # Implementation depends on encryption requirements
         return data
+
+    def get_telemetry(self) -> FMSTelemetry:
+        """Generate file management system telemetry packet."""
+        def get_storage_stats(area: str) -> FileSystemStats:
+            storage = self.storage_areas[area]
+            return FileSystemStats(
+                total_bytes=storage.get_total_space(),
+                used_bytes=storage.get_used_space(),
+                free_bytes=storage.get_free_space(),
+                file_count=storage.get_file_count(),
+                fragmentation=storage.get_fragmentation(),
+                last_write_time=storage.get_last_write_time(),
+                write_errors=storage.get_write_errors(),
+                read_errors=storage.get_read_errors()
+            )
+
+        return FMSTelemetry(
+            timestamp=datetime.utcnow(),
+            system_enabled=self.is_enabled(),
+            operating_mode=self.mode.name,
+            
+            # Storage Areas
+            payload_storage=get_storage_stats('payload'),
+            telemetry_storage=get_storage_stats('telemetry'),
+            software_storage=get_storage_stats('software'),
+            configuration_storage=get_storage_stats('configuration'),
+            
+            # File Operations
+            files_written=self.operation_stats['files_written'],
+            files_read=self.operation_stats['files_read'],
+            files_deleted=self.operation_stats['files_deleted'],
+            bytes_written=self.operation_stats['bytes_written'],
+            bytes_read=self.operation_stats['bytes_read'],
+            failed_operations=self.operation_stats['failed_operations'],
+            
+            # Transfer Status
+            active_transfers=len(self.active_transfers),
+            queued_transfers=len(self.transfer_queue),
+            failed_transfers=self.transfer_stats['failed'],
+            last_transfer_rate_bps=self.transfer_stats['last_rate'],
+            transfer_queue_bytes=self.get_queued_bytes(),
+            
+            # File Types
+            image_files=self.get_file_count_by_type('image'),
+            telemetry_files=self.get_file_count_by_type('telemetry'),
+            log_files=self.get_file_count_by_type('log'),
+            config_files=self.get_file_count_by_type('config'),
+            software_files=self.get_file_count_by_type('software'),
+            
+            # System Status
+            garbage_collection_running=self.gc_running,
+            last_gc_duration_s=self.gc_stats['last_duration'],
+            disk_health=self.get_disk_health(),
+            fault_flags=self.get_fault_flags(),
+            board_temp=self.get_board_temperature(),
+            uptime_seconds=int((datetime.utcnow() - self.start_time).total_seconds())
+        )
+
+    def publish_telemetry(self):
+        """Publish file management system telemetry packet."""
+        telemetry = self.get_telemetry()
+        packet = telemetry.to_ccsds()
+        self.event_bus.publish(
+            EventType.TELEMETRY,
+            "FMS",
+            {"packet": packet.pack()}
+        )
+
+    def get_fault_flags(self) -> int:
+        """Get file management system fault flags."""
+        flags = 0
+        
+        # Storage space warnings/errors
+        for i, area in enumerate(self.storage_areas.values()):
+            if area.get_free_space() < self.min_free_space:
+                flags |= (1 << i)
+            if area.get_fragmentation() > self.max_fragmentation:
+                flags |= (1 << (i + 8))
+                
+        # Operation errors
+        if self.operation_stats['failed_operations'] > self.max_failed_ops:
+            flags |= 0x10000
+            
+        # Transfer errors
+        if self.transfer_stats['failed'] > self.max_failed_transfers:
+            flags |= 0x20000
+            
+        # System health
+        if self.get_disk_health() < 0.5:
+            flags |= 0x40000
+        if len(self.transfer_queue) >= self.max_queue_size:
+            flags |= 0x80000
+            
+        return flags

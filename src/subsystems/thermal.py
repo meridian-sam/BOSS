@@ -225,36 +225,97 @@ class ThermalSubsystem:
                 
         self.mode = mode
 
-    def get_telemetry(self) -> Dict:
-        """Get thermal system telemetry."""
-        return {
-            'mode': self.mode.name,
-            'zones': {
-                zone.name: {
-                    'average_temp': state.average_temp,
-                    'temperatures': [
-                        {
-                            'temperature': sensor.temperature,
-                            'valid': sensor.valid,
-                            'last_valid': sensor.last_valid_time.isoformat() 
-                                if sensor.last_valid_time else None
-                        }
-                        for sensor in state.temperatures
-                    ],
-                    'heater': {
-                        'enabled': state.heater.enabled,
-                        'setpoint': state.heater.setpoint,
-                        'duty_cycle': state.heater.duty_cycle,
-                        'power': state.power_consumption
-                    }
-                }
-                for zone, state in self.zones.items()
+    def get_telemetry(self) -> ThermalTelemetry:
+        """Generate thermal subsystem telemetry packet."""
+        current_time = datetime.utcnow()
+        
+        return ThermalTelemetry(
+            timestamp=current_time,
+            
+            # Temperature sensor readings
+            temperatures={
+                sensor.name: sensor.get_temperature()
+                for sensor in self.temperature_sensors
             },
-            'total_power': self.total_power_consumption,
-            'eclipse': self.eclipse_state,
-            'solar_intensity': self.solar_intensity,
-            'timestamp': self.timestamp.isoformat()
-        }
+            
+            # Heater states
+            heater_states={
+                heater.name: heater.is_enabled()
+                for heater in self.heaters
+            },
+            heater_duties={
+                heater.name: heater.get_duty_cycle()
+                for heater in self.heaters
+            },
+            heater_powers={
+                heater.name: heater.get_power()
+                for heater in self.heaters
+            },
+            
+            # Thermal control data
+            setpoints={
+                zone.name: zone.get_setpoint()
+                for zone in self.thermal_zones
+            },
+            control_errors={
+                zone.name: zone.get_control_error()
+                for zone in self.thermal_zones
+            },
+            control_outputs={
+                zone.name: zone.get_control_output()
+                for zone in self.thermal_zones
+            },
+            
+            # Environmental data
+            external_temps={
+                sensor.name: sensor.get_temperature()
+                for sensor in self.external_sensors
+            },
+            radiator_temps={
+                rad.name: rad.get_temperature()
+                for rad in self.radiators
+            },
+            heat_flows={
+                zone.name: zone.get_heat_flow()
+                for zone in self.thermal_zones
+            },
+            
+            # System status
+            control_mode=self.control_mode.name,
+            fault_flags=self.get_fault_flags(),
+            board_temp=self.get_board_temperature()
+        )
+
+    def publish_telemetry(self):
+        """Publish thermal telemetry packet."""
+        telemetry = self.get_telemetry()
+        packet = telemetry.to_ccsds()
+        self.event_bus.publish(
+            EventType.TELEMETRY,
+            "THERMAL",
+            {"packet": packet.pack()}
+        )
+
+    def get_fault_flags(self) -> int:
+        """Get thermal subsystem fault flags."""
+        flags = 0
+        
+        # Check for temperature out of range
+        for i, sensor in enumerate(self.temperature_sensors):
+            if not sensor.is_temperature_valid():
+                flags |= (1 << i)
+                
+        # Check for heater faults
+        for i, heater in enumerate(self.heaters):
+            if heater.has_fault():
+                flags |= (1 << (i + 16))
+                
+        # Check for control loop faults
+        for i, zone in enumerate(self.thermal_zones):
+            if zone.control_error_exceeded():
+                flags |= (1 << (i + 24))
+                
+        return flags
 
     def _initialize_zones(self) -> Dict[ThermalZone, ThermalZoneState]:
         """Initialize thermal zones with sensors and heaters."""

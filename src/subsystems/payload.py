@@ -330,20 +330,99 @@ class PayloadManager:
             self.status.state = PayloadState.ERROR
             return False
             
-    def get_telemetry(self) -> Dict:
-        """Get payload telemetry."""
-        return {
-            'state': self.status.state.name,
-            'temperature_c': self.status.temperature_c,
-            'power_consumption_w': self.status.power_consumption_w,
-            'storage_used_bytes': self.status.storage_used_bytes,
-            'images_captured': self.status.images_captured,
-            'last_image_time': self.status.last_image_time.isoformat() 
-                if self.status.last_image_time else None,
-            'calibration_age_hours': self.status.calibration_age_hours,
-            'error_count': self.status.error_count,
-            'timestamp': self.status.timestamp.isoformat()
-        }
+    def get_telemetry(self) -> PayloadTelemetry:
+        """Generate payload subsystem telemetry packet."""
+        return PayloadTelemetry(
+            timestamp=datetime.utcnow(),
+            payload_enabled=self.is_enabled(),
+            operating_mode=self.mode.name,
+            
+            # Camera Settings
+            exposure_time_ms=self.camera.get_exposure_time(),
+            gain=self.camera.get_gain(),
+            binning=self.camera.get_binning(),
+            region_of_interest=self.camera.get_roi(),
+            color_mode=self.camera.get_color_mode(),
+            
+            # Sensor Status
+            sensor_temp=self.camera.get_sensor_temperature(),
+            sensor_voltage=self.camera.get_sensor_voltage(),
+            sensor_current=self.camera.get_sensor_current(),
+            ccd_temp=self.camera.get_ccd_temperature(),
+            
+            # Image Stats
+            images_captured=self.image_stats['captured'],
+            images_stored=self.image_stats['stored'],
+            failed_captures=self.image_stats['failed'],
+            last_image_quality=self.image_stats['last_quality'],
+            last_image_brightness=self.image_stats['last_brightness'],
+            last_image_contrast=self.image_stats['last_contrast'],
+            
+            # Storage Status
+            storage_used_bytes=self.storage.get_used_space(),
+            storage_total_bytes=self.storage.get_total_space(),
+            images_queued=len(self.processing_queue),
+            compression_ratio=self.get_compression_ratio(),
+            
+            # Processing Status
+            processing_queue_length=len(self.processing_queue),
+            last_processing_time_ms=self.processing_stats['last_time_ms'],
+            processing_errors=self.processing_stats['errors'],
+            
+            # Power Status
+            voltage_3v3=self.power_monitor.get_3v3_voltage(),
+            voltage_5v=self.power_monitor.get_5v_voltage(),
+            current_3v3=self.power_monitor.get_3v3_current(),
+            current_5v=self.power_monitor.get_5v_current(),
+            power_consumption=self.get_power_consumption(),
+            
+            # System Status
+            fault_flags=self.get_fault_flags(),
+            board_temp=self.get_board_temperature(),
+            uptime_seconds=int((datetime.utcnow() - self.start_time).total_seconds())
+        )
+
+    def publish_telemetry(self):
+        """Publish payload telemetry packet."""
+        telemetry = self.get_telemetry()
+        packet = telemetry.to_ccsds()
+        self.event_bus.publish(
+            EventType.TELEMETRY,
+            "PAYLOAD",
+            {"packet": packet.pack()}
+        )
+
+    def get_fault_flags(self) -> int:
+        """Get payload subsystem fault flags."""
+        flags = 0
+        
+        # Camera faults
+        if self.camera.has_fault():
+            flags |= 0x01
+        if self.camera.temperature_exceeded():
+            flags |= 0x02
+        if self.camera.power_fault():
+            flags |= 0x04
+            
+        # Storage faults
+        if self.storage.is_full():
+            flags |= 0x10
+        if self.storage.has_error():
+            flags |= 0x20
+            
+        # Processing faults
+        if len(self.processing_queue) >= self.max_queue_size:
+            flags |= 0x100
+        if self.processing_stats['errors'] > self.max_processing_errors:
+            flags |= 0x200
+            
+        # Power faults
+        if not self.power_monitor.voltages_in_range():
+            flags |= 0x1000
+        if self.power_consumption > self.max_power:
+            flags |= 0x2000
+            
+        return flags
         
     def _can_capture(self) -> bool:
         """Check if camera can capture an image."""

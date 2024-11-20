@@ -231,3 +231,41 @@ class ADCS:
         # Calculate desired attitude quaternion for nadir pointing
         # Implementation depends on desired nadir-pointing strategy
         return np.array([1., 0., 0., 0.])  # Placeholder
+
+    def get_telemetry(self) -> ADCSTelemetry:
+        """Generate ADCS telemetry packet."""
+        return ADCSTelemetry(
+            # Attitude state
+            quaternion=self.state.quaternion,
+            angular_velocity=self.state.angular_velocity,
+            
+            # Sensor readings
+            magnetometer=self.magnetometer.get_reading(),
+            sun_sensors=self.sun_sensors.get_readings(),
+            gyro_temps=self.gyros.get_temperatures(),
+            
+            # Actuator states
+            reaction_wheel_speeds=self.reaction_wheels.get_speeds(),
+            reaction_wheel_currents=self.reaction_wheels.get_currents(),
+            magnetorquer_commands=self.magnetorquers.get_commands(),
+            
+            # Control state
+            control_mode=self.control_mode.name,
+            control_error=self.get_control_error(),
+            control_effort=self.get_control_effort(),
+            
+            # System status
+            power_status=self.power_enabled,
+            fault_flags=self.get_fault_flags(),
+            cpu_temp=self.get_cpu_temperature()
+        )
+    
+    def publish_telemetry(self):
+        """Publish ADCS telemetry packet."""
+        telemetry = self.get_telemetry()
+        packet = telemetry.to_ccsds()
+        self.event_bus.publish(
+            EventType.TELEMETRY,
+            "ADCS",
+            {"packet": packet.pack()}
+        )
