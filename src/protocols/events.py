@@ -42,7 +42,7 @@ class EventFilter:
         self.priorities = set(priorities) if priorities else None
         self.sources = set(sources) if sources else None
         
-    def matches(self, event: Event) -> bool:
+    def matches(self, event: 'Event') -> bool:
         """Check if event matches filter criteria."""
         if self.event_types and event.type not in self.event_types:
             return False

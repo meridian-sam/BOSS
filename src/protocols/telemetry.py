@@ -1,9 +1,10 @@
 from dataclasses import dataclass
 from datetime import datetime
 import struct
-from typing import Dict, Any, List, Optional, Union
 from .ccsds import CCSDSPacket, PacketType
 import numpy as np
+from typing import Dict, Any, List, Optional, Tuple
+from enum import Enum
 
 HOUSEKEEPING_APID = 100
 EVENT_APID = 101

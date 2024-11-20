@@ -3,13 +3,15 @@ from dataclasses import dataclass
 from typing import Dict, Optional, List, Callable
 from datetime import datetime
 import logging
-import numpy as np
-from events import EventBus, EventType, Event, EventPriority
+import json
+from src.protocols.events import EventBus, EventType, Event, EventPriority
 from .adcs import ADCS, ADCSMode
 from .comms import CommunicationsSubsystem, CommState
 from .power import PowerSubsystem, PowerState
 from .fms import FileManagementSystem, FileType, StorageArea
 from .payload import PayloadManager, PayloadState
+from .thermal import ThermalSubsystem, ThermalMode
+from src.protocols.events import EventBus, EventType, Event, EventPriority, EventSeverity, EventTelemetry
 
 class SystemMode(Enum):
     """Spacecraft system modes."""
@@ -34,6 +36,113 @@ class SystemState:
     memory_usage: float
     temperature_c: float
     timestamp: datetime
+
+@dataclass
+class SubsystemStatus:
+    name: str
+    enabled: bool
+    mode: str
+    uptime_seconds: float
+    fault_flags: int
+    power_consumption: float
+    board_temp: float
+
+@dataclass
+class HousekeepingTelemetry:
+    timestamp: datetime
+    spacecraft_mode: str
+    eclipse_state: bool
+    battery_voltage: float
+    battery_current: float
+    battery_charge: float
+    solar_array_power: float
+    power_consumption: float
+    min_temperature: float
+    max_temperature: float
+    avg_temperature: float
+    heater_states: List[bool]
+    quaternion: List[float]
+    angular_velocity: List[float]
+    sun_pointing_error: float
+    position_eci: List[float]
+    velocity_eci: List[float]
+    next_aos_time: Optional[datetime]
+    next_los_time: Optional[datetime]
+    rf_power_dbm: float
+    link_quality: float
+    packets_queued: int
+    last_ground_contact: Optional[datetime]
+    memory_usage: float
+    storage_usage: float
+    cpu_load: float
+    subsystem_status: List[SubsystemStatus]
+    error_count: int
+    warning_count: int
+    last_error_time: Optional[datetime]
+    last_error_message: Optional[str]
+
+@dataclass
+class ProcessStats:
+    """Process statistics."""
+    name: str
+    cpu_percent: float
+    memory_bytes: int
+    thread_count: int
+    uptime_seconds: float
+    last_heartbeat: datetime
+
+@dataclass
+class OBCTelemetry:
+    """OBC telemetry data structure."""
+    timestamp: datetime
+    boot_count: int
+    uptime_seconds: int
+    boot_cause: str
+    cpu_load_1min: float
+    cpu_load_5min: float
+    cpu_load_15min: float
+    cpu_temp: float
+    total_memory_bytes: int
+    used_memory_bytes: int
+    free_memory_bytes: int
+    total_swap_bytes: int
+    used_swap_bytes: int
+    process_count: int
+    thread_count: int
+    process_stats: List[ProcessStats]
+    watchdog_enabled: bool
+    last_watchdog_kick: datetime
+    watchdog_timeout_s: float
+    software_version: str
+    last_update_time: Optional[datetime]
+    pending_updates: int
+    failed_updates: int
+    time_sync_error_ms: float
+    last_time_sync: Optional[datetime]
+    time_source: str
+    interrupt_count: int
+    context_switches: int
+    system_calls: int
+    page_faults: int
+    memory_errors: int
+    bus_errors: int
+    software_errors: int
+    hardware_errors: int
+    operating_mode: str
+    fault_flags: int
+    board_voltages: List[float]
+    board_currents: List[float]
+    board_temps: List[float]
+
+@dataclass
+class ProcessStats:
+    """Process statistics."""
+    name: str
+    cpu_percent: float
+    memory_bytes: int
+    thread_count: int
+    uptime_seconds: float
+    last_heartbeat: datetime
 
 class OBC:
     """On-Board Computer main controller."""

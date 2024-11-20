@@ -11,6 +11,8 @@ from PIL import Image, ImageEnhance
 import ephem
 from pathlib import Path
 import os
+from .thermal import ThermalZone
+from protocols.events import EventType
 
 class PayloadState(Enum):
     """Payload operational states."""
@@ -64,6 +66,43 @@ class PayloadStatus:
     error_count: int
     timestamp: datetime
     temperature_c: float = 20.0  # Add temperature tracking
+
+@dataclass
+class PayloadTelemetry:
+    """Payload telemetry data."""
+    timestamp: datetime
+    payload_enabled: bool
+    operating_mode: str
+    exposure_time_ms: float
+    gain: float
+    binning: int
+    region_of_interest: Tuple[int, int, int, int]
+    color_mode: str
+    sensor_temp: float
+    sensor_voltage: float
+    sensor_current: float
+    ccd_temp: float
+    images_captured: int
+    images_stored: int
+    failed_captures: int
+    last_image_quality: float
+    last_image_brightness: float
+    last_image_contrast: float
+    storage_used_bytes: int
+    storage_total_bytes: int
+    images_queued: int
+    compression_ratio: float
+    processing_queue_length: int
+    last_processing_time_ms: float
+    processing_errors: int
+    voltage_3v3: float
+    voltage_5v: float
+    current_3v3: float
+    current_5v: float
+    power_consumption: float
+    fault_flags: int
+    board_temp: float
+    uptime_seconds: int
 
 class PayloadManager:
     """Spacecraft payload (camera) manager."""

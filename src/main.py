@@ -6,6 +6,8 @@ from models.magnetic_field import MagneticFieldModel
 from subsystems.obc import OBC
 from subsystems.comms import CommunicationsSubsystem
 from subsystems.adcs import ADCS
+from subsystems.power import PowerSubsystem
+import numpy as np
 
 def main():
     # Initialize configuration

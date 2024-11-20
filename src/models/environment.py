@@ -1,8 +1,6 @@
-from skyfield.api import load, wgs84
-from skyfield.positionlib import Geocentric
-from datetime import datetime, timedelta
+from datetime import datetime
 import numpy as np
-from typing import Tuple, NamedTuple, Optional
+from typing import NamedTuple, Optional
 from models.eclipse import EclipseCalculator, EclipseState
 from dataclasses import dataclass
 
@@ -21,7 +19,6 @@ class EnvironmentState:
     timestamp: datetime
 
 class Environment:
-    class Environment:
     def __init__(self, config):
         """
         Initialize environment model.

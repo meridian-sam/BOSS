@@ -1,12 +1,14 @@
 from enum import Enum, auto
 from dataclasses import dataclass
-from typing import Dict, Optional, List, Tuple
+from typing import Dict, Optional, List
 from datetime import datetime
 import numpy as np
 import logging
 from protocols.ccsds import CCSDSPacket, PacketType
 from protocols.telemetry import TelemetryFrameHandler
-from protocols.cfdp import CFDPProtocol, TransactionStatus
+from protocols.cfdp import CFDPProtocol
+from protocols.events import EventType
+from subsystems.thermal import ThermalZone
 
 class CommState(Enum):
     """Communication system states."""
@@ -43,6 +45,45 @@ class CommStatus:
     power_consumption_w: float
     timestamp: datetime
     temperature_c: float = 20.0  # Add temperature tracking
+
+@dataclass
+class CommsTelemetry:
+    """Communications subsystem telemetry data."""
+    timestamp: datetime
+    # RF Status
+    tx_power_dbm: float
+    rx_power_dbm: float
+    tx_current: float
+    rx_current: float
+    pa_temp: float
+    # Link Quality
+    link_quality: float
+    bit_snr: float
+    rssi: float
+    ber: float
+    agc_gain: float
+    # Data Rates
+    uplink_rate_bps: float
+    downlink_rate_bps: float
+    uplink_rssi: float
+    downlink_rssi: float
+    # Buffer Status
+    tx_buffer_used: int
+    rx_buffer_used: int
+    tx_buffer_size: int
+    rx_buffer_size: int
+    # Packet Statistics
+    packets_sent: int
+    packets_received: int
+    packets_dropped: int
+    crc_errors: int
+    frame_errors: int
+    # System Status
+    tx_enabled: bool
+    rx_enabled: bool
+    mode: str
+    fault_flags: int
+    board_temp: float
 
 class CommunicationsSubsystem:
     """Spacecraft communications subsystem."""

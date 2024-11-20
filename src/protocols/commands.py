@@ -3,6 +3,10 @@ from dataclasses import dataclass
 from typing import Dict, Any, Optional, List
 from datetime import datetime
 
+def validate_dict_keys(dictionary: Dict, required_keys: List[str]) -> bool:
+    """Check if dictionary contains all required keys."""
+    return all(key in dictionary for key in required_keys)
+
 class CommandType(Enum):
     """Command types for different subsystems."""
     SYSTEM = auto()      # OBC/general system commands

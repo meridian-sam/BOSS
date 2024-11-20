@@ -4,7 +4,7 @@ from typing import Dict, List, Optional, Tuple
 from datetime import datetime
 import numpy as np
 import logging
-from events import EventBus, EventType, EventPriority
+from src.protocols.events import EventBus, EventType, EventPriority
 
 class ThermalMode(Enum):
     """Thermal control modes."""
@@ -41,6 +41,24 @@ class ThermistorData:
     raw_value: int          # ADC counts
     valid: bool = True
     last_valid_time: Optional[datetime] = None
+
+@dataclass
+class ThermalTelemetry:
+    """Thermal subsystem telemetry packet."""
+    timestamp: datetime
+    temperatures: Dict[str, float]
+    heater_states: Dict[str, bool]
+    heater_duties: Dict[str, float]
+    heater_powers: Dict[str, float]
+    setpoints: Dict[str, float]
+    control_errors: Dict[str, float]
+    control_outputs: Dict[str, float]
+    external_temps: Dict[str, float]
+    radiator_temps: Dict[str, float]
+    heat_flows: Dict[str, float]
+    control_mode: str
+    fault_flags: int
+    board_temp: float
 
 @dataclass
 class ThermalZoneState:

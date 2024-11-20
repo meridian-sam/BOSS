@@ -1,11 +1,13 @@
 from enum import Enum, auto
 from dataclasses import dataclass
-from typing import Dict, Optional, Tuple
+from typing import Dict, Optional, Tuple, List
 import numpy as np
 from datetime import datetime
 import logging
 from models.attitude import AttitudeDynamics
 from models.magnetic_field import MagneticFieldModel
+from subsystems.thermal import ThermalZone
+from common.events import EventType
 
 class ADCSMode(Enum):
     """ADCS control modes."""
@@ -30,6 +32,23 @@ class ADCSState:
     power_consumption: float  # Watts
     timestamp: datetime
     temperature_c: float = 20.0  # Add temperature tracking
+
+@dataclass
+class ADCSTelemetry:
+    quaternion: np.ndarray
+    angular_velocity: np.ndarray
+    magnetometer: np.ndarray
+    sun_sensors: List[float]
+    gyro_temps: List[float]
+    reaction_wheel_speeds: List[float]
+    reaction_wheel_currents: List[float]
+    magnetorquer_commands: List[float]
+    control_mode: str
+    control_error: float
+    control_effort: float
+    power_status: bool
+    fault_flags: int
+    cpu_temp: float
 
 class ADCS:
     """Attitude Determination and Control System."""
@@ -58,7 +77,7 @@ class ADCS:
             wheel_speeds=np.zeros(4),
             magnetorquer_dipoles=np.zeros(3),
             power_consumption=0.0,
-            timestamp=datetime.utcnow()
+            timestamp=datetime.now(datetime.UTC)
         )
 
         # Hardware configuration
@@ -121,7 +140,7 @@ class ADCS:
         self.state.angular_velocity = self.dynamics.get_state().angular_velocity
         self.state.wheel_speeds += wheel_torques * dt / self.wheel_max_momentum
         self.state.magnetorquer_dipoles = magnetorquer_dipoles
-        self.state.timestamp = datetime.utcnow()
+        self.state.timestamp = datetime.now(datetime.UTC)
         
         # Calculate power consumption
         self.state.power_consumption = (
@@ -130,7 +149,7 @@ class ADCS:
         )
 
         if hasattr(self, 'thermal_subsystem'):
-        self.state.temperature_c = self.thermal_subsystem.zones[ThermalZone.ADCS].average_temp
+            self.state.temperature_c = self.thermal_subsystem.zones[ThermalZone.ADCS].average_temp
         
         return self.get_telemetry()
         

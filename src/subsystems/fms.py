@@ -8,6 +8,9 @@ import logging
 import os
 from pathlib import Path
 from filelock import FileLock
+from PIL import Image
+import io
+from protocols.events import EventType
 
 class FileType(Enum):
     """Types of files managed by FMS."""
@@ -26,6 +29,18 @@ class StorageArea(Enum):
     SYSTEM = auto()      # For ATS/RTS and config files
     TELEMETRY = auto()   # For stored telemetry
     LOG = auto()         # For system logs
+
+@dataclass
+class FileSystemStats:
+    """Storage area statistics."""
+    total_bytes: int
+    used_bytes: int
+    free_bytes: int
+    file_count: int
+    fragmentation: float
+    last_write_time: datetime
+    write_errors: int
+    read_errors: int
 
 @dataclass
 class FileMetadata:
@@ -50,6 +65,39 @@ class StoragePartition:
     files: Dict[str, FileMetadata]
     read_only: bool = False
     encrypted: bool = False
+
+@dataclass
+class FMSTelemetry:
+    """File Management System telemetry data."""
+    timestamp: datetime
+    system_enabled: bool
+    operating_mode: str
+    payload_storage: FileSystemStats
+    telemetry_storage: FileSystemStats
+    software_storage: FileSystemStats
+    configuration_storage: FileSystemStats
+    files_written: int
+    files_read: int
+    files_deleted: int
+    bytes_written: int
+    bytes_read: int
+    failed_operations: int
+    active_transfers: int
+    queued_transfers: int
+    failed_transfers: int
+    last_transfer_rate_bps: float
+    transfer_queue_bytes: int
+    image_files: int
+    telemetry_files: int
+    log_files: int
+    config_files: int
+    software_files: int
+    garbage_collection_running: bool
+    last_gc_duration_s: float
+    disk_health: float
+    fault_flags: int
+    board_temp: float
+    uptime_seconds: int
 
 class StorageError(Exception):
     """Base exception for storage-related errors."""
@@ -239,6 +287,14 @@ class FileManagementSystem:
             # Encrypt if requested or if partition requires it
             if encrypt or self.storage[storage_area].encrypted:
                 data = self._encrypt_data(data)
+                
+            processed_data = data  # Store processed data
+                
+            file_path = self._get_file_path(file_id, storage_area)
+            lock_path = f"{file_path}.lock"
+            with FileLock(lock_path):
+                with open(file_path, 'wb') as f:
+                    f.write(processed_data)
                 
             # Check storage capacity
             partition = self.storage[storage_area]

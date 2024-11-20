@@ -4,7 +4,7 @@ from typing import Dict, List, Optional
 from datetime import datetime
 import numpy as np
 import logging
-from events import EventBus, EventType, EventPriority
+from src.protocols.events import EventBus, EventType, EventPriority
 
 class PowerState(Enum):
     """Power system states."""
@@ -53,6 +53,33 @@ class PowerLoad:
     nominal_power: float        # Watts
     current_power: float        # Watts
     enabled: bool = True
+
+@dataclass
+class PowerTelemetry:
+    """Power subsystem telemetry data."""
+    battery_voltage: float
+    battery_current: float
+    battery_temperature: float
+    battery_charge: float
+    battery_health: float
+    battery_cycles: int
+    solar_voltages: List[float]
+    solar_currents: List[float]
+    solar_temperatures: List[float]
+    solar_power: List[float]
+    bus_voltage_3v3: float
+    bus_current_3v3: float
+    bus_voltage_5v: float
+    bus_current_5v: float
+    bus_voltage_12v: float
+    bus_current_12v: float
+    subsystem_powers: Dict[str, float]
+    subsystem_states: Dict[str, bool]
+    total_power_in: float
+    total_power_out: float
+    power_mode: str
+    fault_flags: int
+    board_temp: float
 
 class PowerSubsystem:
     """Spacecraft power subsystem."""
@@ -146,8 +173,8 @@ class PowerSubsystem:
             self._update_power_totals()
 
             if hasattr(self, 'thermal_subsystem'):
-            thermal_power = self.thermal_subsystem.total_power_consumption
-            self.total_power_consumed += thermal_power
+                thermal_power = self.thermal_subsystem.total_power_consumption
+                self.total_power_consumed += thermal_power
             
             return self.get_telemetry()
             

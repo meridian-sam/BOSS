@@ -1,7 +1,8 @@
 from dataclasses import dataclass
-from typing import Tuple, Optional, Dict
+from typing import Tuple, Optional, Dict, List
 import numpy as np
 from scipy.integrate import solve_ivp
+from scipy import interpolate
 from datetime import datetime, timedelta
 import sys
 
@@ -170,7 +171,7 @@ class OrbitPropagator:
         
         return np.concatenate([pos_eci, vel_eci])
     
-def _calculate_srp_acceleration(self, pos: np.ndarray, bodies) -> np.ndarray:
+    def _calculate_srp_acceleration(self, pos: np.ndarray, bodies) -> np.ndarray:
         """Calculate solar radiation pressure acceleration"""
         # Get sun direction and distance
         sun_pos = bodies.position[1]
@@ -417,20 +418,20 @@ def _calculate_srp_acceleration(self, pos: np.ndarray, bodies) -> np.ndarray:
 
 class OrbitStateManager:
     """Manage and interpolate orbit states."""
-
-    if len(self.state_history) > 0:
-        memory_usage = sys.getsizeof(self.state_history[-1])
-        if memory_usage * len(self.state_history) > 1e8:  # 100MB limit
-            self.state_history = self.state_history[len(self.state_history)//2:]
     
     def __init__(self, max_history: int = 1000):
         self.max_history = max_history
         self.state_history: List[OrbitState] = []
         self._interpolator = None
+
+        if len(self.state_history) > 0:
+            memory_usage = sys.getsizeof(self.state_history[-1])
+            if memory_usage * len(self.state_history) > 1e8:  # 100MB limit
+                self.state_history = self.state_history[len(self.state_history)//2:]
         
     def add_state(self, state: OrbitState):
-        """Add new state to history."""
         self.state_history.append(state)
+        """Add new state to history."""
         if len(self.state_history) > self.max_history:
             self.state_history.pop(0)
         self._update_interpolator()
@@ -462,6 +463,6 @@ class OrbitStateManager:
         velocities = np.array([state.velocity for state in self.state_history])
         
         self._interpolator = {
-            'position': scipy.interpolate.interp1d(times, positions, axis=0),
-            'velocity': scipy.interpolate.interp1d(times, velocities, axis=0)
+            'position': interpolate.interp1d(times, positions, axis=0),
+            'velocity': interpolate.interp1d(times, velocities, axis=0)
         }
