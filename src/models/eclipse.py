@@ -1,12 +1,15 @@
 from dataclasses import dataclass
 import numpy as np
-from typing import NamedTuple
+from typing import NamedTuple, Tuple
+from datetime import datetime
 
-class EclipseState(NamedTuple):
-    """Represents the eclipse state of the spacecraft"""
-    illumination: float  # 0.0 (full eclipse) to 1.0 (full sun)
-    eclipse_type: str    # 'none', 'umbra', or 'penumbra'
-    sun_angle: float    # Angle between spacecraft and sun direction (radians)
+@dataclass
+class EclipseState:
+    """Eclipse conditions."""
+    illumination: float  # [0-1]
+    eclipse_type: str  # 'none', 'partial', 'total'
+    sun_angle: float  # [rad]
+    timestamp: datetime
 
 @dataclass
 class CelestialBodyConstants:

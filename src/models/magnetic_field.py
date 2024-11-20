@@ -1,7 +1,26 @@
+from dataclasses import dataclass
 import numpy as np
+from datetime import datetime
+from typing import Optional
+
+@dataclass
+class MagneticFieldState:
+    """Magnetic field state."""
+    field_vector: np.ndarray  # [T]
+    field_strength: float  # [T]
+    timestamp: datetime
 
 class MagneticFieldModel:
-    def __init__(self):
+    def __init__(self, model_type: str = 'dipole'):
+        """
+        Initialize magnetic field model.
+        
+        Args:
+            model_type: 'dipole' or 'igrf'
+        """
+        self.model_type = model_type
+        self.state: Optional[MagneticFieldState] = None
+        
         # Earth's magnetic dipole moment (A⋅m²)
         self.magnetic_moment = 7.94e22  # Tesla⋅m³
         

@@ -1,131 +1,347 @@
+from enum import Enum, auto
+from dataclasses import dataclass
+from typing import Dict, Optional, List, Tuple
 from datetime import datetime
 import numpy as np
-from dataclasses import dataclass
-from enum import Enum
 import logging
+from .fms import FileManagementSystem, FileType, StorageArea
+
+class PayloadState(Enum):
+    """Payload operational states."""
+    OFF = auto()
+    STANDBY = auto()
+    ACTIVE = auto()
+    CALIBRATING = auto()
+    ERROR = auto()
+
+class ImageQuality(Enum):
+    """Image quality settings."""
+    LOW = auto()      # 8-bit, high compression
+    MEDIUM = auto()   # 12-bit, medium compression
+    HIGH = auto()     # 16-bit, low compression
+    RAW = auto()      # No compression
 
 @dataclass
-class Image:
-    timestamp: datetime
+class CameraConfig:
+    """Camera configuration."""
+    exposure_time_ms: float
+    gain: float
+    binning: int
+    quality: ImageQuality
+    compression_ratio: float
+
+@dataclass
+class ImageMetadata:
+    """Image metadata."""
     image_id: str
+    timestamp: datetime
+    exposure_time_ms: float
+    gain: float
+    binning: int
+    quality: ImageQuality
     size_bytes: int
-    metadata: dict
-    compressed: bool = True
+    compression_ratio: float
+    position: np.ndarray  # Spacecraft position when image was taken
+    attitude: np.ndarray  # Spacecraft attitude when image was taken
+    target: Optional[str] = None  # Target name if applicable
 
-class CameraState(Enum):
-    OFF = "OFF"
-    STANDBY = "STANDBY"
-    IMAGING = "IMAGING"
+@dataclass
+class PayloadStatus:
+    """Payload system status."""
+    state: PayloadState
+    temperature_c: float
+    power_consumption_w: float
+    storage_used_bytes: int
+    images_captured: int
+    last_image_time: Optional[datetime]
+    calibration_age_hours: float
+    error_count: int
+    timestamp: datetime
+    temperature_c: float = 20.0  # Add temperature tracking
 
-class CameraPayload:
-    def __init__(self, config):
+class PayloadManager:
+    """Spacecraft payload (camera) manager."""
+    
+    def __init__(self, config, fms: FileManagementSystem):
+        """
+        Initialize payload manager.
+        
+        Args:
+            config: Payload configuration
+            fms: File management system
+        """
         self.config = config
-        self.state = CameraState.OFF
-        self.images = []  # List to store captured images
-        self.last_capture_time = None
-        self.power_consumption = 0.0
+        self.fms = fms
+        self.logger = logging.getLogger(__name__)
         
-        # Calculate camera parameters
-        self.fov_rad = 2 * np.arctan((self.config.sensor_width_pixels * 
-                                     self.config.pixel_size_um * 1e-6) / 
-                                    (2 * self.config.focal_length_mm * 1e-3))
-        
-        # Ground sampling distance at 500km (meters per pixel)
-        self.gsd_at_500km = (500000 * self.config.pixel_size_um * 1e-6 / 
-                            (self.config.focal_length_mm * 1e-3))
-        
-        logging.info(f"Camera initialized. FOV: {np.degrees(self.fov_rad):.1f} degrees, "
-                    f"GSD @ 500km: {self.gsd_at_500km:.2f} m/pixel")
-    
-    def capture_image(self, position: np.ndarray, attitude_quaternion: np.ndarray, 
-                     sun_in_fov: bool) -> bool:
-        """
-        Attempt to capture an image if conditions are suitable
-        Returns True if image was captured successfully
-        """
-        current_time = datetime.utcnow()
-        
-        # Check if camera is ready
-        if self.state == CameraState.OFF:
-            logging.warning("Cannot capture image: Camera is OFF")
-            return False
-        
-        # Check if enough time has passed since last capture
-        if (self.last_capture_time and 
-            (current_time - self.last_capture_time).total_seconds() < 1/self.config.max_frame_rate_hz):
-            logging.warning("Cannot capture image: Frame rate limit")
-            return False
-        
-        # Check storage capacity
-        if len(self.images) >= self.config.max_images:
-            logging.warning("Cannot capture image: Storage full")
-            return False
-        
-        # Check if sun is in FOV
-        if sun_in_fov:
-            logging.warning("Cannot capture image: Sun in FOV")
-            return False
-        
-        # Calculate image parameters
-        altitude = np.linalg.norm(position) - 6371.0  # km
-        gsd = self.gsd_at_500km * (altitude / 500.0)  # Scale GSD with altitude
-        
-        # Calculate ground footprint
-        swath_width = gsd * self.config.sensor_width_pixels / 1000.0  # km
-        swath_height = gsd * self.config.sensor_height_pixels / 1000.0  # km
-        
-        # Create image metadata
-        metadata = {
-            'position_km': position.tolist(),
-            'attitude_quaternion': attitude_quaternion.tolist(),
-            'altitude_km': altitude,
-            'gsd_m': gsd,
-            'swath_width_km': swath_width,
-            'swath_height_km': swath_height
-        }
-        
-        # Calculate image size (with compression)
-        raw_size = (self.config.sensor_width_pixels * 
-                   self.config.sensor_height_pixels * 
-                   self.config.bit_depth) / 8  # bytes
-        compressed_size = int(raw_size * self.config.compression_ratio)
-        
-        # Create and store image
-        image = Image(
-            timestamp=current_time,
-            image_id=f"IMG_{current_time.strftime('%Y%m%d_%H%M%S')}",
-            size_bytes=compressed_size,
-            metadata=metadata
+        # Initialize camera configuration
+        self.camera_config = CameraConfig(
+            exposure_time_ms=10.0,
+            gain=1.0,
+            binning=1,
+            quality=ImageQuality.HIGH,
+            compression_ratio=0.7
         )
-        self.images.append(image)
-        self.last_capture_time = current_time
         
-        logging.info(f"Image captured: {image.image_id}, Size: {compressed_size/1e6:.1f}MB")
-        return True
-    
-    def set_state(self, new_state: CameraState):
-        """Change camera state and update power consumption"""
-        self.state = new_state
-        if new_state == CameraState.OFF:
-            self.power_consumption = 0.0
-        elif new_state == CameraState.STANDBY:
-            self.power_consumption = self.config.standby_power_w
-        elif new_state == CameraState.IMAGING:
-            self.power_consumption = self.config.power_consumption_w
-    
-    def delete_image(self, image_id: str) -> bool:
-        """Delete an image from storage"""
-        initial_length = len(self.images)
-        self.images = [img for img in self.images if img.image_id != image_id]
-        return len(self.images) < initial_length
-    
-    def get_telemetry(self) -> dict:
-        """Return current payload telemetry"""
-        return {
-            'state': self.state.value,
-            'power_consumption_w': self.power_consumption,
-            'storage_used': len(self.images),
-            'storage_available': self.config.max_images - len(self.images),
-            'last_capture_time': self.last_capture_time.isoformat() if self.last_capture_time else None,
-            'storage_percentage': (len(self.images) / self.config.max_images) * 100
+        # Initialize state
+        self.status = PayloadStatus(
+            state=PayloadState.OFF,
+            temperature_c=20.0,
+            power_consumption_w=0.0,
+            storage_used_bytes=0,
+            images_captured=0,
+            last_image_time=None,
+            calibration_age_hours=0.0,
+            error_count=0,
+            timestamp=datetime.utcnow()
+        )
+        
+        # Image capture parameters
+        self.sensor_width = 2048
+        self.sensor_height = 1536
+        self.bit_depth = 12
+        self.max_frame_rate = 1.0  # Hz
+        self.last_capture_time = datetime.utcnow()
+        
+        # Temperature limits
+        self.temp_limits = {
+            'min_operational': -20.0,
+            'max_operational': 60.0,
+            'warning_low': -10.0,
+            'warning_high': 50.0
         }
+        
+        self.logger.info("Payload manager initialized")
+        
+    def update(self, dt: float) -> Dict:
+        """
+        Update payload status.
+        
+        Args:
+            dt: Time step in seconds
+            
+        Returns:
+            Payload telemetry dictionary
+        """
+        try:
+            # Update timestamp
+            self.status.timestamp = datetime.utcnow()
+            
+            # Update calibration age
+            if self.status.state != PayloadState.OFF:
+                self.status.calibration_age_hours += dt / 3600.0
+            
+            # Update temperature (simulated)
+            self._update_temperature(dt)
+            
+            # Check temperature limits
+            self._check_temperature_limits()
+            
+            # Update power consumption
+            self._update_power_consumption()
+
+            if hasattr(self, 'thermal_subsystem'):
+                self.status.temperature_c = self.thermal_subsystem.zones[ThermalZone.PAYLOAD].average_temp
+            if hasattr(self, 'thermal_subsystem'):
+                zone_state = self.thermal_subsystem.zones[ThermalZone.PAYLOAD]
+                if zone_state.average_temp < self.temp_limits['min_operational'] or \
+                zone_state.average_temp > self.temp_limits['max_operational']:
+                    self.status.state = PayloadState.OFF
+
+            return self.get_telemetry()
+            
+        except Exception as e:
+            self.logger.error(f"Error in payload update: {str(e)}")
+            self.status.error_count += 1
+            return self.get_telemetry()
+            
+    def capture_image(self, 
+                     exposure_time_ms: Optional[float] = None,
+                     target: Optional[str] = None) -> Optional[str]:
+        """
+        Capture an image with the current configuration.
+        
+        Args:
+            exposure_time_ms: Optional override for exposure time
+            target: Optional target name
+            
+        Returns:
+            Image ID if successful, None otherwise
+        """
+        try:
+            # Check if camera is ready
+            if not self._can_capture():
+                return None
+                
+            # Update exposure time if provided
+            if exposure_time_ms is not None:
+                self.camera_config.exposure_time_ms = exposure_time_ms
+                
+            # Simulate image capture
+            image_data = self._simulate_image_capture()
+            
+            # Create metadata
+            metadata = ImageMetadata(
+                image_id=f"IMG_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}",
+                timestamp=datetime.utcnow(),
+                exposure_time_ms=self.camera_config.exposure_time_ms,
+                gain=self.camera_config.gain,
+                binning=self.camera_config.binning,
+                quality=self.camera_config.quality,
+                size_bytes=len(image_data),
+                compression_ratio=self.camera_config.compression_ratio,
+                position=np.zeros(3),  # Should come from ADCS
+                attitude=np.zeros(4),  # Should come from ADCS
+                target=target
+            )
+            
+            # Store image
+            image_id = self.fms.store_file(
+                image_data,
+                FileType.IMAGE,
+                StorageArea.PAYLOAD,
+                compress=True,
+                attributes=metadata.__dict__
+            )
+            
+            if image_id:
+                self.status.images_captured += 1
+                self.status.last_image_time = datetime.utcnow()
+                self.last_capture_time = datetime.utcnow()
+                
+            return image_id
+            
+        except Exception as e:
+            self.logger.error(f"Error capturing image: {str(e)}")
+            self.status.error_count += 1
+            return None
+            
+    def set_state(self, state: PayloadState):
+        """Set payload state."""
+        if state == self.status.state:
+            return
+            
+        self.logger.info(f"Payload state changing from {self.status.state} to {state}")
+        
+        if state == PayloadState.ACTIVE:
+            if not self._check_operational_limits():
+                self.logger.error("Cannot activate payload - outside operational limits")
+                return
+                
+        self.status.state = state
+        
+    def calibrate(self) -> bool:
+        """Perform payload calibration."""
+        try:
+            if self.status.state not in [PayloadState.STANDBY, PayloadState.ACTIVE]:
+                return False
+                
+            self.status.state = PayloadState.CALIBRATING
+            
+            # Perform calibration sequence
+            # Implementation depends on specific payload requirements
+            
+            self.status.calibration_age_hours = 0.0
+            self.status.state = PayloadState.ACTIVE
+            return True
+            
+        except Exception as e:
+            self.logger.error(f"Calibration error: {str(e)}")
+            self.status.error_count += 1
+            self.status.state = PayloadState.ERROR
+            return False
+            
+    def get_telemetry(self) -> Dict:
+        """Get payload telemetry."""
+        return {
+            'state': self.status.state.name,
+            'temperature_c': self.status.temperature_c,
+            'power_consumption_w': self.status.power_consumption_w,
+            'storage_used_bytes': self.status.storage_used_bytes,
+            'images_captured': self.status.images_captured,
+            'last_image_time': self.status.last_image_time.isoformat() 
+                if self.status.last_image_time else None,
+            'calibration_age_hours': self.status.calibration_age_hours,
+            'error_count': self.status.error_count,
+            'timestamp': self.status.timestamp.isoformat()
+        }
+        
+    def _can_capture(self) -> bool:
+        """Check if camera can capture an image."""
+        if self.status.state != PayloadState.ACTIVE:
+            return False
+            
+        if not self._check_operational_limits():
+            return False
+            
+        # Check frame rate limit
+        time_since_last = (datetime.utcnow() - self.last_capture_time).total_seconds()
+        if time_since_last < (1.0 / self.max_frame_rate):
+            return False
+            
+        return True
+        
+    def _check_operational_limits(self) -> bool:
+        """Check if payload is within operational limits."""
+        if (self.status.temperature_c < self.temp_limits['min_operational'] or
+            self.status.temperature_c > self.temp_limits['max_operational']):
+            return False
+        return True
+        
+    def _update_temperature(self, dt: float):
+        """Update payload temperature (simulated)."""
+        if self.status.state == PayloadState.OFF:
+            # Cool down
+            self.status.temperature_c = max(
+                20.0,
+                self.status.temperature_c - 0.1 * dt
+            )
+        else:
+            # Heat up based on activity
+            heat_rate = {
+                PayloadState.STANDBY: 0.05,
+                PayloadState.ACTIVE: 0.1,
+                PayloadState.CALIBRATING: 0.15,
+                PayloadState.ERROR: 0.0
+            }[self.status.state]
+            
+            self.status.temperature_c += heat_rate * dt
+            
+    def _check_temperature_limits(self):
+        """Check temperature limits and update state if necessary."""
+        if self.status.temperature_c < self.temp_limits['min_operational']:
+            self.logger.warning("Payload temperature below operational limit")
+            self.set_state(PayloadState.OFF)
+        elif self.status.temperature_c > self.temp_limits['max_operational']:
+            self.logger.warning("Payload temperature above operational limit")
+            self.set_state(PayloadState.OFF)
+            
+    def _update_power_consumption(self):
+        """Update power consumption based on state."""
+        power_draw = {
+            PayloadState.OFF: 0.0,
+            PayloadState.STANDBY: 0.5,
+            PayloadState.ACTIVE: 2.5,
+            PayloadState.CALIBRATING: 3.0,
+            PayloadState.ERROR: 0.1
+        }[self.status.state]
+        
+        self.status.power_consumption_w = power_draw
+        
+    def _simulate_image_capture(self) -> bytes:
+        """Simulate image capture (placeholder)."""
+        # Create dummy image data based on configuration
+        image_size = (
+            self.sensor_width // self.camera_config.binning,
+            self.sensor_height // self.camera_config.binning
+        )
+        
+        # Create random image data
+        image_data = np.random.randint(
+            0,
+            2 ** self.bit_depth,
+            size=image_size,
+            dtype=np.uint16
+        )
+        
+        return image_data.tobytes()

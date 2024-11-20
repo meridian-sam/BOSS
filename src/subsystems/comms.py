@@ -1,82 +1,314 @@
-import socket
-from typing import Optional
+from enum import Enum, auto
+from dataclasses import dataclass
+from typing import Dict, Optional, List, Tuple
 from datetime import datetime
-import struct
+import numpy as np
+import logging
+from protocols.ccsds import CCSDSPacket, PacketType
+from protocols.telemetry import TelemetryFrameHandler
+from protocols.cfdp import CFDPProtocol, TransactionStatus
+
+class CommState(Enum):
+    """Communication system states."""
+    OFF = auto()
+    STANDBY = auto()
+    RECEIVING = auto()
+    TRANSMITTING = auto()
+    ERROR = auto()
+
+@dataclass
+class LinkBudget:
+    """Communication link characteristics."""
+    distance_km: float
+    elevation_deg: float
+    path_loss_db: float
+    received_power_dbm: float
+    noise_floor_dbm: float
+    snr_db: float
+    bit_error_rate: float
+    link_margin_db: float
+
+@dataclass
+class CommStatus:
+    """Communication system status."""
+    state: CommState
+    uplink_enabled: bool
+    downlink_enabled: bool
+    last_packet_time: Optional[datetime]
+    packets_received: int
+    packets_transmitted: int
+    bit_errors_detected: int
+    rssi_dbm: float
+    temperature_c: float
+    power_consumption_w: float
+    timestamp: datetime
+    temperature_c: float = 20.0  # Add temperature tracking
 
 class CommunicationsSubsystem:
+    """Spacecraft communications subsystem."""
+    
     def __init__(self, config):
+        """
+        Initialize communications subsystem.
+        
+        Args:
+            config: Communications configuration
+        """
         self.config = config
-        self.tm_handler = TelemetryFrameHandler()
-        self.cfdp = CFDPProtocol(entity_id=1)  # Spacecraft ID
-        self.uplink_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.downlink_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.logger = logging.getLogger(__name__)
         
-        # Setup sockets
-        self.uplink_socket.bind(("0.0.0.0", self.config.comms.yamcs_uplink_port))
-        self.yamcs_address = (self.config.comms.yamcs_host, 
-                            self.config.comms.yamcs_downlink_port)
+        # Initialize protocols
+        self.telemetry_handler = TelemetryFrameHandler(spacecraft_id=1)
+        self.cfdp = CFDPProtocol(entity_id=1)
         
-        self._last_telemetry_time = datetime.now()
+        # Initialize state
+        self.status = CommStatus(
+            state=CommState.STANDBY,
+            uplink_enabled=False,
+            downlink_enabled=False,
+            last_packet_time=None,
+            packets_received=0,
+            packets_transmitted=0,
+            bit_errors_detected=0,
+            rssi_dbm=-120.0,
+            temperature_c=20.0,
+            power_consumption_w=0.0,
+            timestamp=datetime.utcnow()
+        )
         
-    def process_uplink(self) -> Optional[bytes]:
-        """Check for and process any incoming commands"""
+        # Radio parameters
+        self.tx_power_dbm = 30.0  # 1W transmitter
+        self.tx_antenna_gain_db = 3.0
+        self.rx_antenna_gain_db = 3.0
+        self.system_noise_temp_k = 290.0
+        self.implementation_loss_db = 2.0
+        
+        # Buffer management
+        self.uplink_buffer: List[CCSDSPacket] = []
+        self.downlink_buffer: List[CCSDSPacket] = []
+        self.max_buffer_size = 1000
+        
+    def update(self, 
+              ground_station_position: np.ndarray,
+              spacecraft_position: np.ndarray,
+              dt: float) -> Dict:
+        """
+        Update communications system state.
+        
+        Args:
+            ground_station_position: Ground station ECI position [km]
+            spacecraft_position: Spacecraft ECI position [km]
+            dt: Time step [s]
+            
+        Returns:
+            Communications telemetry dictionary
+        """
+        # Calculate link budget
+        link_budget = self._calculate_link_budget(
+            ground_station_position, 
+            spacecraft_position
+        )
+        
+        # Update state based on link availability
+        if link_budget.link_margin_db > 3.0:  # Minimum margin threshold
+            if self.status.state == CommState.STANDBY:
+                self._enable_communications()
+        else:
+            self._disable_communications()
+            
+        # Process buffers
+        self._process_uplink_buffer(dt)
+        self._process_downlink_buffer(dt)
+        
+        # Update CFDP transactions
+        self.cfdp.update_transactions()
+        
+        # Update power consumption based on state
+        self._update_power_consumption()
+        
+        # Update timestamp
+        self.status.timestamp = datetime.utcnow()
+
+        if hasattr(self, 'thermal_subsystem'):
+            self.status.temperature_c = self.thermal_subsystem.zones[ThermalZone.COMMS].average_temp
+        
+        return self.get_telemetry()
+        
+    def send_packet(self, packet: CCSDSPacket) -> bool:
+        """
+        Queue packet for transmission.
+        
+        Args:
+            packet: CCSDS packet to transmit
+            
+        Returns:
+            True if packet was queued successfully
+        """
+        if len(self.downlink_buffer) < self.max_buffer_size:
+            self.downlink_buffer.append(packet)
+            return True
+        self.logger.warning("Downlink buffer full, packet dropped")
+        return False
+        
+    def receive_packet(self, data: bytes) -> Optional[CCSDSPacket]:
+        """
+        Process received packet data.
+        
+        Args:
+            data: Raw packet bytes
+            
+        Returns:
+            Decoded CCSDS packet if successful
+        """
         try:
-            data, _ = self.uplink_socket.recvfrom(1024)
-            return data
-        except socket.error:
+            packet = CCSDSPacket.unpack(data)
+            self.status.packets_received += 1
+            self.status.last_packet_time = datetime.utcnow()
+            self.uplink_buffer.append(packet)
+            return packet
+        except Exception as e:
+            self.logger.error(f"Error processing packet: {str(e)}")
+            self.status.bit_errors_detected += 1
             return None
             
-    def send_telemetry(self, telemetry: dict):
-        """Send telemetry using CCSDS packets"""
-        # Pack telemetry into CCSDS packets
-        packets = self.tm_handler.pack_telemetry(telemetry)
+    def start_file_transfer(self, 
+                           filename: str, 
+                           file_size: int, 
+                           destination_id: int) -> str:
+        """
+        Start CFDP file transfer.
         
-        # Create and send frames
-        for packet in packets:
-            frame = self.tm_handler.create_tm_frame(
-                virtual_channel=0,
-                data=packet.pack_primary_header() + packet.data,
-                timestamp=datetime.utcnow()
-            )
-            self._transmit_frame(frame)
-    
-    def initiate_file_transfer(self, file_id: str, 
-                             destination_id: int, file_data: bytes):
-        """Initiate CFDP file transfer"""
-        # Create metadata PDU
-        metadata_pdu = self.cfdp.create_metadata_pdu(
-            file_id, len(file_data), destination_id
+        Returns:
+            Transaction ID
+        """
+        transaction = self.cfdp.create_transaction(
+            filename=filename,
+            file_size=file_size,
+            destination_id=destination_id
         )
-        self._transmit_frame(metadata_pdu)
+        return str(transaction.transaction_id)
         
-        # Send file data in segments
-        offset = 0
-        while offset < len(file_data):
-            segment = file_data[offset:offset + self.cfdp.segment_size]
-            data_pdu = self.cfdp.create_file_data_pdu(
-                self.cfdp.transaction_seq,
-                offset,
-                segment
-            )
-            self._transmit_frame(data_pdu)
-            offset += len(segment)
+    def get_telemetry(self) -> Dict:
+        """Get communications telemetry."""
+        return {
+            'state': self.status.state.name,
+            'uplink_enabled': self.status.uplink_enabled,
+            'downlink_enabled': self.status.downlink_enabled,
+            'last_packet_time': self.status.last_packet_time.isoformat() 
+                if self.status.last_packet_time else None,
+            'packets_received': self.status.packets_received,
+            'packets_transmitted': self.status.packets_transmitted,
+            'bit_errors': self.status.bit_errors_detected,
+            'rssi_dbm': self.status.rssi_dbm,
+            'temperature_c': self.status.temperature_c,
+            'power_consumption_w': self.status.power_consumption_w,
+            'uplink_buffer_usage': len(self.uplink_buffer),
+            'downlink_buffer_usage': len(self.downlink_buffer),
+            'timestamp': self.status.timestamp.isoformat()
+        }
         
-        # Send EOF
-        checksum = self._calculate_checksum(file_data)
-        eof_pdu = self.cfdp.create_eof_pdu(
-            self.cfdp.transaction_seq,
-            len(file_data),
-            checksum
+    def _calculate_link_budget(self, 
+                             ground_station_pos: np.ndarray,
+                             spacecraft_pos: np.ndarray) -> LinkBudget:
+        """Calculate communication link budget."""
+        # Calculate distance and elevation
+        relative_pos = spacecraft_pos - ground_station_pos
+        distance = np.linalg.norm(relative_pos)
+        elevation = self._calculate_elevation(ground_station_pos, relative_pos)
+        
+        # Calculate losses
+        path_loss = 20 * np.log10(distance) + 20 * np.log10(self.config.downlink_frequency) + 32.45
+        
+        # Calculate received power
+        rx_power = (self.tx_power_dbm + 
+                   self.tx_antenna_gain_db + 
+                   self.rx_antenna_gain_db - 
+                   path_loss - 
+                   self.implementation_loss_db)
+        
+        # Calculate noise floor
+        noise_floor = -174 + 10 * np.log10(self.config.downlink_rate_bps)
+        
+        # Calculate SNR and BER
+        snr = rx_power - noise_floor
+        ber = self._calculate_bit_error_rate(snr)
+        
+        return LinkBudget(
+            distance_km=distance,
+            elevation_deg=np.degrees(elevation),
+            path_loss_db=path_loss,
+            received_power_dbm=rx_power,
+            noise_floor_dbm=noise_floor,
+            snr_db=snr,
+            bit_error_rate=ber,
+            link_margin_db=snr - 3.0  # Required SNR threshold
         )
-        self._transmit_frame(eof_pdu)
-    
-    def process_command(self, command: bytes):
-        """Process incoming command to change ADCS mode"""
-        # Example command processing
-        if command == b'SET_MODE_OFF':
-            return ADCS.OFF
-        elif command == b'SET_MODE_SUNSAFE':
-            return ADCS.SUNSAFE
-        elif command == b'SET_MODE_NADIR':
-            return ADCS.NADIR
-        return None
+        
+    def _calculate_elevation(self, 
+                           ground_station_pos: np.ndarray,
+                           relative_pos: np.ndarray) -> float:
+        """Calculate elevation angle to spacecraft."""
+        gs_norm = np.linalg.norm(ground_station_pos)
+        return np.arcsin(np.dot(ground_station_pos, relative_pos) / 
+                        (gs_norm * np.linalg.norm(relative_pos)))
+        
+    def _calculate_bit_error_rate(self, snr_db: float) -> float:
+        """Calculate bit error rate for given SNR."""
+        # Simplified QPSK BER calculation
+        snr_linear = 10 ** (snr_db / 10)
+        return 0.5 * np.erfc(np.sqrt(snr_linear))
+        
+    def _process_uplink_buffer(self, dt: float):
+        """Process packets in uplink buffer."""
+        packets_to_process = min(
+            len(self.uplink_buffer),
+            int(self.config.uplink_rate_bps * dt / 8 / 1024)  # Packets per timestep
+        )
+        
+        for _ in range(packets_to_process):
+            packet = self.uplink_buffer.pop(0)
+            # Process packet based on type
+            if packet.header.packet_type == PacketType.TC:
+                self._handle_telecommand(packet)
+                
+    def _process_downlink_buffer(self, dt: float):
+        """Process packets in downlink buffer."""
+        packets_to_transmit = min(
+            len(self.downlink_buffer),
+            int(self.config.downlink_rate_bps * dt / 8 / 1024)  # Packets per timestep
+        )
+        
+        for _ in range(packets_to_transmit):
+            packet = self.downlink_buffer.pop(0)
+            # Simulate transmission
+            self.status.packets_transmitted += 1
+            
+    def _handle_telecommand(self, packet: CCSDSPacket):
+        """Process telecommand packet."""
+        # Implementation depends on command structure
+        pass
+        
+    def _enable_communications(self):
+        """Enable communications system."""
+        self.status.state = CommState.STANDBY
+        self.status.uplink_enabled = True
+        self.status.downlink_enabled = True
+        self.logger.info("Communications system enabled")
+        
+    def _disable_communications(self):
+        """Disable communications system."""
+        self.status.state = CommState.OFF
+        self.status.uplink_enabled = False
+        self.status.downlink_enabled = False
+        self.logger.info("Communications system disabled")
+        
+    def _update_power_consumption(self):
+        """Update power consumption based on state."""
+        if self.status.state == CommState.OFF:
+            self.status.power_consumption_w = 0.0
+        elif self.status.state == CommState.STANDBY:
+            self.status.power_consumption_w = 0.5
+        elif self.status.state == CommState.RECEIVING:
+            self.status.power_consumption_w = 2.0
+        elif self.status.state == CommState.TRANSMITTING:
+            self.status.power_consumption_w = 5.0

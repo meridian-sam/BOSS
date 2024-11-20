@@ -1,18 +1,42 @@
+from dataclasses import dataclass
 import numpy as np
 from scipy.spatial.transform import Rotation as R
+from typing import Optional
+
+@dataclass
+class AttitudeState:
+    """Spacecraft attitude state."""
+    quaternion: np.ndarray  # [w, x, y, z]
+    angular_velocity: np.ndarray  # [wx, wy, wz] rad/s
+    timestamp: Optional[float] = None  # Unix timestamp
 
 class AttitudeDynamics:
     def __init__(self, inertia_matrix: np.ndarray):
+        """
+        Initialize attitude dynamics model.
+        
+        Args:
+            inertia_matrix: 3x3 inertia tensor [kg⋅m²]
+        """
         self.inertia_matrix = inertia_matrix
         self.inertia_inv = np.linalg.inv(inertia_matrix)
         
-        # Initial attitude (quaternion) and angular velocity
-        self.quaternion = R.from_euler('xyz', [0, 0, 0]).as_quat()
-        self.angular_velocity = np.zeros(3)  # rad/s
+        # Initial state
+        self.state = AttitudeState(
+            quaternion=np.array([1.0, 0.0, 0.0, 0.0]),  # Identity quaternion
+            angular_velocity=np.zeros(3)
+        )
         
-    def update(self, torque: np.ndarray, dt: float):
+    def update(self, torque: np.ndarray, dt: float) -> AttitudeState:
         """
-        Update the attitude dynamics given applied torque and timestep
+        Update attitude dynamics.
+        
+        Args:
+            torque: Applied torque vector [N⋅m]
+            dt: Time step [s]
+            
+        Returns:
+            Updated attitude state
         """
         # Update angular velocity using Euler's equation
         angular_acceleration = self.inertia_inv @ (torque - np.cross(self.angular_velocity, self.inertia_matrix @ self.angular_velocity))

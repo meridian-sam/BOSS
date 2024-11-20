@@ -2,16 +2,36 @@ from skyfield.api import load, wgs84
 from skyfield.positionlib import Geocentric
 from datetime import datetime, timedelta
 import numpy as np
-from typing import Tuple, NamedTuple
+from typing import Tuple, NamedTuple, Optional
 from models.eclipse import EclipseCalculator, EclipseState
+from dataclasses import dataclass
 
 class CelestialBody(NamedTuple):
     position: np.ndarray  # km, ECI coordinates
     velocity: np.ndarray  # km/s, ECI coordinates
     sun_direction: np.ndarray  # unit vector
 
+@dataclass
+class EnvironmentState:
+    """Environmental conditions at a point in time."""
+    magnetic_field: np.ndarray  # [T]
+    atmospheric_density: float  # [kg/m³]
+    solar_flux: float  # [W/m²]
+    eclipse_factor: float  # [0-1]
+    timestamp: datetime
+
 class Environment:
-    def __init__(self):
+    class Environment:
+    def __init__(self, config):
+        """
+        Initialize environment model.
+        
+        Args:
+            config: Environment configuration
+        """
+        self.config = config
+        self.state: Optional[EnvironmentState] = None
+        
         # Load astronomical ephemerides
         self.ts = load.timescale()
         self.ephemeris = load('de421.bsp')  # NASA JPL ephemerides
