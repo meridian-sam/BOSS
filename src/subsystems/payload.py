@@ -5,6 +5,12 @@ from datetime import datetime
 import numpy as np
 import logging
 from .fms import FileManagementSystem, FileType, StorageArea
+import requests
+import io
+from PIL import Image, ImageEnhance
+import ephem
+from pathlib import Path
+import os
 
 class PayloadState(Enum):
     """Payload operational states."""
@@ -103,6 +109,20 @@ class PayloadManager:
         self.max_frame_rate = 1.0  # Hz
         self.last_capture_time = datetime.utcnow()
         
+        # Camera parameters
+        self.fov = 2.0  # degrees
+        self.resolution = (2048, 1536)
+        self.pixel_size = 5.5e-6  # 5.5 microns
+        self.focal_length = 0.5  # 500mm
+
+        # API keys and configuration
+        self.google_maps_api_key = os.getenv('GOOGLE_MAPS_API_KEY')
+        self.nasa_api_key = os.getenv('NASA_API_KEY')
+        
+        # Image cache directory
+        self.cache_dir = Path("cache/images")
+        self.cache_dir.mkdir(parents=True, exist_ok=True)
+        
         # Temperature limits
         self.temp_limits = {
             'min_operational': -20.0,
@@ -156,64 +176,123 @@ class PayloadManager:
             return self.get_telemetry()
             
     def capture_image(self, 
-                     exposure_time_ms: Optional[float] = None,
-                     target: Optional[str] = None) -> Optional[str]:
+                     lat: float, 
+                     lon: float, 
+                     alt: float,
+                     quaternion: np.ndarray,
+                     timestamp: datetime) -> Optional[str]:
         """
-        Capture an image with the current configuration.
+        Capture an image based on spacecraft position and attitude.
         
         Args:
-            exposure_time_ms: Optional override for exposure time
-            target: Optional target name
+            lat: Latitude in degrees
+            lon: Longitude in degrees
+            alt: Altitude in meters
+            quaternion: Spacecraft attitude quaternion
+            timestamp: Image capture time
             
         Returns:
-            Image ID if successful, None otherwise
+            Path to captured image file or None if capture failed
         """
         try:
-            # Check if camera is ready
-            if not self._can_capture():
-                return None
-                
-            # Update exposure time if provided
-            if exposure_time_ms is not None:
-                self.camera_config.exposure_time_ms = exposure_time_ms
-                
-            # Simulate image capture
-            image_data = self._simulate_image_capture()
+            # Calculate pointing vector from quaternion
+            pointing = self._quaternion_to_vector(quaternion)
             
-            # Create metadata
-            metadata = ImageMetadata(
-                image_id=f"IMG_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}",
-                timestamp=datetime.utcnow(),
-                exposure_time_ms=self.camera_config.exposure_time_ms,
-                gain=self.camera_config.gain,
-                binning=self.camera_config.binning,
-                quality=self.camera_config.quality,
-                size_bytes=len(image_data),
-                compression_ratio=self.camera_config.compression_ratio,
-                position=np.zeros(3),  # Should come from ADCS
-                attitude=np.zeros(4),  # Should come from ADCS
-                target=target
-            )
-            
-            # Store image
-            image_id = self.fms.store_file(
-                image_data,
-                FileType.IMAGE,
-                StorageArea.PAYLOAD,
-                compress=True,
-                attributes=metadata.__dict__
-            )
-            
-            if image_id:
-                self.status.images_captured += 1
-                self.status.last_image_time = datetime.utcnow()
-                self.last_capture_time = datetime.utcnow()
+            # Check if pointing at Earth
+            if self._is_nadir_pointing(pointing):
+                # Calculate ground footprint
+                footprint = self._calculate_footprint(lat, lon, alt)
                 
-            return image_id
+                # Get illumination conditions
+                sun_elevation = self._calculate_sun_elevation(lat, lon, timestamp)
+                
+                # Get base map from Google Static Maps API
+                base_image = self._get_earth_image(
+                    footprint['center_lat'],
+                    footprint['center_lon'],
+                    footprint['width_m'],
+                    footprint['height_m']
+                )
+                
+                if base_image:
+                    # Get cloud coverage from NASA GIBS
+                    cloud_image = self._get_cloud_coverage(
+                        footprint['center_lat'],
+                        footprint['center_lon'],
+                        timestamp
+                    )
+                    
+                    # Combine images and adjust for lighting
+                    final_image = self._process_image(
+                        base_image, 
+                        cloud_image,
+                        sun_elevation
+                    )
+                    
+                    # Save image
+                    image_path = self.cache_dir / f"capture_{timestamp.strftime('%Y%m%d_%H%M%S')}.jpg"
+                    final_image.save(image_path, "JPEG", quality=95)
+                    
+                    return str(image_path)
+                    
+            else:
+                # Pointing at space, generate star field
+                return self._capture_star_field(pointing, timestamp)
+                
+            return None
             
         except Exception as e:
-            self.logger.error(f"Error capturing image: {str(e)}")
-            self.status.error_count += 1
+            self.logger.error(f"Image capture error: {str(e)}")
+            return None
+
+    def capture_and_store_image(self, 
+                          lat: float, 
+                          lon: float, 
+                          alt: float,
+                          quaternion: np.ndarray) -> Optional[Dict]:
+        """Capture image and store in FMS."""
+        try:
+            # Capture image
+            timestamp = datetime.utcnow()
+            image_path = self.capture_image(lat, lon, alt, quaternion, timestamp)
+            
+            if not image_path:
+                return None
+                
+            # Prepare metadata
+            metadata = {
+                'timestamp': timestamp.isoformat(),
+                'position': {
+                    'latitude': lat,
+                    'longitude': lon,
+                    'altitude': alt
+                },
+                'attitude': quaternion.tolist(),
+                'camera_config': {
+                    'exposure_time_ms': self.camera_config.exposure_time_ms,
+                    'gain': self.camera_config.gain,
+                    'binning': self.camera_config.binning,
+                    'quality': self.camera_config.quality.name
+                }
+            }
+            
+            # Store in FMS
+            file_id = self.fms.store_image(image_path, metadata)
+            
+            if file_id:
+                # Create thumbnail
+                thumb_id = self.fms.create_thumbnail(file_id)
+                
+                return {
+                    'file_id': file_id,
+                    'thumbnail_id': thumb_id,
+                    'metadata': metadata
+                }
+                
+            return None
+            
+        except Exception as e:
+            self.logger.error(f"Error in capture and store: {str(e)}")
             return None
             
     def set_state(self, state: PayloadState):
@@ -345,3 +424,127 @@ class PayloadManager:
         )
         
         return image_data.tobytes()
+    
+    def _get_earth_image(self, 
+                        lat: float, 
+                        lon: float, 
+                        width_m: float, 
+                        height_m: float) -> Optional[Image.Image]:
+        """Get Earth image from Google Static Maps API."""
+        try:
+            # Calculate zoom level based on footprint
+            zoom = self._calculate_zoom_level(width_m)
+            
+            # Construct API URL
+            url = (
+                f"https://maps.googleapis.com/maps/api/staticmap?"
+                f"center={lat},{lon}&zoom={zoom}&size={self.resolution[0]}x{self.resolution[1]}"
+                f"&maptype=satellite&key={self.google_maps_api_key}"
+            )
+            
+            response = requests.get(url)
+            if response.status_code == 200:
+                return Image.open(io.BytesIO(response.content))
+            return None
+            
+        except Exception as e:
+            self.logger.error(f"Earth image retrieval error: {str(e)}")
+            return None
+
+    def _get_cloud_coverage(self, 
+                          lat: float, 
+                          lon: float, 
+                          timestamp: datetime) -> Optional[Image.Image]:
+        """Get cloud coverage from NASA GIBS."""
+        try:
+            # NASA GIBS API endpoint for MODIS cloud coverage
+            url = (
+                f"https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/"
+                f"MODIS_Terra_CorrectedReflectance_TrueColor/default/"
+                f"{timestamp.strftime('%Y-%m-%d')}/250m/"
+                f"{lat}/{lon}/0/0.png"
+            )
+            
+            response = requests.get(url)
+            if response.status_code == 200:
+                return Image.open(io.BytesIO(response.content))
+            return None
+            
+        except Exception as e:
+            self.logger.error(f"Cloud coverage retrieval error: {str(e)}")
+            return None
+
+    def _process_image(self, 
+                      base_image: Image.Image,
+                      cloud_image: Optional[Image.Image],
+                      sun_elevation: float) -> Image.Image:
+        """Process and combine images with lighting conditions."""
+        try:
+            # Resize cloud image if available
+            if cloud_image:
+                cloud_image = cloud_image.resize(base_image.size)
+                # Blend cloud layer
+                base_image = Image.blend(base_image, cloud_image, 0.3)
+            
+            # Adjust brightness based on sun elevation
+            brightness_factor = np.clip(np.sin(np.radians(sun_elevation)), 0.0, 1.0)
+            enhancer = ImageEnhance.Brightness(base_image)
+            base_image = enhancer.enhance(brightness_factor)
+            
+            # Add noise based on sensor characteristics
+            noise = np.random.normal(0, 5, base_image.size)
+            noise_image = Image.fromarray(noise.astype('uint8'))
+            base_image = Image.blend(base_image, noise_image, 0.1)
+            
+            return base_image
+            
+        except Exception as e:
+            self.logger.error(f"Image processing error: {str(e)}")
+            return base_image
+
+    def _calculate_sun_elevation(self, 
+                               lat: float, 
+                               lon: float, 
+                               timestamp: datetime) -> float:
+        """Calculate sun elevation angle for given position and time."""
+        observer = ephem.Observer()
+        observer.lat = str(lat)
+        observer.lon = str(lon)
+        observer.date = timestamp
+        
+        sun = ephem.Sun()
+        sun.compute(observer)
+        
+        return float(sun.alt) * 180.0 / np.pi
+
+    def _calculate_footprint(self, 
+                           lat: float, 
+                           lon: float, 
+                           alt: float) -> Dict:
+        """Calculate image footprint on ground."""
+        # Calculate ground footprint based on FOV and altitude
+        footprint_angle = self.fov / 2.0
+        footprint_radius = alt * np.tan(np.radians(footprint_angle))
+        
+        return {
+            'center_lat': lat,
+            'center_lon': lon,
+            'width_m': footprint_radius * 2,
+            'height_m': footprint_radius * 2
+        }
+
+    def _capture_star_field(self, 
+                          pointing: np.ndarray, 
+                          timestamp: datetime) -> Optional[str]:
+        """Generate star field image when pointing at space."""
+        try:
+            # Convert pointing to RA/Dec
+            ra, dec = self._vector_to_radec(pointing)
+            
+            # Use Astronomy.net API to get star field
+            # Implementation depends on chosen star catalog/API
+            return None
+            
+        except Exception as e:
+            self.logger.error(f"Star field generation error: {str(e)}")
+            return None

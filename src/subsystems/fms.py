@@ -10,10 +10,12 @@ from pathlib import Path
 
 class FileType(Enum):
     """Types of files managed by FMS."""
-    IMAGE = auto()
+    IMAGE_RAW = auto()      # Raw camera data
+    IMAGE_PROCESSED = auto() # Processed JPG/PNG
+    IMAGE_THUMBNAIL = auto() # Small preview
     TELEMETRY = auto()
     CONFIG = auto()
-    SEQUENCE = auto()  # ATS/RTS sequences
+    SEQUENCE = auto()
     LOG = auto()
     FIRMWARE = auto()
 
@@ -102,6 +104,96 @@ class FileManagementSystem:
         self.file_locks: Dict[str, bool] = {}
         
         self.logger.info("File Management System initialized")
+
+    def store_image(self, 
+                   image_path: str, 
+                   metadata: Dict = None) -> Optional[str]:
+        """
+        Store captured image with metadata.
+        
+        Args:
+            image_path: Path to image file
+            metadata: Image metadata (timestamp, position, etc.)
+            
+        Returns:
+            File ID if successful, None otherwise
+        """
+        try:
+            # Read image file
+            with open(image_path, 'rb') as f:
+                image_data = f.read()
+                
+            # Generate unique file ID
+            timestamp = datetime.utcnow()
+            file_id = f"IMG_{timestamp.strftime('%Y%m%d_%H%M%S')}"
+            
+            # Create metadata
+            file_metadata = FileMetadata(
+                file_id=file_id,
+                file_type=FileType.IMAGE_PROCESSED,
+                storage_area=StorageArea.PAYLOAD,
+                size_bytes=len(image_data),
+                creation_time=timestamp,
+                last_access_time=timestamp,
+                checksum=hashlib.sha256(image_data).hexdigest(),
+                compression_ratio=None,  # JPG already compressed
+                encryption_type=None,
+                attributes=metadata or {}
+            )
+            
+            # Store in payload partition
+            partition = self.storage[StorageArea.PAYLOAD]
+            
+            # Check storage limits
+            if partition.used_bytes + len(image_data) > partition.total_bytes:
+                self.logger.error("Insufficient storage space for image")
+                return None
+                
+            # Store data and metadata
+            partition.files[file_id] = file_metadata
+            partition.used_bytes += len(image_data)
+            self.data_store[file_id] = image_data
+            
+            self.logger.info(f"Stored image {file_id} ({len(image_data)} bytes)")
+            return file_id
+            
+        except Exception as e:
+            self.logger.error(f"Error storing image: {str(e)}")
+            return None
+            
+    def create_thumbnail(self, file_id: str) -> Optional[str]:
+        """Create thumbnail for image preview."""
+        try:
+            if file_id not in self.data_store:
+                return None
+                
+            # Load image
+            image_data = self.data_store[file_id]
+            image = Image.open(io.BytesIO(image_data))
+            
+            # Create thumbnail
+            thumbnail_size = (256, 256)
+            image.thumbnail(thumbnail_size)
+            
+            # Save thumbnail
+            thumb_buffer = io.BytesIO()
+            image.save(thumb_buffer, format='JPEG', quality=70)
+            thumb_data = thumb_buffer.getvalue()
+            
+            # Store thumbnail
+            thumb_id = f"{file_id}_thumb"
+            self.store_file(
+                thumb_data,
+                FileType.IMAGE_THUMBNAIL,
+                StorageArea.PAYLOAD,
+                file_id=thumb_id
+            )
+            
+            return thumb_id
+            
+        except Exception as e:
+            self.logger.error(f"Error creating thumbnail: {str(e)}")
+            return None
         
     def store_file(self, 
                   data: Union[bytes, Dict], 

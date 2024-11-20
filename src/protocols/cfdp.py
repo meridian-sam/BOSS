@@ -351,3 +351,55 @@ class CFDPProtocol:
                     if transaction.segments_sent:
                         last_segment = transaction.segments_sent[-1]
                         # Implementation-specific resend logic here
+    def request_image_download(self, 
+                             file_id: str, 
+                             thumbnail_only: bool = False) -> Optional[Dict]:
+        """
+        Request image download via CFDP.
+        
+        Args:
+            file_id: Image file ID
+            thumbnail_only: If True, download thumbnail instead of full image
+            
+        Returns:
+            Transaction info if successful, None otherwise
+        """
+        try:
+            # Check if file exists
+            if not self.fms.file_exists(file_id):
+                return None
+                
+            # Get file metadata
+            metadata = self.fms.get_metadata(file_id)
+            
+            # If thumbnail requested, try to get/create it
+            if thumbnail_only:
+                thumb_id = self.fms.create_thumbnail(file_id)
+                if thumb_id:
+                    file_id = thumb_id
+                    metadata = self.fms.get_metadata(thumb_id)
+                
+            # Create CFDP transaction
+            transaction = self.create_transaction(
+                source_id=self.entity_id,
+                destination_id=0,  # Ground station ID
+                file_size=metadata.size_bytes,
+                metadata={
+                    'file_id': file_id,
+                    'file_type': metadata.file_type.name,
+                    'creation_time': metadata.creation_time.isoformat(),
+                    'checksum': metadata.checksum,
+                    'attributes': metadata.attributes
+                }
+            )
+            
+            return {
+                'transaction_id': transaction.transaction_id,
+                'file_id': file_id,
+                'size_bytes': metadata.size_bytes,
+                'metadata': metadata.attributes
+            }
+            
+        except Exception as e:
+            self.logger.error(f"Error initiating image download: {str(e)}")
+            return None

@@ -142,9 +142,30 @@ class CommandHandler:
         pass
         
     def _handle_payload_command(self, command: Command) -> Dict:
-        """Handle payload commands."""
-        # Implementation for payload commands
-        pass
+        if command.subtype == 'CAPTURE_IMAGE':
+        # Get spacecraft state
+        position = self.obc.get_position()
+        attitude = self.obc.adcs.state.quaternion
+        
+        # Capture image
+        image_path = self.obc.payload.capture_image(
+            lat=position['latitude'],
+            lon=position['longitude'],
+            alt=position['altitude'],
+            quaternion=attitude,
+            timestamp=datetime.utcnow()
+        )
+        
+        if image_path:
+            # Store in file management system
+            self.obc.fms.store_file(
+                image_path,
+                FileType.IMAGE,
+                StorageArea.PAYLOAD
+            )
+            return {'success': True, 'image_path': image_path}
+            
+        return {'success': False, 'error': 'Image capture failed'}
         
     def _handle_fms_command(self, command: Command) -> Dict:
         """Handle file management commands."""
