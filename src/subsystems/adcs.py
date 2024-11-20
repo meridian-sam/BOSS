@@ -7,7 +7,7 @@ import logging
 from models.attitude import AttitudeDynamics
 from models.magnetic_field import MagneticFieldModel
 from subsystems.thermal import ThermalZone
-from common.events import EventType
+from protocols.events import EventType
 
 class ADCSMode(Enum):
     """ADCS control modes."""

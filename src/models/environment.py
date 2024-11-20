@@ -1,3 +1,4 @@
+from skyfield.api import load
 from datetime import datetime
 import numpy as np
 from typing import NamedTuple, Optional
